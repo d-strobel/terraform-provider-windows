@@ -1,0 +1,43 @@
+{
+    "version": "0.1",
+    "provider": {
+        "name": "windows"
+    },
+    "datasources": [
+        {
+            "name": "local_group",
+            "schema": {
+                "attributes": [
+                    {
+                        "name": "name",
+                        "string": {
+                            "computed_optional_required": "optional",
+                            "description": "Define the name of the local security group."
+                        }
+                    },
+                    {
+                        "name": "sid",
+                        "string": {
+                            "computed_optional_required": "optional",
+                            "description": "Define the security ID of the local security group."
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "Define the security ID of the local security group."
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The ID of the retrieved local security group. This is the same as the SID."
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
