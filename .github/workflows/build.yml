@@ -1,5 +1,5 @@
 # Terraform Provider testing workflow.
-name: Tests
+name: build
 
 # This GitHub action runs your tests for each pull request and push.
 # Optionally, you can turn it on using a schedule for regular testing.
@@ -56,6 +56,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
           cache: true
+      - run: go install github.com/hashicorp/terraform-plugin-codegen-framework/cmd/tfplugingen-framework@v0.3.1
       - run: make framework-generator
       - name: git diff
         run: |
