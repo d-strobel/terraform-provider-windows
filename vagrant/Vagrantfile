@@ -1,0 +1,7 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Configure vagrant boxes
+Vagrant.configure("2") do |config|
+  config.vm.box = "d-strobel/win2022sc"
+end
