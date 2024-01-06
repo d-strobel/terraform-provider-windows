@@ -26,7 +26,7 @@
                         "name": "description",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "Define the security ID of the local security group."
+                            "description": "The description of the local security group."
                         }
                     },
                     {

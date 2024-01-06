@@ -14,8 +14,8 @@ func LocalGroupDataSourceSchema(ctx context.Context) schema.Schema {
 		Attributes: map[string]schema.Attribute{
 			"description": schema.StringAttribute{
 				Computed:            true,
-				Description:         "Define the security ID of the local security group.",
-				MarkdownDescription: "Define the security ID of the local security group.",
+				Description:         "The description of the local security group.",
+				MarkdownDescription: "The description of the local security group.",
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
