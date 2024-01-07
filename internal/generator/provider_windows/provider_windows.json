@@ -8,7 +8,7 @@
                     "name": "endpoint",
                     "string": {
                         "optional_required": "required",
-                        "description": "Define the hostname or ip-address of the target Windows system. Can be set via 'WIN_ENDPOINT' environment variable."
+                        "description": "Define the hostname or ip-address of the target Windows system."
                     }
                 },
                 {
@@ -21,43 +21,43 @@
                                 "name": "username",
                                 "string": {
                                     "optional_required": "optional",
-                                    "description": "Define the username to connect with the target Windows system. Required if winrm is set. Can be set via 'WIN_WINRM_USERNAME' environment variable."
+                                    "description": "(Env: `WIN_WINRM_USERNAME`)<br>Define the username to connect with the target Windows system. Required if winrm is set."
                                 }
                             },
                             {
                                 "name": "password",
                                 "string": {
                                     "optional_required": "optional",
-                                    "description": "Define the password to connect with the target Windows system. Required if winrm is set. Can be set via 'WIN_WINRM_PASSWORD' environment variable.",
+                                    "description": "(Env: `WIN_WINRM_PASSWORD`)<br>Define the password to connect with the target Windows system. Required if winrm is set.",
                                     "sensitive": true
                                 }
                             },
                             {
-                                "name": "protocol",
-                                "string": {
+                                "name": "use_tls",
+                                "bool": {
                                     "optional_required": "optional",
-                                    "description": "Define the protocol to connect with the target Windows system. Default value is 'https'. Can be set via 'WIN_WINRM_PROTOCOL' environment variable."
+                                    "description": "(Env: `WIN_WINRM_USE_TLS`) (Default: `true`)<br>Define if TLS (https) should be used to connect with the target Windows system."
                                 }
                             },
                             {
                                 "name": "port",
                                 "int64": {
                                     "optional_required": "optional",
-                                    "description": "Define the port to connect with the target Windows system. Default value is '5986'. Can be set via 'WIN_WINRM_PORT' environment variable."
+                                    "description": "(Env: `WIN_WINRM_PORT`) (Default: `5986`)<br>Define the port to connect with the target Windows system."
                                 }
                             },
                             {
                                 "name": "insecure",
                                 "bool": {
                                     "optional_required": "optional",
-                                    "description": "Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates. Default value is 'false'. Can be set via 'WIN_WINRM_INSECURE' environment variable."
+                                    "description": "(Env: `WIN_WINRM_INSECURE`) (Default: `false`)<br>Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates."
                                 }
                             },
                             {
                                 "name": "timeout",
                                 "int64": {
                                     "optional_required": "optional",
-                                    "description": "Define the connection timeout in minutes for the target Windows system. Can be set via 'WIN_WINRM_TIMEOUT' environment variable."
+                                    "description": "(Env: `WIN_WINRM_TIMEOUT`) (Default: `0`)<br>Define the connection timeout in minutes for the target Windows system."
                                 }
                             },
                             {
@@ -69,14 +69,14 @@
                                             "name": "realm",
                                             "string": {
                                                 "optional_required": "optional",
-                                                "description": "Define the Kerberos realm. Required if kerberos is set. Can be set via 'WIN_KERBEROS_REALM' environment variable."
+                                                "description": "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set."
                                             }
                                         },
                                         {
                                             "name": "krb_config_file",
                                             "string": {
                                                 "optional_required": "optional",
-                                                "description": "Define the path to the kerberos configuration file. Required if kerberos is set. Can be set via 'WIN_KERBEROS_KRB_CONFIG_FILE' environment variable."
+                                                "description": "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set."
                                             }
                                         }
                                     ]
@@ -95,7 +95,7 @@
                                 "name": "username",
                                 "string": {
                                     "optional_required": "optional",
-                                    "description": "Define the username to connect with the target Windows system. Required if ssh is set. Can be set via 'WIN_SSH_USERNAME' environment variable."
+                                    "description": "(Env: `WIN_SSH_USERNAME`)<br>Define the username to connect with the target Windows system. Required if ssh is set."
                                 }
                             },
                             {
@@ -103,7 +103,7 @@
                                 "string": {
                                     "optional_required": "optional",
                                     "sensitive": true,
-                                    "description": "Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PASSWORD' environment variable."
+                                    "description": "(Env: `WIN_SSH_PASSWORD`)<br>Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set."
                                 }
                             },
                             {
@@ -111,35 +111,35 @@
                                 "string": {
                                     "optional_required": "optional",
                                     "sensitive": true,
-                                    "description": "Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PRIVATE_KEY' environment variable."
+                                    "description": "(Env: `WIN_SSH_PRIVATE_KEY`)<br>Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set."
                                 }
                             },
                             {
                                 "name": "private_key_path",
                                 "string": {
                                     "optional_required": "optional",
-                                    "description": "Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PRIVATE_KEY_PATH' environment variable."
+                                    "description": "(Env: `WIN_SSH_PRIVATE_KEY_PATH`)<br>Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set."
                                 }
                             },
                             {
                                 "name": "known_hosts_path",
                                 "string": {
                                     "optional_required": "optional",
-                                    "description": "Define the path to the known hosts file to connect with the target Windows system. Can be set via 'WIN_SSH_KNOWN_HOSTS_PATH' environment variable."
+                                    "description": "(Env: `WIN_SSH_KNOWN_HOSTS_PATH`)<br>Define the path to the known hosts file to connect with the target Windows system."
                                 }
                             },
                             {
                                 "name": "insecure",
                                 "bool": {
                                     "optional_required": "optional",
-                                    "description": "Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys. Default value is 'false'. Can be set via 'WIN_SSH_INSECURE' environment variable."
+                                    "description": "(Env: `WIN_SSH_INSECURE`) (Default: `false`)<br>Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys."
                                 }
                             },
                             {
                                 "name": "port",
                                 "int64": {
                                     "optional_required": "optional",
-                                    "description": "Define the port to connect with the target Windows system. Can be set via 'WIN_SSH_PORT' environment variable."
+                                    "description": "(Env: `WIN_SSH_PORT`) (Default: `22`)<br>Define the port to connect with the target Windows system."
                                 }
                             }
                         ]

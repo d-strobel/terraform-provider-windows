@@ -30,7 +30,7 @@ provider "windows" {
 
 ### Required
 
-- `endpoint` (String) Define the hostname or ip-address of the target Windows system. Can be set via 'WIN_ENDPOINT' environment variable.
+- `endpoint` (String) Define the hostname or ip-address of the target Windows system.
 
 ### Optional
 
@@ -42,13 +42,13 @@ provider "windows" {
 
 Optional:
 
-- `insecure` (Boolean) Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys. Default value is 'false'. Can be set via 'WIN_SSH_INSECURE' environment variable.
-- `known_hosts_path` (String) Define the path to the known hosts file to connect with the target Windows system. Can be set via 'WIN_SSH_KNOWN_HOSTS_PATH' environment variable.
-- `password` (String, Sensitive) Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PASSWORD' environment variable.
-- `port` (Number) Define the port to connect with the target Windows system. Can be set via 'WIN_SSH_PORT' environment variable.
-- `private_key` (String, Sensitive) Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PRIVATE_KEY' environment variable.
-- `private_key_path` (String) Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PRIVATE_KEY_PATH' environment variable.
-- `username` (String) Define the username to connect with the target Windows system. Required if ssh is set. Can be set via 'WIN_SSH_USERNAME' environment variable.
+- `insecure` (Boolean) (Env: `WIN_SSH_INSECURE`) (Default: `false`)<br>Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys.
+- `known_hosts_path` (String) (Env: `WIN_SSH_KNOWN_HOSTS_PATH`)<br>Define the path to the known hosts file to connect with the target Windows system.
+- `password` (String, Sensitive) (Env: `WIN_SSH_PASSWORD`)<br>Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.
+- `port` (Number) (Env: `WIN_SSH_PORT`) (Default: `22`)<br>Define the port to connect with the target Windows system.
+- `private_key` (String, Sensitive) (Env: `WIN_SSH_PRIVATE_KEY`)<br>Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.
+- `private_key_path` (String) (Env: `WIN_SSH_PRIVATE_KEY_PATH`)<br>Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.
+- `username` (String) (Env: `WIN_SSH_USERNAME`)<br>Define the username to connect with the target Windows system. Required if ssh is set.
 
 
 <a id="nestedatt--winrm"></a>
@@ -56,18 +56,18 @@ Optional:
 
 Optional:
 
-- `insecure` (Boolean) Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates. Default value is 'false'. Can be set via 'WIN_WINRM_INSECURE' environment variable.
+- `insecure` (Boolean) (Env: `WIN_WINRM_INSECURE`) (Default: `false`)<br>Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates.
 - `kerberos` (Attributes) (see [below for nested schema](#nestedatt--winrm--kerberos))
-- `password` (String, Sensitive) Define the password to connect with the target Windows system. Required if winrm is set. Can be set via 'WIN_WINRM_PASSWORD' environment variable.
-- `port` (Number) Define the port to connect with the target Windows system. Default value is '5986'. Can be set via 'WIN_WINRM_PORT' environment variable.
-- `protocol` (String) Define the protocol to connect with the target Windows system. Default value is 'https'. Can be set via 'WIN_WINRM_PROTOCOL' environment variable.
-- `timeout` (Number) Define the connection timeout in minutes for the target Windows system. Can be set via 'WIN_WINRM_TIMEOUT' environment variable.
-- `username` (String) Define the username to connect with the target Windows system. Required if winrm is set. Can be set via 'WIN_WINRM_USERNAME' environment variable.
+- `password` (String, Sensitive) (Env: `WIN_WINRM_PASSWORD`)<br>Define the password to connect with the target Windows system. Required if winrm is set.
+- `port` (Number) (Env: `WIN_WINRM_PORT`) (Default: `5986`)<br>Define the port to connect with the target Windows system.
+- `timeout` (Number) (Env: `WIN_WINRM_TIMEOUT`) (Default: `0`)<br>Define the connection timeout in minutes for the target Windows system.
+- `use_tls` (Boolean) (Env: `WIN_WINRM_USE_TLS`) (Default: `true`)<br>Define if TLS (https) should be used to connect with the target Windows system.
+- `username` (String) (Env: `WIN_WINRM_USERNAME`)<br>Define the username to connect with the target Windows system. Required if winrm is set.
 
 <a id="nestedatt--winrm--kerberos"></a>
 ### Nested Schema for `winrm.kerberos`
 
 Optional:
 
-- `krb_config_file` (String) Define the path to the kerberos configuration file. Required if kerberos is set. Can be set via 'WIN_KERBEROS_KRB_CONFIG_FILE' environment variable.
-- `realm` (String) Define the Kerberos realm. Required if kerberos is set. Can be set via 'WIN_KERBEROS_REALM' environment variable.
+- `krb_config_file` (String) (Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set.
+- `realm` (String) (Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set.
