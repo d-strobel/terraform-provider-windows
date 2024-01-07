@@ -20,47 +20,47 @@ func WindowsProviderSchema(ctx context.Context) schema.Schema {
 		Attributes: map[string]schema.Attribute{
 			"endpoint": schema.StringAttribute{
 				Required:            true,
-				Description:         "Define the hostname or ip-address of the target Windows system. Can be set via 'WIN_ENDPOINT' environment variable.",
-				MarkdownDescription: "Define the hostname or ip-address of the target Windows system. Can be set via 'WIN_ENDPOINT' environment variable.",
+				Description:         "Define the hostname or ip-address of the target Windows system.",
+				MarkdownDescription: "Define the hostname or ip-address of the target Windows system.",
 			},
 			"ssh": schema.SingleNestedAttribute{
 				Attributes: map[string]schema.Attribute{
 					"insecure": schema.BoolAttribute{
 						Optional:            true,
-						Description:         "Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys. Default value is 'false'. Can be set via 'WIN_SSH_INSECURE' environment variable.",
-						MarkdownDescription: "Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys. Default value is 'false'. Can be set via 'WIN_SSH_INSECURE' environment variable.",
+						Description:         "(Env: `WIN_SSH_INSECURE`) (Default: `false`)<br>Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys.",
+						MarkdownDescription: "(Env: `WIN_SSH_INSECURE`) (Default: `false`)<br>Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys.",
 					},
 					"known_hosts_path": schema.StringAttribute{
 						Optional:            true,
-						Description:         "Define the path to the known hosts file to connect with the target Windows system. Can be set via 'WIN_SSH_KNOWN_HOSTS_PATH' environment variable.",
-						MarkdownDescription: "Define the path to the known hosts file to connect with the target Windows system. Can be set via 'WIN_SSH_KNOWN_HOSTS_PATH' environment variable.",
+						Description:         "(Env: `WIN_SSH_KNOWN_HOSTS_PATH`)<br>Define the path to the known hosts file to connect with the target Windows system.",
+						MarkdownDescription: "(Env: `WIN_SSH_KNOWN_HOSTS_PATH`)<br>Define the path to the known hosts file to connect with the target Windows system.",
 					},
 					"password": schema.StringAttribute{
 						Optional:            true,
 						Sensitive:           true,
-						Description:         "Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PASSWORD' environment variable.",
-						MarkdownDescription: "Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PASSWORD' environment variable.",
+						Description:         "(Env: `WIN_SSH_PASSWORD`)<br>Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.",
+						MarkdownDescription: "(Env: `WIN_SSH_PASSWORD`)<br>Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.",
 					},
 					"port": schema.Int64Attribute{
 						Optional:            true,
-						Description:         "Define the port to connect with the target Windows system. Can be set via 'WIN_SSH_PORT' environment variable.",
-						MarkdownDescription: "Define the port to connect with the target Windows system. Can be set via 'WIN_SSH_PORT' environment variable.",
+						Description:         "(Env: `WIN_SSH_PORT`) (Default: `22`)<br>Define the port to connect with the target Windows system.",
+						MarkdownDescription: "(Env: `WIN_SSH_PORT`) (Default: `22`)<br>Define the port to connect with the target Windows system.",
 					},
 					"private_key": schema.StringAttribute{
 						Optional:            true,
 						Sensitive:           true,
-						Description:         "Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PRIVATE_KEY' environment variable.",
-						MarkdownDescription: "Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PRIVATE_KEY' environment variable.",
+						Description:         "(Env: `WIN_SSH_PRIVATE_KEY`)<br>Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.",
+						MarkdownDescription: "(Env: `WIN_SSH_PRIVATE_KEY`)<br>Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.",
 					},
 					"private_key_path": schema.StringAttribute{
 						Optional:            true,
-						Description:         "Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PRIVATE_KEY_PATH' environment variable.",
-						MarkdownDescription: "Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set. Can be set via 'WIN_SSH_PRIVATE_KEY_PATH' environment variable.",
+						Description:         "(Env: `WIN_SSH_PRIVATE_KEY_PATH`)<br>Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.",
+						MarkdownDescription: "(Env: `WIN_SSH_PRIVATE_KEY_PATH`)<br>Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.",
 					},
 					"username": schema.StringAttribute{
 						Optional:            true,
-						Description:         "Define the username to connect with the target Windows system. Required if ssh is set. Can be set via 'WIN_SSH_USERNAME' environment variable.",
-						MarkdownDescription: "Define the username to connect with the target Windows system. Required if ssh is set. Can be set via 'WIN_SSH_USERNAME' environment variable.",
+						Description:         "(Env: `WIN_SSH_USERNAME`)<br>Define the username to connect with the target Windows system. Required if ssh is set.",
+						MarkdownDescription: "(Env: `WIN_SSH_USERNAME`)<br>Define the username to connect with the target Windows system. Required if ssh is set.",
 					},
 				},
 				CustomType: SshType{
@@ -76,20 +76,20 @@ func WindowsProviderSchema(ctx context.Context) schema.Schema {
 				Attributes: map[string]schema.Attribute{
 					"insecure": schema.BoolAttribute{
 						Optional:            true,
-						Description:         "Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates. Default value is 'false'. Can be set via 'WIN_WINRM_INSECURE' environment variable.",
-						MarkdownDescription: "Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates. Default value is 'false'. Can be set via 'WIN_WINRM_INSECURE' environment variable.",
+						Description:         "(Env: `WIN_WINRM_INSECURE`) (Default: `false`)<br>Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates.",
+						MarkdownDescription: "(Env: `WIN_WINRM_INSECURE`) (Default: `false`)<br>Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates.",
 					},
 					"kerberos": schema.SingleNestedAttribute{
 						Attributes: map[string]schema.Attribute{
 							"krb_config_file": schema.StringAttribute{
 								Optional:            true,
-								Description:         "Define the path to the kerberos configuration file. Required if kerberos is set. Can be set via 'WIN_KERBEROS_KRB_CONFIG_FILE' environment variable.",
-								MarkdownDescription: "Define the path to the kerberos configuration file. Required if kerberos is set. Can be set via 'WIN_KERBEROS_KRB_CONFIG_FILE' environment variable.",
+								Description:         "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set.",
+								MarkdownDescription: "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set.",
 							},
 							"realm": schema.StringAttribute{
 								Optional:            true,
-								Description:         "Define the Kerberos realm. Required if kerberos is set. Can be set via 'WIN_KERBEROS_REALM' environment variable.",
-								MarkdownDescription: "Define the Kerberos realm. Required if kerberos is set. Can be set via 'WIN_KERBEROS_REALM' environment variable.",
+								Description:         "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set.",
+								MarkdownDescription: "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set.",
 							},
 						},
 						CustomType: KerberosType{
@@ -102,28 +102,28 @@ func WindowsProviderSchema(ctx context.Context) schema.Schema {
 					"password": schema.StringAttribute{
 						Optional:            true,
 						Sensitive:           true,
-						Description:         "Define the password to connect with the target Windows system. Required if winrm is set. Can be set via 'WIN_WINRM_PASSWORD' environment variable.",
-						MarkdownDescription: "Define the password to connect with the target Windows system. Required if winrm is set. Can be set via 'WIN_WINRM_PASSWORD' environment variable.",
+						Description:         "(Env: `WIN_WINRM_PASSWORD`)<br>Define the password to connect with the target Windows system. Required if winrm is set.",
+						MarkdownDescription: "(Env: `WIN_WINRM_PASSWORD`)<br>Define the password to connect with the target Windows system. Required if winrm is set.",
 					},
 					"port": schema.Int64Attribute{
 						Optional:            true,
-						Description:         "Define the port to connect with the target Windows system. Default value is '5986'. Can be set via 'WIN_WINRM_PORT' environment variable.",
-						MarkdownDescription: "Define the port to connect with the target Windows system. Default value is '5986'. Can be set via 'WIN_WINRM_PORT' environment variable.",
-					},
-					"protocol": schema.StringAttribute{
-						Optional:            true,
-						Description:         "Define the protocol to connect with the target Windows system. Default value is 'https'. Can be set via 'WIN_WINRM_PROTOCOL' environment variable.",
-						MarkdownDescription: "Define the protocol to connect with the target Windows system. Default value is 'https'. Can be set via 'WIN_WINRM_PROTOCOL' environment variable.",
+						Description:         "(Env: `WIN_WINRM_PORT`) (Default: `5986`)<br>Define the port to connect with the target Windows system.",
+						MarkdownDescription: "(Env: `WIN_WINRM_PORT`) (Default: `5986`)<br>Define the port to connect with the target Windows system.",
 					},
 					"timeout": schema.Int64Attribute{
 						Optional:            true,
-						Description:         "Define the connection timeout in minutes for the target Windows system. Can be set via 'WIN_WINRM_TIMEOUT' environment variable.",
-						MarkdownDescription: "Define the connection timeout in minutes for the target Windows system. Can be set via 'WIN_WINRM_TIMEOUT' environment variable.",
+						Description:         "(Env: `WIN_WINRM_TIMEOUT`) (Default: `0`)<br>Define the connection timeout in minutes for the target Windows system.",
+						MarkdownDescription: "(Env: `WIN_WINRM_TIMEOUT`) (Default: `0`)<br>Define the connection timeout in minutes for the target Windows system.",
+					},
+					"use_tls": schema.BoolAttribute{
+						Optional:            true,
+						Description:         "(Env: `WIN_WINRM_USE_TLS`) (Default: `true`)<br>Define if TLS (https) should be used to connect with the target Windows system.",
+						MarkdownDescription: "(Env: `WIN_WINRM_USE_TLS`) (Default: `true`)<br>Define if TLS (https) should be used to connect with the target Windows system.",
 					},
 					"username": schema.StringAttribute{
 						Optional:            true,
-						Description:         "Define the username to connect with the target Windows system. Required if winrm is set. Can be set via 'WIN_WINRM_USERNAME' environment variable.",
-						MarkdownDescription: "Define the username to connect with the target Windows system. Required if winrm is set. Can be set via 'WIN_WINRM_USERNAME' environment variable.",
+						Description:         "(Env: `WIN_WINRM_USERNAME`)<br>Define the username to connect with the target Windows system. Required if winrm is set.",
+						MarkdownDescription: "(Env: `WIN_WINRM_USERNAME`)<br>Define the username to connect with the target Windows system. Required if winrm is set.",
 					},
 				},
 				CustomType: WinrmType{
@@ -886,24 +886,6 @@ func (t WinrmType) ValueFromObject(ctx context.Context, in basetypes.ObjectValue
 			fmt.Sprintf(`port expected to be basetypes.Int64Value, was: %T`, portAttribute))
 	}
 
-	protocolAttribute, ok := attributes["protocol"]
-
-	if !ok {
-		diags.AddError(
-			"Attribute Missing",
-			`protocol is missing from object`)
-
-		return nil, diags
-	}
-
-	protocolVal, ok := protocolAttribute.(basetypes.StringValue)
-
-	if !ok {
-		diags.AddError(
-			"Attribute Wrong Type",
-			fmt.Sprintf(`protocol expected to be basetypes.StringValue, was: %T`, protocolAttribute))
-	}
-
 	timeoutAttribute, ok := attributes["timeout"]
 
 	if !ok {
@@ -920,6 +902,24 @@ func (t WinrmType) ValueFromObject(ctx context.Context, in basetypes.ObjectValue
 		diags.AddError(
 			"Attribute Wrong Type",
 			fmt.Sprintf(`timeout expected to be basetypes.Int64Value, was: %T`, timeoutAttribute))
+	}
+
+	useTlsAttribute, ok := attributes["use_tls"]
+
+	if !ok {
+		diags.AddError(
+			"Attribute Missing",
+			`use_tls is missing from object`)
+
+		return nil, diags
+	}
+
+	useTlsVal, ok := useTlsAttribute.(basetypes.BoolValue)
+
+	if !ok {
+		diags.AddError(
+			"Attribute Wrong Type",
+			fmt.Sprintf(`use_tls expected to be basetypes.BoolValue, was: %T`, useTlsAttribute))
 	}
 
 	usernameAttribute, ok := attributes["username"]
@@ -949,8 +949,8 @@ func (t WinrmType) ValueFromObject(ctx context.Context, in basetypes.ObjectValue
 		Kerberos: kerberosVal,
 		Password: passwordVal,
 		Port:     portVal,
-		Protocol: protocolVal,
 		Timeout:  timeoutVal,
+		UseTls:   useTlsVal,
 		Username: usernameVal,
 		state:    attr.ValueStateKnown,
 	}, diags
@@ -1091,24 +1091,6 @@ func NewWinrmValue(attributeTypes map[string]attr.Type, attributes map[string]at
 			fmt.Sprintf(`port expected to be basetypes.Int64Value, was: %T`, portAttribute))
 	}
 
-	protocolAttribute, ok := attributes["protocol"]
-
-	if !ok {
-		diags.AddError(
-			"Attribute Missing",
-			`protocol is missing from object`)
-
-		return NewWinrmValueUnknown(), diags
-	}
-
-	protocolVal, ok := protocolAttribute.(basetypes.StringValue)
-
-	if !ok {
-		diags.AddError(
-			"Attribute Wrong Type",
-			fmt.Sprintf(`protocol expected to be basetypes.StringValue, was: %T`, protocolAttribute))
-	}
-
 	timeoutAttribute, ok := attributes["timeout"]
 
 	if !ok {
@@ -1125,6 +1107,24 @@ func NewWinrmValue(attributeTypes map[string]attr.Type, attributes map[string]at
 		diags.AddError(
 			"Attribute Wrong Type",
 			fmt.Sprintf(`timeout expected to be basetypes.Int64Value, was: %T`, timeoutAttribute))
+	}
+
+	useTlsAttribute, ok := attributes["use_tls"]
+
+	if !ok {
+		diags.AddError(
+			"Attribute Missing",
+			`use_tls is missing from object`)
+
+		return NewWinrmValueUnknown(), diags
+	}
+
+	useTlsVal, ok := useTlsAttribute.(basetypes.BoolValue)
+
+	if !ok {
+		diags.AddError(
+			"Attribute Wrong Type",
+			fmt.Sprintf(`use_tls expected to be basetypes.BoolValue, was: %T`, useTlsAttribute))
 	}
 
 	usernameAttribute, ok := attributes["username"]
@@ -1154,8 +1154,8 @@ func NewWinrmValue(attributeTypes map[string]attr.Type, attributes map[string]at
 		Kerberos: kerberosVal,
 		Password: passwordVal,
 		Port:     portVal,
-		Protocol: protocolVal,
 		Timeout:  timeoutVal,
+		UseTls:   useTlsVal,
 		Username: usernameVal,
 		state:    attr.ValueStateKnown,
 	}, diags
@@ -1233,8 +1233,8 @@ type WinrmValue struct {
 	Kerberos basetypes.ObjectValue `tfsdk:"kerberos"`
 	Password basetypes.StringValue `tfsdk:"password"`
 	Port     basetypes.Int64Value  `tfsdk:"port"`
-	Protocol basetypes.StringValue `tfsdk:"protocol"`
 	Timeout  basetypes.Int64Value  `tfsdk:"timeout"`
+	UseTls   basetypes.BoolValue   `tfsdk:"use_tls"`
 	Username basetypes.StringValue `tfsdk:"username"`
 	state    attr.ValueState
 }
@@ -1251,8 +1251,8 @@ func (v WinrmValue) ToTerraformValue(ctx context.Context) (tftypes.Value, error)
 	}.TerraformType(ctx)
 	attrTypes["password"] = basetypes.StringType{}.TerraformType(ctx)
 	attrTypes["port"] = basetypes.Int64Type{}.TerraformType(ctx)
-	attrTypes["protocol"] = basetypes.StringType{}.TerraformType(ctx)
 	attrTypes["timeout"] = basetypes.Int64Type{}.TerraformType(ctx)
+	attrTypes["use_tls"] = basetypes.BoolType{}.TerraformType(ctx)
 	attrTypes["username"] = basetypes.StringType{}.TerraformType(ctx)
 
 	objectType := tftypes.Object{AttributeTypes: attrTypes}
@@ -1293,14 +1293,6 @@ func (v WinrmValue) ToTerraformValue(ctx context.Context) (tftypes.Value, error)
 
 		vals["port"] = val
 
-		val, err = v.Protocol.ToTerraformValue(ctx)
-
-		if err != nil {
-			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
-		}
-
-		vals["protocol"] = val
-
 		val, err = v.Timeout.ToTerraformValue(ctx)
 
 		if err != nil {
@@ -1308,6 +1300,14 @@ func (v WinrmValue) ToTerraformValue(ctx context.Context) (tftypes.Value, error)
 		}
 
 		vals["timeout"] = val
+
+		val, err = v.UseTls.ToTerraformValue(ctx)
+
+		if err != nil {
+			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
+		}
+
+		vals["use_tls"] = val
 
 		val, err = v.Username.ToTerraformValue(ctx)
 
@@ -1375,8 +1375,8 @@ func (v WinrmValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, d
 			},
 			"password": basetypes.StringType{},
 			"port":     basetypes.Int64Type{},
-			"protocol": basetypes.StringType{},
 			"timeout":  basetypes.Int64Type{},
+			"use_tls":  basetypes.BoolType{},
 			"username": basetypes.StringType{},
 		},
 		map[string]attr.Value{
@@ -1384,8 +1384,8 @@ func (v WinrmValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, d
 			"kerberos": kerberos,
 			"password": v.Password,
 			"port":     v.Port,
-			"protocol": v.Protocol,
 			"timeout":  v.Timeout,
+			"use_tls":  v.UseTls,
 			"username": v.Username,
 		})
 
@@ -1423,11 +1423,11 @@ func (v WinrmValue) Equal(o attr.Value) bool {
 		return false
 	}
 
-	if !v.Protocol.Equal(other.Protocol) {
+	if !v.Timeout.Equal(other.Timeout) {
 		return false
 	}
 
-	if !v.Timeout.Equal(other.Timeout) {
+	if !v.UseTls.Equal(other.UseTls) {
 		return false
 	}
 
@@ -1454,8 +1454,8 @@ func (v WinrmValue) AttributeTypes(ctx context.Context) map[string]attr.Type {
 		},
 		"password": basetypes.StringType{},
 		"port":     basetypes.Int64Type{},
-		"protocol": basetypes.StringType{},
 		"timeout":  basetypes.Int64Type{},
+		"use_tls":  basetypes.BoolType{},
 		"username": basetypes.StringType{},
 	}
 }
