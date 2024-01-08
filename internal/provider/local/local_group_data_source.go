@@ -21,7 +21,6 @@ func NewLocalGroupDataSource() datasource.DataSource {
 // LocalGroupDataSource defines the data source implementation.
 type LocalGroupDataSource struct {
 	client *gowindows.Client
-	params *local.GroupParams
 }
 
 func (d *LocalGroupDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {

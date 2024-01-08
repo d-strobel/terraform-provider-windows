@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	// SSH environment variables
+	// SSH environment variables.
 	envSSHUsername       string = "WIN_SSH_USERNAME"
 	envSSHPassword       string = "WIN_SSH_PASSWORD"
 	envSSHPrivateKey     string = "WIN_SSH_PRIVATE_KEY"
@@ -27,7 +27,7 @@ const (
 	envSSHPort           string = "WIN_SSH_PORT"
 	envSSHInsecure       string = "WIN_SSH_INSECURE"
 
-	// WinRM environment variables
+	// WinRM environment variables.
 	envWinRMUsername string = "WIN_WINRM_USERNAME"
 	envWinRMPassword string = "WIN_WINRM_PASSWORD"
 	envWinRMPort     string = "WIN_WINRM_PORT"
@@ -35,15 +35,15 @@ const (
 	envWinRMInsecure string = "WIN_WINRM_INSECURE"
 	envWinRMUseTLS   string = "WIN_WINRM_USE_TLS"
 
-	// WinRM Kerberos environment variables
+	// WinRM Kerberos environment variables.
 	envKerberosRealm      string = "WIN_KRB_REALM"
 	envKerberosConfigFile string = "WIN_KRB_CONFIG_FILE"
 
-	// SSH default values
+	// SSH default values.
 	defaultSSHPort     int  = 22
 	defaultSSHInsecure bool = false
 
-	// WinRM default values
+	// WinRM default values.
 	defaultWinRMPort     int           = 5986
 	defaultWinRMTimeout  time.Duration = 0
 	defaultWinRMInsecure bool          = false
