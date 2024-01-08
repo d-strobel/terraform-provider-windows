@@ -59,27 +59,27 @@
                                     "optional_required": "optional",
                                     "description": "(Env: `WIN_WINRM_TIMEOUT`) (Default: `0`)<br>Define the connection timeout in minutes for the target Windows system."
                                 }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "kerberos",
+                    "single_nested": {
+                        "optional_required": "optional",
+                        "attributes": [
+                            {
+                                "name": "realm",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set."
+                                }
                             },
                             {
-                                "name": "kerberos",
-                                "single_nested": {
+                                "name": "krb_config_file",
+                                "string": {
                                     "optional_required": "optional",
-                                    "attributes": [
-                                        {
-                                            "name": "realm",
-                                            "string": {
-                                                "optional_required": "optional",
-                                                "description": "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set."
-                                            }
-                                        },
-                                        {
-                                            "name": "krb_config_file",
-                                            "string": {
-                                                "optional_required": "optional",
-                                                "description": "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set."
-                                            }
-                                        }
-                                    ]
+                                    "description": "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set."
                                 }
                             }
                         ]

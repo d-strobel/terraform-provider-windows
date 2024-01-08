@@ -23,6 +23,26 @@ func WindowsProviderSchema(ctx context.Context) schema.Schema {
 				Description:         "Define the hostname or ip-address of the target Windows system.",
 				MarkdownDescription: "Define the hostname or ip-address of the target Windows system.",
 			},
+			"kerberos": schema.SingleNestedAttribute{
+				Attributes: map[string]schema.Attribute{
+					"krb_config_file": schema.StringAttribute{
+						Optional:            true,
+						Description:         "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set.",
+						MarkdownDescription: "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set.",
+					},
+					"realm": schema.StringAttribute{
+						Optional:            true,
+						Description:         "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set.",
+						MarkdownDescription: "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set.",
+					},
+				},
+				CustomType: KerberosType{
+					ObjectType: types.ObjectType{
+						AttrTypes: KerberosValue{}.AttributeTypes(ctx),
+					},
+				},
+				Optional: true,
+			},
 			"ssh": schema.SingleNestedAttribute{
 				Attributes: map[string]schema.Attribute{
 					"insecure": schema.BoolAttribute{
@@ -79,26 +99,6 @@ func WindowsProviderSchema(ctx context.Context) schema.Schema {
 						Description:         "(Env: `WIN_WINRM_INSECURE`) (Default: `false`)<br>Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates.",
 						MarkdownDescription: "(Env: `WIN_WINRM_INSECURE`) (Default: `false`)<br>Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates.",
 					},
-					"kerberos": schema.SingleNestedAttribute{
-						Attributes: map[string]schema.Attribute{
-							"krb_config_file": schema.StringAttribute{
-								Optional:            true,
-								Description:         "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set.",
-								MarkdownDescription: "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set.",
-							},
-							"realm": schema.StringAttribute{
-								Optional:            true,
-								Description:         "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set.",
-								MarkdownDescription: "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set.",
-							},
-						},
-						CustomType: KerberosType{
-							ObjectType: types.ObjectType{
-								AttrTypes: KerberosValue{}.AttributeTypes(ctx),
-							},
-						},
-						Optional: true,
-					},
 					"password": schema.StringAttribute{
 						Optional:            true,
 						Sensitive:           true,
@@ -140,9 +140,379 @@ func WindowsProviderSchema(ctx context.Context) schema.Schema {
 }
 
 type WindowsModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
-	Ssh      SshValue     `tfsdk:"ssh"`
-	Winrm    WinrmValue   `tfsdk:"winrm"`
+	Endpoint types.String  `tfsdk:"endpoint"`
+	Kerberos KerberosValue `tfsdk:"kerberos"`
+	Ssh      SshValue      `tfsdk:"ssh"`
+	Winrm    WinrmValue    `tfsdk:"winrm"`
+}
+
+var _ basetypes.ObjectTypable = KerberosType{}
+
+type KerberosType struct {
+	basetypes.ObjectType
+}
+
+func (t KerberosType) Equal(o attr.Type) bool {
+	other, ok := o.(KerberosType)
+
+	if !ok {
+		return false
+	}
+
+	return t.ObjectType.Equal(other.ObjectType)
+}
+
+func (t KerberosType) String() string {
+	return "KerberosType"
+}
+
+func (t KerberosType) ValueFromObject(ctx context.Context, in basetypes.ObjectValue) (basetypes.ObjectValuable, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	attributes := in.Attributes()
+
+	krbConfigFileAttribute, ok := attributes["krb_config_file"]
+
+	if !ok {
+		diags.AddError(
+			"Attribute Missing",
+			`krb_config_file is missing from object`)
+
+		return nil, diags
+	}
+
+	krbConfigFileVal, ok := krbConfigFileAttribute.(basetypes.StringValue)
+
+	if !ok {
+		diags.AddError(
+			"Attribute Wrong Type",
+			fmt.Sprintf(`krb_config_file expected to be basetypes.StringValue, was: %T`, krbConfigFileAttribute))
+	}
+
+	realmAttribute, ok := attributes["realm"]
+
+	if !ok {
+		diags.AddError(
+			"Attribute Missing",
+			`realm is missing from object`)
+
+		return nil, diags
+	}
+
+	realmVal, ok := realmAttribute.(basetypes.StringValue)
+
+	if !ok {
+		diags.AddError(
+			"Attribute Wrong Type",
+			fmt.Sprintf(`realm expected to be basetypes.StringValue, was: %T`, realmAttribute))
+	}
+
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	return KerberosValue{
+		KrbConfigFile: krbConfigFileVal,
+		Realm:         realmVal,
+		state:         attr.ValueStateKnown,
+	}, diags
+}
+
+func NewKerberosValueNull() KerberosValue {
+	return KerberosValue{
+		state: attr.ValueStateNull,
+	}
+}
+
+func NewKerberosValueUnknown() KerberosValue {
+	return KerberosValue{
+		state: attr.ValueStateUnknown,
+	}
+}
+
+func NewKerberosValue(attributeTypes map[string]attr.Type, attributes map[string]attr.Value) (KerberosValue, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	// Reference: https://github.com/hashicorp/terraform-plugin-framework/issues/521
+	ctx := context.Background()
+
+	for name, attributeType := range attributeTypes {
+		attribute, ok := attributes[name]
+
+		if !ok {
+			diags.AddError(
+				"Missing KerberosValue Attribute Value",
+				"While creating a KerberosValue value, a missing attribute value was detected. "+
+					"A KerberosValue must contain values for all attributes, even if null or unknown. "+
+					"This is always an issue with the provider and should be reported to the provider developers.\n\n"+
+					fmt.Sprintf("KerberosValue Attribute Name (%s) Expected Type: %s", name, attributeType.String()),
+			)
+
+			continue
+		}
+
+		if !attributeType.Equal(attribute.Type(ctx)) {
+			diags.AddError(
+				"Invalid KerberosValue Attribute Type",
+				"While creating a KerberosValue value, an invalid attribute value was detected. "+
+					"A KerberosValue must use a matching attribute type for the value. "+
+					"This is always an issue with the provider and should be reported to the provider developers.\n\n"+
+					fmt.Sprintf("KerberosValue Attribute Name (%s) Expected Type: %s\n", name, attributeType.String())+
+					fmt.Sprintf("KerberosValue Attribute Name (%s) Given Type: %s", name, attribute.Type(ctx)),
+			)
+		}
+	}
+
+	for name := range attributes {
+		_, ok := attributeTypes[name]
+
+		if !ok {
+			diags.AddError(
+				"Extra KerberosValue Attribute Value",
+				"While creating a KerberosValue value, an extra attribute value was detected. "+
+					"A KerberosValue must not contain values beyond the expected attribute types. "+
+					"This is always an issue with the provider and should be reported to the provider developers.\n\n"+
+					fmt.Sprintf("Extra KerberosValue Attribute Name: %s", name),
+			)
+		}
+	}
+
+	if diags.HasError() {
+		return NewKerberosValueUnknown(), diags
+	}
+
+	krbConfigFileAttribute, ok := attributes["krb_config_file"]
+
+	if !ok {
+		diags.AddError(
+			"Attribute Missing",
+			`krb_config_file is missing from object`)
+
+		return NewKerberosValueUnknown(), diags
+	}
+
+	krbConfigFileVal, ok := krbConfigFileAttribute.(basetypes.StringValue)
+
+	if !ok {
+		diags.AddError(
+			"Attribute Wrong Type",
+			fmt.Sprintf(`krb_config_file expected to be basetypes.StringValue, was: %T`, krbConfigFileAttribute))
+	}
+
+	realmAttribute, ok := attributes["realm"]
+
+	if !ok {
+		diags.AddError(
+			"Attribute Missing",
+			`realm is missing from object`)
+
+		return NewKerberosValueUnknown(), diags
+	}
+
+	realmVal, ok := realmAttribute.(basetypes.StringValue)
+
+	if !ok {
+		diags.AddError(
+			"Attribute Wrong Type",
+			fmt.Sprintf(`realm expected to be basetypes.StringValue, was: %T`, realmAttribute))
+	}
+
+	if diags.HasError() {
+		return NewKerberosValueUnknown(), diags
+	}
+
+	return KerberosValue{
+		KrbConfigFile: krbConfigFileVal,
+		Realm:         realmVal,
+		state:         attr.ValueStateKnown,
+	}, diags
+}
+
+func NewKerberosValueMust(attributeTypes map[string]attr.Type, attributes map[string]attr.Value) KerberosValue {
+	object, diags := NewKerberosValue(attributeTypes, attributes)
+
+	if diags.HasError() {
+		// This could potentially be added to the diag package.
+		diagsStrings := make([]string, 0, len(diags))
+
+		for _, diagnostic := range diags {
+			diagsStrings = append(diagsStrings, fmt.Sprintf(
+				"%s | %s | %s",
+				diagnostic.Severity(),
+				diagnostic.Summary(),
+				diagnostic.Detail()))
+		}
+
+		panic("NewKerberosValueMust received error(s): " + strings.Join(diagsStrings, "\n"))
+	}
+
+	return object
+}
+
+func (t KerberosType) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
+	if in.Type() == nil {
+		return NewKerberosValueNull(), nil
+	}
+
+	if !in.Type().Equal(t.TerraformType(ctx)) {
+		return nil, fmt.Errorf("expected %s, got %s", t.TerraformType(ctx), in.Type())
+	}
+
+	if !in.IsKnown() {
+		return NewKerberosValueUnknown(), nil
+	}
+
+	if in.IsNull() {
+		return NewKerberosValueNull(), nil
+	}
+
+	attributes := map[string]attr.Value{}
+
+	val := map[string]tftypes.Value{}
+
+	err := in.As(&val)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for k, v := range val {
+		a, err := t.AttrTypes[k].ValueFromTerraform(ctx, v)
+
+		if err != nil {
+			return nil, err
+		}
+
+		attributes[k] = a
+	}
+
+	return NewKerberosValueMust(KerberosValue{}.AttributeTypes(ctx), attributes), nil
+}
+
+func (t KerberosType) ValueType(ctx context.Context) attr.Value {
+	return KerberosValue{}
+}
+
+var _ basetypes.ObjectValuable = KerberosValue{}
+
+type KerberosValue struct {
+	KrbConfigFile basetypes.StringValue `tfsdk:"krb_config_file"`
+	Realm         basetypes.StringValue `tfsdk:"realm"`
+	state         attr.ValueState
+}
+
+func (v KerberosValue) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
+	attrTypes := make(map[string]tftypes.Type, 2)
+
+	var val tftypes.Value
+	var err error
+
+	attrTypes["krb_config_file"] = basetypes.StringType{}.TerraformType(ctx)
+	attrTypes["realm"] = basetypes.StringType{}.TerraformType(ctx)
+
+	objectType := tftypes.Object{AttributeTypes: attrTypes}
+
+	switch v.state {
+	case attr.ValueStateKnown:
+		vals := make(map[string]tftypes.Value, 2)
+
+		val, err = v.KrbConfigFile.ToTerraformValue(ctx)
+
+		if err != nil {
+			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
+		}
+
+		vals["krb_config_file"] = val
+
+		val, err = v.Realm.ToTerraformValue(ctx)
+
+		if err != nil {
+			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
+		}
+
+		vals["realm"] = val
+
+		if err := tftypes.ValidateValue(objectType, vals); err != nil {
+			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
+		}
+
+		return tftypes.NewValue(objectType, vals), nil
+	case attr.ValueStateNull:
+		return tftypes.NewValue(objectType, nil), nil
+	case attr.ValueStateUnknown:
+		return tftypes.NewValue(objectType, tftypes.UnknownValue), nil
+	default:
+		panic(fmt.Sprintf("unhandled Object state in ToTerraformValue: %s", v.state))
+	}
+}
+
+func (v KerberosValue) IsNull() bool {
+	return v.state == attr.ValueStateNull
+}
+
+func (v KerberosValue) IsUnknown() bool {
+	return v.state == attr.ValueStateUnknown
+}
+
+func (v KerberosValue) String() string {
+	return "KerberosValue"
+}
+
+func (v KerberosValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	objVal, diags := types.ObjectValue(
+		map[string]attr.Type{
+			"krb_config_file": basetypes.StringType{},
+			"realm":           basetypes.StringType{},
+		},
+		map[string]attr.Value{
+			"krb_config_file": v.KrbConfigFile,
+			"realm":           v.Realm,
+		})
+
+	return objVal, diags
+}
+
+func (v KerberosValue) Equal(o attr.Value) bool {
+	other, ok := o.(KerberosValue)
+
+	if !ok {
+		return false
+	}
+
+	if v.state != other.state {
+		return false
+	}
+
+	if v.state != attr.ValueStateKnown {
+		return true
+	}
+
+	if !v.KrbConfigFile.Equal(other.KrbConfigFile) {
+		return false
+	}
+
+	if !v.Realm.Equal(other.Realm) {
+		return false
+	}
+
+	return true
+}
+
+func (v KerberosValue) Type(ctx context.Context) attr.Type {
+	return KerberosType{
+		basetypes.ObjectType{
+			AttrTypes: v.AttributeTypes(ctx),
+		},
+	}
+}
+
+func (v KerberosValue) AttributeTypes(ctx context.Context) map[string]attr.Type {
+	return map[string]attr.Type{
+		"krb_config_file": basetypes.StringType{},
+		"realm":           basetypes.StringType{},
+	}
 }
 
 var _ basetypes.ObjectTypable = SshType{}
@@ -832,24 +1202,6 @@ func (t WinrmType) ValueFromObject(ctx context.Context, in basetypes.ObjectValue
 			fmt.Sprintf(`insecure expected to be basetypes.BoolValue, was: %T`, insecureAttribute))
 	}
 
-	kerberosAttribute, ok := attributes["kerberos"]
-
-	if !ok {
-		diags.AddError(
-			"Attribute Missing",
-			`kerberos is missing from object`)
-
-		return nil, diags
-	}
-
-	kerberosVal, ok := kerberosAttribute.(basetypes.ObjectValue)
-
-	if !ok {
-		diags.AddError(
-			"Attribute Wrong Type",
-			fmt.Sprintf(`kerberos expected to be basetypes.ObjectValue, was: %T`, kerberosAttribute))
-	}
-
 	passwordAttribute, ok := attributes["password"]
 
 	if !ok {
@@ -946,7 +1298,6 @@ func (t WinrmType) ValueFromObject(ctx context.Context, in basetypes.ObjectValue
 
 	return WinrmValue{
 		Insecure: insecureVal,
-		Kerberos: kerberosVal,
 		Password: passwordVal,
 		Port:     portVal,
 		Timeout:  timeoutVal,
@@ -1037,24 +1388,6 @@ func NewWinrmValue(attributeTypes map[string]attr.Type, attributes map[string]at
 			fmt.Sprintf(`insecure expected to be basetypes.BoolValue, was: %T`, insecureAttribute))
 	}
 
-	kerberosAttribute, ok := attributes["kerberos"]
-
-	if !ok {
-		diags.AddError(
-			"Attribute Missing",
-			`kerberos is missing from object`)
-
-		return NewWinrmValueUnknown(), diags
-	}
-
-	kerberosVal, ok := kerberosAttribute.(basetypes.ObjectValue)
-
-	if !ok {
-		diags.AddError(
-			"Attribute Wrong Type",
-			fmt.Sprintf(`kerberos expected to be basetypes.ObjectValue, was: %T`, kerberosAttribute))
-	}
-
 	passwordAttribute, ok := attributes["password"]
 
 	if !ok {
@@ -1151,7 +1484,6 @@ func NewWinrmValue(attributeTypes map[string]attr.Type, attributes map[string]at
 
 	return WinrmValue{
 		Insecure: insecureVal,
-		Kerberos: kerberosVal,
 		Password: passwordVal,
 		Port:     portVal,
 		Timeout:  timeoutVal,
@@ -1230,7 +1562,6 @@ var _ basetypes.ObjectValuable = WinrmValue{}
 
 type WinrmValue struct {
 	Insecure basetypes.BoolValue   `tfsdk:"insecure"`
-	Kerberos basetypes.ObjectValue `tfsdk:"kerberos"`
 	Password basetypes.StringValue `tfsdk:"password"`
 	Port     basetypes.Int64Value  `tfsdk:"port"`
 	Timeout  basetypes.Int64Value  `tfsdk:"timeout"`
@@ -1240,15 +1571,12 @@ type WinrmValue struct {
 }
 
 func (v WinrmValue) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
-	attrTypes := make(map[string]tftypes.Type, 7)
+	attrTypes := make(map[string]tftypes.Type, 6)
 
 	var val tftypes.Value
 	var err error
 
 	attrTypes["insecure"] = basetypes.BoolType{}.TerraformType(ctx)
-	attrTypes["kerberos"] = basetypes.ObjectType{
-		AttrTypes: KerberosValue{}.AttributeTypes(ctx),
-	}.TerraformType(ctx)
 	attrTypes["password"] = basetypes.StringType{}.TerraformType(ctx)
 	attrTypes["port"] = basetypes.Int64Type{}.TerraformType(ctx)
 	attrTypes["timeout"] = basetypes.Int64Type{}.TerraformType(ctx)
@@ -1259,7 +1587,7 @@ func (v WinrmValue) ToTerraformValue(ctx context.Context) (tftypes.Value, error)
 
 	switch v.state {
 	case attr.ValueStateKnown:
-		vals := make(map[string]tftypes.Value, 7)
+		vals := make(map[string]tftypes.Value, 6)
 
 		val, err = v.Insecure.ToTerraformValue(ctx)
 
@@ -1268,14 +1596,6 @@ func (v WinrmValue) ToTerraformValue(ctx context.Context) (tftypes.Value, error)
 		}
 
 		vals["insecure"] = val
-
-		val, err = v.Kerberos.ToTerraformValue(ctx)
-
-		if err != nil {
-			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
-		}
-
-		vals["kerberos"] = val
 
 		val, err = v.Password.ToTerraformValue(ctx)
 
@@ -1346,33 +1666,9 @@ func (v WinrmValue) String() string {
 func (v WinrmValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	var kerberos basetypes.ObjectValue
-
-	if v.Kerberos.IsNull() {
-		kerberos = types.ObjectNull(
-			KerberosValue{}.AttributeTypes(ctx),
-		)
-	}
-
-	if v.Kerberos.IsUnknown() {
-		kerberos = types.ObjectUnknown(
-			KerberosValue{}.AttributeTypes(ctx),
-		)
-	}
-
-	if !v.Kerberos.IsNull() && !v.Kerberos.IsUnknown() {
-		kerberos = types.ObjectValueMust(
-			KerberosValue{}.AttributeTypes(ctx),
-			v.Kerberos.Attributes(),
-		)
-	}
-
 	objVal, diags := types.ObjectValue(
 		map[string]attr.Type{
 			"insecure": basetypes.BoolType{},
-			"kerberos": basetypes.ObjectType{
-				AttrTypes: KerberosValue{}.AttributeTypes(ctx),
-			},
 			"password": basetypes.StringType{},
 			"port":     basetypes.Int64Type{},
 			"timeout":  basetypes.Int64Type{},
@@ -1381,7 +1677,6 @@ func (v WinrmValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, d
 		},
 		map[string]attr.Value{
 			"insecure": v.Insecure,
-			"kerberos": kerberos,
 			"password": v.Password,
 			"port":     v.Port,
 			"timeout":  v.Timeout,
@@ -1408,10 +1703,6 @@ func (v WinrmValue) Equal(o attr.Value) bool {
 	}
 
 	if !v.Insecure.Equal(other.Insecure) {
-		return false
-	}
-
-	if !v.Kerberos.Equal(other.Kerberos) {
 		return false
 	}
 
@@ -1449,382 +1740,10 @@ func (v WinrmValue) Type(ctx context.Context) attr.Type {
 func (v WinrmValue) AttributeTypes(ctx context.Context) map[string]attr.Type {
 	return map[string]attr.Type{
 		"insecure": basetypes.BoolType{},
-		"kerberos": basetypes.ObjectType{
-			AttrTypes: KerberosValue{}.AttributeTypes(ctx),
-		},
 		"password": basetypes.StringType{},
 		"port":     basetypes.Int64Type{},
 		"timeout":  basetypes.Int64Type{},
 		"use_tls":  basetypes.BoolType{},
 		"username": basetypes.StringType{},
-	}
-}
-
-var _ basetypes.ObjectTypable = KerberosType{}
-
-type KerberosType struct {
-	basetypes.ObjectType
-}
-
-func (t KerberosType) Equal(o attr.Type) bool {
-	other, ok := o.(KerberosType)
-
-	if !ok {
-		return false
-	}
-
-	return t.ObjectType.Equal(other.ObjectType)
-}
-
-func (t KerberosType) String() string {
-	return "KerberosType"
-}
-
-func (t KerberosType) ValueFromObject(ctx context.Context, in basetypes.ObjectValue) (basetypes.ObjectValuable, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	attributes := in.Attributes()
-
-	krbConfigFileAttribute, ok := attributes["krb_config_file"]
-
-	if !ok {
-		diags.AddError(
-			"Attribute Missing",
-			`krb_config_file is missing from object`)
-
-		return nil, diags
-	}
-
-	krbConfigFileVal, ok := krbConfigFileAttribute.(basetypes.StringValue)
-
-	if !ok {
-		diags.AddError(
-			"Attribute Wrong Type",
-			fmt.Sprintf(`krb_config_file expected to be basetypes.StringValue, was: %T`, krbConfigFileAttribute))
-	}
-
-	realmAttribute, ok := attributes["realm"]
-
-	if !ok {
-		diags.AddError(
-			"Attribute Missing",
-			`realm is missing from object`)
-
-		return nil, diags
-	}
-
-	realmVal, ok := realmAttribute.(basetypes.StringValue)
-
-	if !ok {
-		diags.AddError(
-			"Attribute Wrong Type",
-			fmt.Sprintf(`realm expected to be basetypes.StringValue, was: %T`, realmAttribute))
-	}
-
-	if diags.HasError() {
-		return nil, diags
-	}
-
-	return KerberosValue{
-		KrbConfigFile: krbConfigFileVal,
-		Realm:         realmVal,
-		state:         attr.ValueStateKnown,
-	}, diags
-}
-
-func NewKerberosValueNull() KerberosValue {
-	return KerberosValue{
-		state: attr.ValueStateNull,
-	}
-}
-
-func NewKerberosValueUnknown() KerberosValue {
-	return KerberosValue{
-		state: attr.ValueStateUnknown,
-	}
-}
-
-func NewKerberosValue(attributeTypes map[string]attr.Type, attributes map[string]attr.Value) (KerberosValue, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	// Reference: https://github.com/hashicorp/terraform-plugin-framework/issues/521
-	ctx := context.Background()
-
-	for name, attributeType := range attributeTypes {
-		attribute, ok := attributes[name]
-
-		if !ok {
-			diags.AddError(
-				"Missing KerberosValue Attribute Value",
-				"While creating a KerberosValue value, a missing attribute value was detected. "+
-					"A KerberosValue must contain values for all attributes, even if null or unknown. "+
-					"This is always an issue with the provider and should be reported to the provider developers.\n\n"+
-					fmt.Sprintf("KerberosValue Attribute Name (%s) Expected Type: %s", name, attributeType.String()),
-			)
-
-			continue
-		}
-
-		if !attributeType.Equal(attribute.Type(ctx)) {
-			diags.AddError(
-				"Invalid KerberosValue Attribute Type",
-				"While creating a KerberosValue value, an invalid attribute value was detected. "+
-					"A KerberosValue must use a matching attribute type for the value. "+
-					"This is always an issue with the provider and should be reported to the provider developers.\n\n"+
-					fmt.Sprintf("KerberosValue Attribute Name (%s) Expected Type: %s\n", name, attributeType.String())+
-					fmt.Sprintf("KerberosValue Attribute Name (%s) Given Type: %s", name, attribute.Type(ctx)),
-			)
-		}
-	}
-
-	for name := range attributes {
-		_, ok := attributeTypes[name]
-
-		if !ok {
-			diags.AddError(
-				"Extra KerberosValue Attribute Value",
-				"While creating a KerberosValue value, an extra attribute value was detected. "+
-					"A KerberosValue must not contain values beyond the expected attribute types. "+
-					"This is always an issue with the provider and should be reported to the provider developers.\n\n"+
-					fmt.Sprintf("Extra KerberosValue Attribute Name: %s", name),
-			)
-		}
-	}
-
-	if diags.HasError() {
-		return NewKerberosValueUnknown(), diags
-	}
-
-	krbConfigFileAttribute, ok := attributes["krb_config_file"]
-
-	if !ok {
-		diags.AddError(
-			"Attribute Missing",
-			`krb_config_file is missing from object`)
-
-		return NewKerberosValueUnknown(), diags
-	}
-
-	krbConfigFileVal, ok := krbConfigFileAttribute.(basetypes.StringValue)
-
-	if !ok {
-		diags.AddError(
-			"Attribute Wrong Type",
-			fmt.Sprintf(`krb_config_file expected to be basetypes.StringValue, was: %T`, krbConfigFileAttribute))
-	}
-
-	realmAttribute, ok := attributes["realm"]
-
-	if !ok {
-		diags.AddError(
-			"Attribute Missing",
-			`realm is missing from object`)
-
-		return NewKerberosValueUnknown(), diags
-	}
-
-	realmVal, ok := realmAttribute.(basetypes.StringValue)
-
-	if !ok {
-		diags.AddError(
-			"Attribute Wrong Type",
-			fmt.Sprintf(`realm expected to be basetypes.StringValue, was: %T`, realmAttribute))
-	}
-
-	if diags.HasError() {
-		return NewKerberosValueUnknown(), diags
-	}
-
-	return KerberosValue{
-		KrbConfigFile: krbConfigFileVal,
-		Realm:         realmVal,
-		state:         attr.ValueStateKnown,
-	}, diags
-}
-
-func NewKerberosValueMust(attributeTypes map[string]attr.Type, attributes map[string]attr.Value) KerberosValue {
-	object, diags := NewKerberosValue(attributeTypes, attributes)
-
-	if diags.HasError() {
-		// This could potentially be added to the diag package.
-		diagsStrings := make([]string, 0, len(diags))
-
-		for _, diagnostic := range diags {
-			diagsStrings = append(diagsStrings, fmt.Sprintf(
-				"%s | %s | %s",
-				diagnostic.Severity(),
-				diagnostic.Summary(),
-				diagnostic.Detail()))
-		}
-
-		panic("NewKerberosValueMust received error(s): " + strings.Join(diagsStrings, "\n"))
-	}
-
-	return object
-}
-
-func (t KerberosType) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
-	if in.Type() == nil {
-		return NewKerberosValueNull(), nil
-	}
-
-	if !in.Type().Equal(t.TerraformType(ctx)) {
-		return nil, fmt.Errorf("expected %s, got %s", t.TerraformType(ctx), in.Type())
-	}
-
-	if !in.IsKnown() {
-		return NewKerberosValueUnknown(), nil
-	}
-
-	if in.IsNull() {
-		return NewKerberosValueNull(), nil
-	}
-
-	attributes := map[string]attr.Value{}
-
-	val := map[string]tftypes.Value{}
-
-	err := in.As(&val)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for k, v := range val {
-		a, err := t.AttrTypes[k].ValueFromTerraform(ctx, v)
-
-		if err != nil {
-			return nil, err
-		}
-
-		attributes[k] = a
-	}
-
-	return NewKerberosValueMust(KerberosValue{}.AttributeTypes(ctx), attributes), nil
-}
-
-func (t KerberosType) ValueType(ctx context.Context) attr.Value {
-	return KerberosValue{}
-}
-
-var _ basetypes.ObjectValuable = KerberosValue{}
-
-type KerberosValue struct {
-	KrbConfigFile basetypes.StringValue `tfsdk:"krb_config_file"`
-	Realm         basetypes.StringValue `tfsdk:"realm"`
-	state         attr.ValueState
-}
-
-func (v KerberosValue) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
-	attrTypes := make(map[string]tftypes.Type, 2)
-
-	var val tftypes.Value
-	var err error
-
-	attrTypes["krb_config_file"] = basetypes.StringType{}.TerraformType(ctx)
-	attrTypes["realm"] = basetypes.StringType{}.TerraformType(ctx)
-
-	objectType := tftypes.Object{AttributeTypes: attrTypes}
-
-	switch v.state {
-	case attr.ValueStateKnown:
-		vals := make(map[string]tftypes.Value, 2)
-
-		val, err = v.KrbConfigFile.ToTerraformValue(ctx)
-
-		if err != nil {
-			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
-		}
-
-		vals["krb_config_file"] = val
-
-		val, err = v.Realm.ToTerraformValue(ctx)
-
-		if err != nil {
-			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
-		}
-
-		vals["realm"] = val
-
-		if err := tftypes.ValidateValue(objectType, vals); err != nil {
-			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
-		}
-
-		return tftypes.NewValue(objectType, vals), nil
-	case attr.ValueStateNull:
-		return tftypes.NewValue(objectType, nil), nil
-	case attr.ValueStateUnknown:
-		return tftypes.NewValue(objectType, tftypes.UnknownValue), nil
-	default:
-		panic(fmt.Sprintf("unhandled Object state in ToTerraformValue: %s", v.state))
-	}
-}
-
-func (v KerberosValue) IsNull() bool {
-	return v.state == attr.ValueStateNull
-}
-
-func (v KerberosValue) IsUnknown() bool {
-	return v.state == attr.ValueStateUnknown
-}
-
-func (v KerberosValue) String() string {
-	return "KerberosValue"
-}
-
-func (v KerberosValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	objVal, diags := types.ObjectValue(
-		map[string]attr.Type{
-			"krb_config_file": basetypes.StringType{},
-			"realm":           basetypes.StringType{},
-		},
-		map[string]attr.Value{
-			"krb_config_file": v.KrbConfigFile,
-			"realm":           v.Realm,
-		})
-
-	return objVal, diags
-}
-
-func (v KerberosValue) Equal(o attr.Value) bool {
-	other, ok := o.(KerberosValue)
-
-	if !ok {
-		return false
-	}
-
-	if v.state != other.state {
-		return false
-	}
-
-	if v.state != attr.ValueStateKnown {
-		return true
-	}
-
-	if !v.KrbConfigFile.Equal(other.KrbConfigFile) {
-		return false
-	}
-
-	if !v.Realm.Equal(other.Realm) {
-		return false
-	}
-
-	return true
-}
-
-func (v KerberosValue) Type(ctx context.Context) attr.Type {
-	return KerberosType{
-		basetypes.ObjectType{
-			AttrTypes: v.AttributeTypes(ctx),
-		},
-	}
-}
-
-func (v KerberosValue) AttributeTypes(ctx context.Context) map[string]attr.Type {
-	return map[string]attr.Type{
-		"krb_config_file": basetypes.StringType{},
-		"realm":           basetypes.StringType{},
 	}
 }
