@@ -19,35 +19,35 @@ import (
 
 const (
 	// SSH environment variables
-	envSSHUsername       = "WIN_SSH_USERNAME"
-	envSSHPassword       = "WIN_SSH_PASSWORD"
-	envSSHPrivateKey     = "WIN_SSH_PRIVATE_KEY"
-	envSSHPrivateKeyPath = "WIN_SSH_PRIVATE_KEY_PATH"
-	envSSHKnownHostsPath = "WIN_SSH_KNOWN_HOSTS_PATH"
-	envSSHPort           = "WIN_SSH_PORT"
-	envSSHInsecure       = "WIN_SSH_INSECURE"
+	envSSHUsername       string = "WIN_SSH_USERNAME"
+	envSSHPassword       string = "WIN_SSH_PASSWORD"
+	envSSHPrivateKey     string = "WIN_SSH_PRIVATE_KEY"
+	envSSHPrivateKeyPath string = "WIN_SSH_PRIVATE_KEY_PATH"
+	envSSHKnownHostsPath string = "WIN_SSH_KNOWN_HOSTS_PATH"
+	envSSHPort           string = "WIN_SSH_PORT"
+	envSSHInsecure       string = "WIN_SSH_INSECURE"
 
 	// WinRM environment variables
-	envWinRMUsername = "WIN_WINRM_USERNAME"
-	envWinRMPassword = "WIN_WINRM_PASSWORD"
-	envWinRMPort     = "WIN_WINRM_PORT"
-	envWinRMTimeout  = "WIN_WINRM_TIMEOUT"
-	envWinRMInsecure = "WIN_WINRM_INSECURE"
-	envWinRMUseTLS   = "WIN_WINRM_USE_TLS"
+	envWinRMUsername string = "WIN_WINRM_USERNAME"
+	envWinRMPassword string = "WIN_WINRM_PASSWORD"
+	envWinRMPort     string = "WIN_WINRM_PORT"
+	envWinRMTimeout  string = "WIN_WINRM_TIMEOUT"
+	envWinRMInsecure string = "WIN_WINRM_INSECURE"
+	envWinRMUseTLS   string = "WIN_WINRM_USE_TLS"
 
 	// WinRM Kerberos environment variables
-	envKerberosRealm      = "WIN_KRB_REALM"
-	envKerberosConfigFile = "WIN_KRB_CONFIG_FILE"
+	envKerberosRealm      string = "WIN_KRB_REALM"
+	envKerberosConfigFile string = "WIN_KRB_CONFIG_FILE"
 
 	// SSH default values
-	defaultSSHPort     = 22
-	defaultSSHInsecure = false
+	defaultSSHPort     int  = 22
+	defaultSSHInsecure bool = false
 
 	// WinRM default values
-	defaultWinRMPort     = 5986
-	defaultWinRMTimeout  = 0
-	defaultWinRMInsecure = false
-	defaultWinRMUseTLS   = true
+	defaultWinRMPort     int           = 5986
+	defaultWinRMTimeout  time.Duration = 0
+	defaultWinRMInsecure bool          = false
+	defaultWinRMUseTLS   bool          = true
 )
 
 // Ensure WindowsProvider satisfies various provider interfaces.
