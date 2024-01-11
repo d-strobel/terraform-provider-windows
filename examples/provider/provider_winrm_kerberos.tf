@@ -4,7 +4,11 @@ provider "windows" {
 
   winrm = {
     username = "vagrant"
-    password = "vagrant"
     port     = 15985
+  }
+
+  kerberos = {
+    realm           = "example.local"
+    krb_config_file = "/path/to/krb5.conf"
   }
 }
