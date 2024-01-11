@@ -67,6 +67,7 @@
                     "name": "kerberos",
                     "single_nested": {
                         "optional_required": "optional",
+                        "description": "Define the Kerberos connection parameters. Currently this can only be combined with a WinRM connection.",
                         "attributes": [
                             {
                                 "name": "realm",
