@@ -18,6 +18,10 @@ func (p *WindowsProvider) ConfigValidators(ctx context.Context) []provider.Confi
 			path.MatchRoot("winrm"),
 			path.MatchRoot("ssh"),
 		),
+		providervalidator.Conflicting(
+			path.MatchRoot("ssh"),
+			path.MatchRoot("kerberos"),
+		),
 	}
 }
 
