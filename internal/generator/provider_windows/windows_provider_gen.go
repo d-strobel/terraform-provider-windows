@@ -41,7 +41,9 @@ func WindowsProviderSchema(ctx context.Context) schema.Schema {
 						AttrTypes: KerberosValue{}.AttributeTypes(ctx),
 					},
 				},
-				Optional: true,
+				Optional:            true,
+				Description:         "Define the Kerberos connection parameters. Currently this can only be combined with a WinRM connection.",
+				MarkdownDescription: "Define the Kerberos connection parameters. Currently this can only be combined with a WinRM connection.",
 			},
 			"ssh": schema.SingleNestedAttribute{
 				Attributes: map[string]schema.Attribute{
