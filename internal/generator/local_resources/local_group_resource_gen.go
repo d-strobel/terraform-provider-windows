@@ -4,6 +4,8 @@ package local_resources
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -21,16 +23,25 @@ func LocalGroupResourceSchema(ctx context.Context) schema.Schema {
 				Computed:            true,
 				Description:         "The ID of the retrieved local security group. This is the same as the SID.",
 				MarkdownDescription: "The ID of the retrieved local security group. This is the same as the SID.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"name": schema.StringAttribute{
 				Required:            true,
 				Description:         "Define the name for the local security group.",
 				MarkdownDescription: "Define the name for the local security group.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"sid": schema.StringAttribute{
 				Computed:            true,
 				Description:         "The security ID of the local security group.",
 				MarkdownDescription: "The security ID of the local security group.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 		},
 	}
