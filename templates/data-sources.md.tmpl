@@ -2,15 +2,14 @@
 page_title: "{{ .Name }} {{ .Type }} - {{ .ProviderName }}"
 subcategory: "{{ title (index (split .Name "_") 1) }}"
 description: |-
-{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+{{ (index (split .Description ".") 0) | plainmarkdown | trimspace | prefixlines "  " }}
 ---
-
 # {{ .Name }} ({{ .Type }})
 
-<!-- data-source description generated from template -->
+<!-- data-source description generated from schema -->
 {{ .Description | trimspace }}
 
-<!-- examples generated from template and example files -->
+<!-- examples generated from example files -->
 ## Example Usage
 
 {{ tffile (printf "examples/data-sources/%s/example.tf" .Name) }}

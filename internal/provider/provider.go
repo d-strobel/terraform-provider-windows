@@ -65,7 +65,11 @@ func (p *WindowsProvider) Metadata(ctx context.Context, req provider.MetadataReq
 
 func (p *WindowsProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = provider_windows.WindowsProviderSchema(ctx)
-	resp.Schema.Description = "The windows provider is used to interact remotely via winrm or ssh with a windows system."
+	resp.Schema.Description = `The windows provider is used to interact remotely via winrm or ssh with a windows system.
+**Disclaimer**:
+Due to the limitations of the terraform-plugin-framework some attributes are listed as optionals even though a combination of certain parameters are required.
+Check examples below for reference.
+`
 }
 
 func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
