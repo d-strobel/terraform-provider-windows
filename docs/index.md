@@ -2,15 +2,16 @@
 page_title: "Windows Provider"
 subcategory: ""
 description: |-
-  The Windows provider is used to interact remotely with windows systems.
+  The windows provider is used to interact remotely via winrm or ssh with a windows system.
 ---
-<!-- provider description generated from template -->
 # Windows Provider
 
-The "windows" provider is used to interact remotely via winrm or ssh with a windows system.
+<!-- provider description generated from schema -->
+The windows provider is used to interact remotely via winrm or ssh with a windows system.
 
+<!-- provider description generated from template -->
 **Disclaimer**:<br>
-Due to the limitations of the terraform-plugin-framework some attributes are listed as optionals even though a combination of certain parameters are required.<br>
+Due to the limitations of the terraform-plugin-framework some attributes are listed as optionals even though a combination of certain parameters are required.
 Check examples below for reference.
 
 <!-- examples generated from template and example files -->
