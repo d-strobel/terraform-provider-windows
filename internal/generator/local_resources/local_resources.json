@@ -49,8 +49,20 @@
                     {
                         "name": "description",
                         "string": {
-                            "computed_optional_required": "optional",
-                            "description": "Define a description for the local security group."
+                            "computed_optional_required": "required",
+                            "description": "Define a description for the local security group.",
+                            "validators": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+                                            }
+                                        ],
+                                        "schema_definition": "stringvalidator.LengthBetween(1, 48)"
+                                    }
+                                }
+                            ]
                         }
                     },
                     {
