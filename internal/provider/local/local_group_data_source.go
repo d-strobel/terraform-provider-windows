@@ -60,7 +60,7 @@ func (d *localGroupDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	}
 
 	// Read API call logic
-	params := local.GroupParams{
+	params := local.GroupReadParams{
 		Name: data.Name.ValueString(),
 		SID:  data.Sid.ValueString(),
 	}
