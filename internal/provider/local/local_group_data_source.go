@@ -29,7 +29,9 @@ func (d *LocalGroupDataSource) Metadata(ctx context.Context, req datasource.Meta
 
 func (d *LocalGroupDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = local_datasources.LocalGroupDataSourceSchema(ctx)
-	resp.Schema.Description = "Retrieve information about a local security group."
+	resp.Schema.Description = `Retrieve information about a local security group.
+You can get a group by the name or the security ID of the group.
+`
 }
 
 func (d *LocalGroupDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
