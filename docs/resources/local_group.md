@@ -24,11 +24,8 @@ resource "windows_local_group" "test" {
 
 ### Required
 
-- `name` (String) Define the name for the local security group.
-
-### Optional
-
 - `description` (String) Define a description for the local security group.
+- `name` (String) Define the name for the local security group.
 
 ### Read-Only
 

@@ -4,8 +4,10 @@ package local_resources
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -15,9 +17,12 @@ func LocalGroupResourceSchema(ctx context.Context) schema.Schema {
 	return schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"description": schema.StringAttribute{
-				Optional:            true,
+				Required:            true,
 				Description:         "Define a description for the local security group.",
 				MarkdownDescription: "Define a description for the local security group.",
+				Validators: []validator.String{
+					stringvalidator.LengthBetween(1, 48),
+				},
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
