@@ -7,6 +7,7 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -147,4 +148,8 @@ func (r *localGroupResource) Delete(ctx context.Context, req resource.DeleteRequ
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local security group, got error: %s", err))
 		return
 	}
+}
+
+func (r *localGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
