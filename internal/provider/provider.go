@@ -260,6 +260,7 @@ func (p *WindowsProvider) Resources(ctx context.Context) []func() resource.Resou
 func (p *WindowsProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		local.NewLocalGroupDataSource,
+		local.NewLocalUserDataSource,
 	}
 }
 
