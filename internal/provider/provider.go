@@ -251,10 +251,9 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 }
 
 func (p *WindowsProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return nil
-	// return []func() resource.Resource{
-	// 	NewExampleResource,
-	// }
+	return []func() resource.Resource{
+		local.NewLocalGroupResource,
+	}
 }
 
 func (p *WindowsProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
