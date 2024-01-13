@@ -31,3 +31,11 @@ resource "windows_local_group" "test" {
 
 - `id` (String) The ID of the retrieved local security group. This is the same as the SID.
 - `sid` (String) The security ID of the local security group.
+
+## Import
+
+Import a local group by the security ID (SID).
+
+```bash
+terraform import windows_local_group.my_group S-1-5-21-153895498-367353507-3704405138-1012
+```
