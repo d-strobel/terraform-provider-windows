@@ -67,7 +67,7 @@ func (p *WindowsProvider) Schema(ctx context.Context, req provider.SchemaRequest
 	resp.Schema = provider_windows.WindowsProviderSchema(ctx)
 	resp.Schema.Description = `The windows provider is used to interact remotely via winrm or ssh with a windows system.
 
-**Disclaimer**:
+**Important**:
 Due to the limitations of the terraform-plugin-framework some attributes are listed as optionals even though a combination of certain parameters are required.
 Check examples below for reference.
 `
