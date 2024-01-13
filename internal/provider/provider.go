@@ -254,6 +254,7 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 func (p *WindowsProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		local.NewLocalGroupResource,
+		local.NewLocalUserResource,
 	}
 }
 
