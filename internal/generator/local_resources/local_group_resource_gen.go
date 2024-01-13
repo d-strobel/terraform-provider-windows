@@ -39,6 +39,9 @@ func LocalGroupResourceSchema(ctx context.Context) schema.Schema {
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+				Validators: []validator.String{
+					stringvalidator.LengthBetween(1, 256),
+				},
 			},
 			"sid": schema.StringAttribute{
 				Computed:            true,
