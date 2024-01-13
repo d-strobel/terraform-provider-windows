@@ -36,12 +36,58 @@ func (p *WindowsProvider) ValidateConfig(ctx context.Context, req provider.Valid
 
 		// username must be set via config or environment variable
 		if data.Winrm.Username.IsNull() && os.Getenv(envWinRMUsername) == "" {
-			resp.Diagnostics.AddAttributeError(path.Root("winrm"), "Missing config attribute", fmt.Sprintf("Parameter 'username' or environment variable '%s' must be set.", envWinRMUsername))
+			resp.Diagnostics.AddAttributeError(path.Root("winrm"),
+				"Missing config attribute",
+				fmt.Sprintf("Parameter 'username' or environment variable '%s' must be set.", envWinRMUsername),
+			)
 		}
 
 		// password must be set via config or environment variable
 		if data.Winrm.Password.IsNull() && os.Getenv(envWinRMPassword) == "" {
-			resp.Diagnostics.AddAttributeError(path.Root("winrm"), "Missing config attribute", fmt.Sprintf("Parameter 'password' or environment variable '%s' must be set.", envWinRMPassword))
+			resp.Diagnostics.AddAttributeError(path.Root("winrm"),
+				"Missing config attribute",
+				fmt.Sprintf("Parameter 'password' or environment variable '%s' must be set.", envWinRMPassword),
+			)
+		}
+	}
+
+	// Check Kerberos attributes
+	if !data.Kerberos.IsNull() {
+
+		// Kerberos realm must be set via config or environment variable
+		if data.Kerberos.Realm.IsNull() && os.Getenv(envKerberosRealm) == "" {
+			resp.Diagnostics.AddAttributeError(path.Root("kerberos"),
+				"Missing config attribute",
+				fmt.Sprintf("Parameter 'realm' or environment variable '%s' must be set.", envKerberosRealm),
+			)
+		}
+
+		// Kerberos config file must be set via config or environment variable
+		if data.Kerberos.KrbConfigFile.IsNull() && os.Getenv(envKerberosConfigFile) == "" {
+			resp.Diagnostics.AddAttributeError(path.Root("kerberos"),
+				"Missing config attribute",
+				fmt.Sprintf("Parameter 'krb_config_file' or environment variable '%s' must be set.", envKerberosConfigFile),
+			)
+		}
+	}
+
+	// Check SSH attributes
+	if !data.Ssh.IsNull() {
+
+		// username must be set via config or environment variable
+		if data.Ssh.Username.IsNull() && os.Getenv(envSSHUsername) == "" {
+			resp.Diagnostics.AddAttributeError(path.Root("ssh"),
+				"Missing config attribute",
+				fmt.Sprintf("Parameter 'username' or environment variable '%s' must be set.", envSSHUsername),
+			)
+		}
+
+		// password must be set via config or environment variable
+		if data.Ssh.Password.IsNull() && os.Getenv(envSSHPassword) == "" && data.Ssh.PrivateKey.IsNull() && os.Getenv(envSSHPrivateKey) == "" && data.Ssh.PrivateKeyPath.IsNull() && os.Getenv(envSSHPrivateKeyPath) == "" {
+			resp.Diagnostics.AddAttributeError(path.Root("ssh"),
+				"Missing config attribute",
+				fmt.Sprintf("Exactly one of the following parameters must be set: ['password' or environment variable '%s', 'private_key' or environment variable '%s', 'private_key_path' or environment variable '%s'].", envSSHPassword, envSSHPrivateKey, envSSHPrivateKeyPath),
+			)
 		}
 	}
 }
