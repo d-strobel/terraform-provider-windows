@@ -28,7 +28,11 @@ func (r *localGroupResource) Metadata(ctx context.Context, req resource.Metadata
 
 func (r *localGroupResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = local_resources.LocalGroupResourceSchema(ctx)
-	resp.Schema.Description = `Manage local security groups.`
+	resp.Schema.Description = `Manage local security groups.
+
+**Note:** The description default is a string with a space.
+This is neccessary because the powershell function Set-LocalGroup does not allow an empty string.
+`
 }
 
 func (r *localGroupResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
