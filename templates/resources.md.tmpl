@@ -15,3 +15,7 @@ description: |-
 {{ tffile (printf "examples/resources/%s/example.tf" .Name) }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+## Import
+{{ plainmarkdown (codefile "" (printf "examples/resources/%s/import.md" .Name)) }}
+{{ codefile "bash" (printf "examples/resources/%s/import.sh" .Name) }}
