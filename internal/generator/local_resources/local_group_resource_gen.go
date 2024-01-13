@@ -18,8 +18,8 @@ func LocalGroupResourceSchema(ctx context.Context) schema.Schema {
 		Attributes: map[string]schema.Attribute{
 			"description": schema.StringAttribute{
 				Required:            true,
-				Description:         "Define a description for the local security group.",
-				MarkdownDescription: "Define a description for the local security group.",
+				Description:         "Define a description for the local security group. The maximum length is 48 characters.",
+				MarkdownDescription: "Define a description for the local security group. The maximum length is 48 characters.",
 				Validators: []validator.String{
 					stringvalidator.LengthBetween(1, 48),
 				},
@@ -34,8 +34,8 @@ func LocalGroupResourceSchema(ctx context.Context) schema.Schema {
 			},
 			"name": schema.StringAttribute{
 				Required:            true,
-				Description:         "Define the name for the local security group.",
-				MarkdownDescription: "Define the name for the local security group.",
+				Description:         "Define the name for the local security group. The maximum length is 256 characters.",
+				MarkdownDescription: "Define the name for the local security group. The maximum length is 256 characters.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},

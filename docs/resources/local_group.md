@@ -24,8 +24,8 @@ resource "windows_local_group" "test" {
 
 ### Required
 
-- `description` (String) Define a description for the local security group.
-- `name` (String) Define the name for the local security group.
+- `description` (String) Define a description for the local security group. The maximum length is 48 characters.
+- `name` (String) Define the name for the local security group. The maximum length is 256 characters.
 
 ### Read-Only
 

@@ -12,7 +12,7 @@
                         "name": "name",
                         "string": {
                             "computed_optional_required": "required",
-                            "description": "Define the name for the local security group.",
+                            "description": "Define the name for the local security group. The maximum length is 256 characters.",
                             "validators": [
                                 {
                                     "custom": {
@@ -62,7 +62,7 @@
                         "name": "description",
                         "string": {
                             "computed_optional_required": "required",
-                            "description": "Define a description for the local security group.",
+                            "description": "Define a description for the local security group. The maximum length is 48 characters.",
                             "validators": [
                                 {
                                     "custom": {
