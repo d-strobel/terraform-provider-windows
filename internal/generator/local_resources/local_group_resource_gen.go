@@ -6,6 +6,7 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -17,12 +18,14 @@ func LocalGroupResourceSchema(ctx context.Context) schema.Schema {
 	return schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"description": schema.StringAttribute{
-				Required:            true,
-				Description:         "Define a description for the local security group. The maximum length is 48 characters.",
-				MarkdownDescription: "Define a description for the local security group. The maximum length is 48 characters.",
+				Optional:            true,
+				Computed:            true,
+				Description:         "(Default: `\" \"`)<br>Define a description for the local security group. The maximum length is 48 characters.",
+				MarkdownDescription: "(Default: `\" \"`)<br>Define a description for the local security group. The maximum length is 48 characters.",
 				Validators: []validator.String{
 					stringvalidator.LengthBetween(1, 48),
 				},
+				Default: stringdefault.StaticString(" "),
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,

@@ -9,6 +9,9 @@ description: |-
 <!-- resource description generated from schema -->
 Manage local security groups.
 
+**Note:** The description default is a string with a space.
+This is neccessary because the powershell function Set-LocalGroup does not allow an empty string.
+
 <!-- examples generated from example files -->
 ## Example Usage
 
@@ -24,8 +27,11 @@ resource "windows_local_group" "test" {
 
 ### Required
 
-- `description` (String) Define a description for the local security group. The maximum length is 48 characters.
 - `name` (String) Define the name for the local security group. The maximum length is 256 characters.
+
+### Optional
+
+- `description` (String) (Default: `" "`)<br>Define a description for the local security group. The maximum length is 48 characters.
 
 ### Read-Only
 
