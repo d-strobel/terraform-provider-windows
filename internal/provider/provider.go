@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"terraform-provider-windows/internal/generator/provider_windows"
+	"terraform-provider-windows/internal/generate/provider_windows"
 	"terraform-provider-windows/internal/provider/local"
 	"time"
 
