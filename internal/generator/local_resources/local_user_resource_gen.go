@@ -7,7 +7,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -20,30 +19,40 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 		Attributes: map[string]schema.Attribute{
 			"account_expires": schema.StringAttribute{
 				Optional:            true,
-				Description:         "Define when the local user account expires (UTC). If not specified, the user account never expires. The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).",
-				MarkdownDescription: "Define when the local user account expires (UTC). If not specified, the user account never expires. The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).",
+				Computed:            true,
+				Description:         "Define when the local user account expires (UTC). If not specified, the user account never expires.<br>The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).",
+				MarkdownDescription: "Define when the local user account expires (UTC). If not specified, the user account never expires.<br>The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"description": schema.StringAttribute{
 				Optional:            true,
 				Computed:            true,
 				Description:         "Define a description for the local user. The maximum length is 48 characters.",
 				MarkdownDescription: "Define a description for the local user. The maximum length is 48 characters.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 				Validators: []validator.String{
 					stringvalidator.LengthBetween(1, 48),
 				},
-				Default: stringdefault.StaticString(""),
 			},
 			"enabled": schema.BoolAttribute{
 				Optional:            true,
 				Computed:            true,
-				Description:         "Define whether the local user is enabled.",
-				MarkdownDescription: "Define whether the local user is enabled.",
+				Description:         "(Default: `true`)<br>Define whether the local user is enabled.",
+				MarkdownDescription: "(Default: `true`)<br>Define whether the local user is enabled.",
 				Default:             booldefault.StaticBool(true),
 			},
 			"full_name": schema.StringAttribute{
 				Optional:            true,
+				Computed:            true,
 				Description:         "Define the full name of the local user. The full name differs from the user name of the user account.",
 				MarkdownDescription: "Define the full name of the local user. The full name differs from the user name of the user account.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
@@ -72,8 +81,11 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 			"password": schema.StringAttribute{
 				Optional:            true,
 				Sensitive:           true,
-				Description:         "Define a password for the local user.",
-				MarkdownDescription: "Define a password for the local user.",
+				Description:         "Define a password for the local user. A password can contain up to 127 characters.",
+				MarkdownDescription: "Define a password for the local user. A password can contain up to 127 characters.",
+				Validators: []validator.String{
+					stringvalidator.LengthBetween(1, 127),
+				},
 			},
 			"password_changeable_date": schema.StringAttribute{
 				Computed:            true,
@@ -93,8 +105,8 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 			"password_never_expires": schema.BoolAttribute{
 				Optional:            true,
 				Computed:            true,
-				Description:         "Define whether the password of the local user.",
-				MarkdownDescription: "Define whether the password of the local user.",
+				Description:         "(Default: `true`)<br>Define whether the password of the local user.",
+				MarkdownDescription: "(Default: `true`)<br>Define whether the password of the local user.",
 				Default:             booldefault.StaticBool(true),
 			},
 			"password_required": schema.BoolAttribute{
@@ -113,8 +125,8 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 			"user_may_change_password": schema.BoolAttribute{
 				Optional:            true,
 				Computed:            true,
-				Description:         "Define whether the local user can change it's own password.",
-				MarkdownDescription: "Define whether the local user can change it's own password.",
+				Description:         "(Default: `true`)<br>Define whether the local user can change it's own password.",
+				MarkdownDescription: "(Default: `true`)<br>Define whether the local user can change it's own password.",
 				Default:             booldefault.StaticBool(true),
 			},
 		},
