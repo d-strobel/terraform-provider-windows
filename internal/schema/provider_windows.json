@@ -1,0 +1,152 @@
+{
+    "version": "0.1",
+    "provider": {
+        "name": "windows",
+        "schema": {
+            "attributes": [
+                {
+                    "name": "endpoint",
+                    "string": {
+                        "optional_required": "required",
+                        "description": "Define the hostname or ip-address of the target Windows system."
+                    }
+                },
+                {
+                    "name": "winrm",
+                    "single_nested": {
+                        "optional_required": "optional",
+                        "description": "Define the WinRM connection parameters. Exactly one of 'winrm' or 'ssh' must be set for the provider to connect to a Windows target system. Define an empty 'winrm' attribute if you wish to use the environment variables.",
+                        "attributes": [
+                            {
+                                "name": "username",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_WINRM_USERNAME`)<br>Define the username to connect with the target Windows system. Required if winrm is set."
+                                }
+                            },
+                            {
+                                "name": "password",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_WINRM_PASSWORD`)<br>Define the password to connect with the target Windows system. Required if winrm is set.",
+                                    "sensitive": true
+                                }
+                            },
+                            {
+                                "name": "use_tls",
+                                "bool": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_WINRM_USE_TLS`) (Default: `true`)<br>Define if TLS (https) should be used to connect with the target Windows system."
+                                }
+                            },
+                            {
+                                "name": "port",
+                                "int64": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_WINRM_PORT`) (Default: `5986`)<br>Define the port to connect with the target Windows system."
+                                }
+                            },
+                            {
+                                "name": "insecure",
+                                "bool": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_WINRM_INSECURE`) (Default: `false`)<br>Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates."
+                                }
+                            },
+                            {
+                                "name": "timeout",
+                                "int64": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_WINRM_TIMEOUT`) (Default: `0`)<br>Define the connection timeout in minutes for the target Windows system."
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "kerberos",
+                    "single_nested": {
+                        "optional_required": "optional",
+                        "description": "Define the Kerberos connection parameters. Currently this can only be combined with a WinRM connection.",
+                        "attributes": [
+                            {
+                                "name": "realm",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set."
+                                }
+                            },
+                            {
+                                "name": "krb_config_file",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set."
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "ssh",
+                    "single_nested": {
+                        "optional_required": "optional",
+                        "description": "Define the SSH connection parameters. Exactly one of 'winrm' or 'ssh' must be set for the provider to connect to a Windows target system. Define an empty 'ssh' attribute if you wish to use the environment variables.",
+                        "attributes": [
+                            {
+                                "name": "username",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_SSH_USERNAME`)<br>Define the username to connect with the target Windows system. Required if ssh is set."
+                                }
+                            },
+                            {
+                                "name": "password",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "sensitive": true,
+                                    "description": "(Env: `WIN_SSH_PASSWORD`)<br>Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set."
+                                }
+                            },
+                            {
+                                "name": "private_key",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "sensitive": true,
+                                    "description": "(Env: `WIN_SSH_PRIVATE_KEY`)<br>Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set."
+                                }
+                            },
+                            {
+                                "name": "private_key_path",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_SSH_PRIVATE_KEY_PATH`)<br>Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set."
+                                }
+                            },
+                            {
+                                "name": "known_hosts_path",
+                                "string": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_SSH_KNOWN_HOSTS_PATH`)<br>Define the path to the known hosts file to connect with the target Windows system."
+                                }
+                            },
+                            {
+                                "name": "insecure",
+                                "bool": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_SSH_INSECURE`) (Default: `false`)<br>Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys."
+                                }
+                            },
+                            {
+                                "name": "port",
+                                "int64": {
+                                    "optional_required": "optional",
+                                    "description": "(Env: `WIN_SSH_PORT`) (Default: `22`)<br>Define the port to connect with the target Windows system."
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

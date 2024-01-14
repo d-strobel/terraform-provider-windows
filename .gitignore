@@ -1,7 +1,6 @@
 *.dll
 *.exe
 .DS_Store
-example.tf
 terraform.tfplan
 terraform.tfstate
 bin/
@@ -34,3 +33,6 @@ website/vendor
 # Keep windows files with windows line endings
 *.winfile eol=crlf
 .vscode
+
+# Exclude local dev build
+terraform-provider-windows

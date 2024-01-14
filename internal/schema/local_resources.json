@@ -1,0 +1,336 @@
+{
+    "version": "0.1",
+    "provider": {
+        "name": "windows"
+    },
+    "resources": [
+        {
+            "name": "local_group",
+            "schema": {
+                "attributes": [
+                    {
+                        "name": "name",
+                        "string": {
+                            "computed_optional_required": "required",
+                            "description": "Define the name for the local security group. The maximum length is 256 characters.",
+                            "validators": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+                                            }
+                                        ],
+                                        "schema_definition": "stringvalidator.LengthBetween(1, 256)"
+                                    }
+                                }
+                            ],
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.RequiresReplace()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sid",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The security ID of the local security group.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "(Default: `\" \"`)<br>Define a description for the local security group. The maximum length is 48 characters.",
+                            "default": {
+                                "static": " "
+                            },
+                            "validators": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+                                            }
+                                        ],
+                                        "schema_definition": "stringvalidator.LengthBetween(1, 48)"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The ID of the retrieved local security group. This is the same as the SID.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "local_user",
+            "schema": {
+                "attributes": [
+                    {
+                        "name": "name",
+                        "string": {
+                            "computed_optional_required": "required",
+                            "description": "Define the name for the local user. A user name can contain up to 20 uppercase characters or lowercase characters. A user name can't contain the following characters: `\"`, `/`, `\\`, `[`, `]`, `:`, `;`, `|`, `=`, `,`, `+`, `*`, `?`, `<`, `>`, `@`",
+                            "validators": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+                                            }
+                                        ],
+                                        "schema_definition": "stringvalidator.LengthBetween(1, 20)"
+                                    }
+                                }
+                            ],
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.RequiresReplace()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sid",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The security ID of the local user.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "string": {
+                            "computed_optional_required": "optional",
+                            "sensitive": true,
+                            "description": "Define a password for the local user. A password can contain up to 127 characters.",
+                            "validators": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+                                            }
+                                        ],
+                                        "schema_definition": "stringvalidator.LengthBetween(1, 127)"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "full_name",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Define the full name of the local user. The full name differs from the user name of the user account.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Define a description for the local user. The maximum length is 48 characters.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ],
+                            "validators": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+                                            }
+                                        ],
+                                        "schema_definition": "stringvalidator.LengthBetween(1, 48)"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The ID of the retrieved local security group. This is the same as the SID.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "account_expires",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Define when the local user account expires (UTC). If not specified, the user account never expires.<br>The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "enabled",
+                        "bool": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "(Default: `true`)<br>Define whether the local user is enabled.",
+                            "default": {
+                                "static": true
+                            }
+                        }
+                    },
+                    {
+                        "name": "password_never_expires",
+                        "bool": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "(Default: `true`)<br>Define whether the password of the local user.",
+                            "default": {
+                                "static": true
+                            }
+                        }
+                    },
+                    {
+                        "name": "user_may_change_password",
+                        "bool": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "(Default: `true`)<br>Define whether the local user can change it's own password.",
+                            "default": {
+                                "static": true
+                            }
+                        }
+                    },
+                    {
+                        "name": "password_changeable_date",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The password changeable date of the local user."
+                        }
+                    },
+                    {
+                        "name": "password_expires",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The time when the password of the local user expires."
+                        }
+                    },
+                    {
+                        "name": "password_required",
+                        "bool": {
+                            "computed_optional_required": "computed",
+                            "description": "If true a password is required login with the local user."
+                        }
+                    },
+                    {
+                        "name": "password_last_set",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The last time when the password was set for the local user."
+                        }
+                    },
+                    {
+                        "name": "last_login",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The last login time of the local user."
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

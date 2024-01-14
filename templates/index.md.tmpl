@@ -1,0 +1,29 @@
+---
+page_title: "Windows Provider"
+subcategory: ""
+description: |-
+{{ (index (split .Description ".") 0) | plainmarkdown | trimspace | prefixlines "  " }}
+---
+# Windows Provider
+
+<!-- provider description generated from schema -->
+{{ .Description | trimspace }}
+
+<!-- examples generated from template and example files -->
+## Example Usage
+
+There are several ways to authenticate to a windows system.
+
+### WinRM - Password authentication
+{{ tffile "examples/provider/provider_winrm_password.tf" }}
+
+### WinRM - Kerberos authentication
+{{ tffile "examples/provider/provider_winrm_kerberos.tf" }}
+
+### SSH - Password authentication
+{{ tffile "examples/provider/provider_ssh_password.tf" }}
+
+### SSH - PublicKey authentication
+{{ tffile "examples/provider/provider_ssh_privatekey.tf" }}
+
+{{ .SchemaMarkdown }}

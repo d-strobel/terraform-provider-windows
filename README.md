@@ -1,11 +1,16 @@
 # Terraform Provider Windows
+<!-- Badges -->
+[![Build][build badge]][build page]
+[![GoReport][goreport badge]][goreport page]
+[![Conventional Commits][convention badge]][convention page]
 
-Terraform provider to interact with Windows based systems.
+Terraform provider to manage Windows based resources.
 
 ## Requirements
 
 - [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 1.0
-- [Go](https://golang.org/doc/install) >= 1.19
+- [Go](https://golang.org/doc/install) >= 1.21
+- [Framework Code Generator](https://github.com/hashicorp/terraform-plugin-codegen-framework) >= 0.3.1
 
 ## Building The Provider
 
@@ -33,7 +38,35 @@ Then commit the changes to `go.mod` and `go.sum`.
 
 ## Using the provider
 
-TODO: Fill this in for each provider
+```terraform
+terraform {
+  required_providers {
+    windows = {
+      source = "d-strobel/windows"
+    }
+  }
+}
+
+provider "windows" {
+  endpoint = "127.0.0.1"
+
+  ssh = {
+    username = "vagrant"
+    password = "vagrant"
+    port     = 1222
+  }
+}
+
+// Create a new local security group.
+resource "windows_local_group" "this" {
+    name = "MyNewGroup"
+}
+
+// Create a new local user.
+resource "windows_local_user" "this" {
+    name = "MyNewUser"
+}
+```
 
 ## Developing the Provider
 
@@ -50,3 +83,13 @@ In order to run the full suite of Acceptance tests, run `make testacc`.
 ```shell
 make testacc
 ```
+
+<!-- Badges -->
+[goreport badge]: https://goreportcard.com/badge/github.com/d-strobel/terraform-provider-windows
+[goreport page]: https://goreportcard.com/report/github.com/d-strobel/terraform-provider-windows
+
+[build badge]: https://github.com/d-strobel/terraform-provider-windows/actions/workflows/build.yml/badge.svg
+[build page]: https://github.com/d-strobel/terraform-provider-windows/actions/workflows/build.yml
+
+[convention badge]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white
+[convention page]: https://conventionalcommits.org
