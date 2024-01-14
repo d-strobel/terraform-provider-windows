@@ -10,7 +10,7 @@ description: |-
 Manage local security groups.
 
 **Note:** The description default is a string with a space.
-This is neccessary because the powershell function Set-LocalGroup does not allow an empty string.
+This is necessary because the powershell function Set-LocalGroup does not allow an empty string.
 
 <!-- examples generated from example files -->
 ## Example Usage
