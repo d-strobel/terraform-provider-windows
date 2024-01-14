@@ -8,11 +8,11 @@ WARN_COLOR=\033[33;01m
 .PHONY: generate-framework
 generate-framework:
 	@printf "$(OK_COLOR)==> Generate provider schema$(NO_COLOR)\n"
-	tfplugingen-framework generate provider --input ./internal/generator/provider_windows/provider_windows.json --output ./internal/generator/provider_windows --package provider_windows
+	tfplugingen-framework generate provider --input ./internal/schema/provider_windows.json --output ./internal/generate/provider_windows --package provider_windows
 
 	@printf "$(OK_COLOR)==> Generate local schema$(NO_COLOR)\n"
-	tfplugingen-framework generate data-sources --input ./internal/generator/local_datasources/local_datasources.json --output ./internal/generator/local_datasources --package local_datasources
-	tfplugingen-framework generate resources --input ./internal/generator/local_resources/local_resources.json --output ./internal/generator/local_resources --package local_resources
+	tfplugingen-framework generate data-sources --input ./internal/schema/local_datasources.json --output ./internal/generate/local_datasources --package local_datasources
+	tfplugingen-framework generate resources --input ./internal/schema/local_resources.json --output ./internal/generate/local_resources --package local_resources
 
 # Generate documentation
 .PHONY: generate-docs

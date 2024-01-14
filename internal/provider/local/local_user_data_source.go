@@ -3,7 +3,7 @@ package local
 import (
 	"context"
 	"fmt"
-	"terraform-provider-windows/internal/generator/local_datasources"
+	"terraform-provider-windows/internal/generate/local_datasources"
 	"time"
 
 	"github.com/d-strobel/gowindows"

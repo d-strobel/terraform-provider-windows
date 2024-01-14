@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"terraform-provider-windows/internal/generator/provider_windows"
+	"terraform-provider-windows/internal/generate/provider_windows"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/providervalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
