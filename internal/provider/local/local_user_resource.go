@@ -60,10 +60,15 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	// Convert time string to time
-	accountExpires, err := time.Parse(time.DateTime, data.AccountExpires.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddAttributeError(path.Root("account_expires"), "Config Error", fmt.Sprintf("Unable to parse time, got error: %s", err))
-		return
+	accountExpires := time.Time{}
+	if !data.AccountExpires.IsUnknown() {
+		var err error
+
+		accountExpires, err = time.Parse(time.DateTime, data.AccountExpires.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddAttributeError(path.Root("account_expires"), "Config Error", fmt.Sprintf("Unable to parse time, got error: %s", err))
+			return
+		}
 	}
 
 	// Create API call logic
@@ -114,15 +119,10 @@ func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 
 	// Read API call logic
-	params := local.UserReadParams{
-		SID: data.Id.ValueString(),
-	}
-
-	winResp, err := r.client.Local.UserRead(ctx, params)
+	winResp, err := r.client.Local.UserRead(ctx, local.UserReadParams{SID: data.Sid.ValueString()})
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local user, got error: %s", err))
 		return
-
 	}
 
 	// Set data
@@ -154,7 +154,55 @@ func (r *localUserResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
+	// Convert time string to time
+	accountExpires := time.Time{}
+	if !data.AccountExpires.IsUnknown() {
+		var err error
+
+		accountExpires, err = time.Parse(time.DateTime, data.AccountExpires.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddAttributeError(path.Root("account_expires"), "Config Error", fmt.Sprintf("Unable to parse time, got error: %s", err))
+			return
+		}
+	}
+
 	// Update API call logic
+	params := local.UserUpdateParams{
+		SID:                   data.Sid.ValueString(),
+		AccountExpires:        accountExpires,
+		Description:           data.Description.ValueString(),
+		Enabled:               data.Enabled.ValueBool(),
+		FullName:              data.FullName.ValueString(),
+		Password:              data.Password.ValueString(),
+		PasswordNeverExpires:  data.PasswordNeverExpires.ValueBool(),
+		UserMayChangePassword: data.UserMayChangePassword.ValueBool(),
+	}
+
+	if err := r.client.Local.UserUpdate(ctx, params); err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update local user, got error: %s", err))
+		return
+	}
+
+	winResp, err := r.client.Local.UserRead(ctx, local.UserReadParams{SID: data.Sid.ValueString()})
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local user after update, got error: %s", err))
+		return
+	}
+
+	// Set data
+	data.Id = types.StringValue(winResp.SID.Value)
+	data.Sid = types.StringValue(winResp.SID.Value)
+	data.Name = types.StringValue(winResp.Name)
+	data.Description = types.StringValue(winResp.Description)
+	data.Enabled = types.BoolValue(winResp.Enabled)
+	data.PasswordRequired = types.BoolValue(winResp.PasswordRequired)
+	data.AccountExpires = types.StringValue(winResp.AccountExpires.Format(time.DateTime))
+	data.FullName = types.StringValue(winResp.FullName)
+	data.LastLogin = types.StringValue(winResp.LastLogon.Format(time.DateTime))
+	data.PasswordChangeableDate = types.StringValue(winResp.PasswordChangeableDate.Format(time.DateTime))
+	data.PasswordExpires = types.StringValue(winResp.PasswordExpires.Format(time.DateTime))
+	data.PasswordLastSet = types.StringValue(winResp.PasswordLastSet.Format(time.DateTime))
+	data.UserMayChangePassword = types.BoolValue(winResp.UserMayChangePassword)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -171,4 +219,9 @@ func (r *localUserResource) Delete(ctx context.Context, req resource.DeleteReque
 	}
 
 	// Delete API call logic
+	err := r.client.Local.UserDelete(ctx, local.UserDeleteParams{SID: data.Sid.ValueString()})
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local user, got error: %s", err))
+		return
+	}
 }
