@@ -225,3 +225,7 @@ func (r *localUserResource) Delete(ctx context.Context, req resource.DeleteReque
 		return
 	}
 }
+
+func (r *localUserResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("sid"), req, resp)
+}
