@@ -27,13 +27,13 @@ resource "windows_local_user" "this" {
 
 ### Optional
 
-- `account_expires` (String) Define when the local user account expires (UTC). If not specified, the user account never expires. The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).
+- `account_expires` (String) Define when the local user account expires (UTC). If not specified, the user account never expires.<br>The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).
 - `description` (String) Define a description for the local user. The maximum length is 48 characters.
-- `enabled` (Boolean) Define whether the local user is enabled.
+- `enabled` (Boolean) (Default: `true`)<br>Define whether the local user is enabled.
 - `full_name` (String) Define the full name of the local user. The full name differs from the user name of the user account.
-- `password` (String, Sensitive) Define a password for the local user.
-- `password_never_expires` (Boolean) Define whether the password of the local user.
-- `user_may_change_password` (Boolean) Define whether the local user can change it's own password.
+- `password` (String, Sensitive) Define a password for the local user. A password can contain up to 127 characters.
+- `password_never_expires` (Boolean) (Default: `true`)<br>Define whether the password of the local user.
+- `user_may_change_password` (Boolean) (Default: `true`)<br>Define whether the local user can change it's own password.
 
 ### Read-Only
 
