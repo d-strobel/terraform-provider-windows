@@ -3,7 +3,7 @@ package local
 import (
 	"context"
 	"fmt"
-	"terraform-provider-windows/internal/generate/local_datasources"
+	"terraform-provider-windows/internal/generate/datasource_local_user"
 	"time"
 
 	"github.com/d-strobel/gowindows"
@@ -27,7 +27,7 @@ func (d *localUserDataSource) Metadata(ctx context.Context, req datasource.Metad
 }
 
 func (d *localUserDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-	resp.Schema = local_datasources.LocalUserDataSourceSchema(ctx)
+	resp.Schema = datasource_local_user.LocalUserDataSourceSchema(ctx)
 	resp.Schema.Description = `Get information about a local user.`
 }
 
@@ -49,7 +49,7 @@ func (d *localUserDataSource) Configure(ctx context.Context, req datasource.Conf
 }
 
 func (d *localUserDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data local_datasources.LocalUserModel
+	var data datasource_local_user.LocalUserModel
 
 	// Read Terraform configuration data into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
