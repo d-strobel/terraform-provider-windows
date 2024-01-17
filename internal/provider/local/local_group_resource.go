@@ -3,7 +3,7 @@ package local
 import (
 	"context"
 	"fmt"
-	"terraform-provider-windows/internal/generate/local_resources"
+	"terraform-provider-windows/internal/generate/resource_local_group"
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local"
@@ -27,7 +27,7 @@ func (r *localGroupResource) Metadata(ctx context.Context, req resource.Metadata
 }
 
 func (r *localGroupResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = local_resources.LocalGroupResourceSchema(ctx)
+	resp.Schema = resource_local_group.LocalGroupResourceSchema(ctx)
 	resp.Schema.Description = `Manage local security groups.
 
 **Note:** The description default is a string with a space.
@@ -53,7 +53,7 @@ func (r *localGroupResource) Configure(ctx context.Context, req resource.Configu
 }
 
 func (r *localGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data local_resources.LocalGroupModel
+	var data resource_local_group.LocalGroupModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -85,7 +85,7 @@ func (r *localGroupResource) Create(ctx context.Context, req resource.CreateRequ
 }
 
 func (r *localGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data local_resources.LocalGroupModel
+	var data resource_local_group.LocalGroupModel
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -111,7 +111,7 @@ func (r *localGroupResource) Read(ctx context.Context, req resource.ReadRequest,
 }
 
 func (r *localGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data local_resources.LocalGroupModel
+	var data resource_local_group.LocalGroupModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -137,7 +137,7 @@ func (r *localGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 }
 
 func (r *localGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data local_resources.LocalGroupModel
+	var data resource_local_group.LocalGroupModel
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)

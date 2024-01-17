@@ -3,7 +3,7 @@ package local
 import (
 	"context"
 	"fmt"
-	"terraform-provider-windows/internal/generate/local_resources"
+	"terraform-provider-windows/internal/generate/resource_local_user"
 	"time"
 
 	"github.com/d-strobel/gowindows"
@@ -28,7 +28,7 @@ func (r *localUserResource) Metadata(ctx context.Context, req resource.MetadataR
 }
 
 func (r *localUserResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = local_resources.LocalUserResourceSchema(ctx)
+	resp.Schema = resource_local_user.LocalUserResourceSchema(ctx)
 	resp.Schema.Description = `Manage local users.`
 }
 
@@ -50,7 +50,7 @@ func (r *localUserResource) Configure(ctx context.Context, req resource.Configur
 }
 
 func (r *localUserResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data local_resources.LocalUserModel
+	var data resource_local_user.LocalUserModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -109,7 +109,7 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 }
 
 func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data local_resources.LocalUserModel
+	var data resource_local_user.LocalUserModel
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -145,7 +145,7 @@ func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 }
 
 func (r *localUserResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var data local_resources.LocalUserModel
+	var data resource_local_user.LocalUserModel
 
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
@@ -209,7 +209,7 @@ func (r *localUserResource) Update(ctx context.Context, req resource.UpdateReque
 }
 
 func (r *localUserResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data local_resources.LocalUserModel
+	var data resource_local_user.LocalUserModel
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
