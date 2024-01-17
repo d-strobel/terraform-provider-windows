@@ -9,7 +9,6 @@ description: |-
 <!-- data-source description generated from schema -->
 Retrieve information about a local security group.
 You can get a group by the name or the security ID of the group.
-
 <!-- examples generated from example files -->
 ## Example Usage
 

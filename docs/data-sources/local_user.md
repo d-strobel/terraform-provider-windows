@@ -8,7 +8,6 @@ description: |-
 
 <!-- data-source description generated from schema -->
 Get information about a local user.
-
 <!-- examples generated from example files -->
 ## Example Usage
 

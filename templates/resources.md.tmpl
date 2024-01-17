@@ -9,13 +9,17 @@ description: |-
 <!-- resource description generated from schema -->
 {{ .Description | trimspace }}
 
+{{- if .HasExample }}
 <!-- examples generated from example files -->
 ## Example Usage
 
-{{ tffile (printf "examples/resources/%s/example.tf" .Name) }}
+{{ tffile .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}
 
+{{- if .HasImport }}
 ## Import
 {{ plainmarkdown (codefile "" (printf "examples/resources/%s/import.md" .Name)) }}
-{{ codefile "bash" (printf "examples/resources/%s/import.sh" .Name) }}
+{{ codefile "bash" .ImportFile }}
+{{- end }}
