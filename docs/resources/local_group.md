@@ -11,7 +11,6 @@ Manage local security groups.
 
 **Note:** The description default is a string with a space.
 This is necessary because the powershell function Set-LocalGroup does not allow an empty string.
-
 <!-- examples generated from example files -->
 ## Example Usage
 
@@ -37,7 +36,6 @@ resource "windows_local_group" "test" {
 
 - `id` (String) The ID of the retrieved local security group. This is the same as the SID.
 - `sid` (String) The security ID of the local security group.
-
 ## Import
 
 Import a local group by the security ID (SID).
