@@ -40,6 +40,51 @@
             }
         },
         {
+            "name": "local_groups",
+            "schema": {
+                "attributes": [
+                    {
+                        "name": "groups",
+                        "list_nested": {
+                            "computed_optional_required": "computed",
+                            "nested_object": {
+                                "attributes": [
+                                    {
+                                        "name": "name",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The name of the local security group."
+                                        }
+                                    },
+                                    {
+                                        "name": "sid",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The security ID of the local security group."
+                                        }
+                                    },
+                                    {
+                                        "name": "description",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The description of the local security group."
+                                        }
+                                    },
+                                    {
+                                        "name": "id",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The ID of the retrieved local security group. This is the same as the SID."
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
             "name": "local_user",
             "schema": {
                 "attributes": [
