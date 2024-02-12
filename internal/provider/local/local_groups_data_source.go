@@ -63,18 +63,22 @@ func (d *localGroupsDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	// Set data
-	for _, v := range winResp {
-		groupsData := datasource_local_groups.GroupsValue{
-			Name:        types.StringValue(v.Name),
-			Description: types.StringValue(v.Description),
-			Sid:         types.StringValue(v.SID.Value),
-			Id:          types.StringValue(v.SID.Value),
-		}
+	var groupsValueList []datasource_local_groups.GroupsValue
 
-		list, _ := types.ListValueFrom(ctx, datasource_local_groups.GroupsType{}, groupsData)
-		data.Groups = list
+	for _, group := range winResp {
+		groupsValue := datasource_local_groups.GroupsValue{
+			Name:        types.StringValue(group.Name),
+			Description: types.StringValue(group.Description),
+			Sid:         types.StringValue(group.SID.Value),
+			Id:          types.StringValue(group.SID.Value),
+		}
+		objVal, _ := groupsValue.ToObjectValue(ctx)
+		newGroupsValue, _ := datasource_local_groups.NewGroupsValue(objVal.AttributeTypes(ctx), objVal.Attributes())
+
+		groupsValueList = append(groupsValueList, newGroupsValue)
 	}
+
+	data.Groups, _ = types.ListValueFrom(ctx, datasource_local_groups.GroupsValue{}.Type(ctx), groupsValueList)
 
 	// Save data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
