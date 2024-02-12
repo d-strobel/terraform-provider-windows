@@ -9,9 +9,11 @@ description: |-
 <!-- data-source description generated from schema -->
 {{ .Description | trimspace }}
 
+{{- if .HasExample }}
 <!-- examples generated from example files -->
 ## Example Usage
 
-{{ tffile (printf "examples/data-sources/%s/example.tf" .Name) }}
+{{ tffile .ExampleFile }}
+{{- end }}
 
 {{ .SchemaMarkdown | trimspace }}

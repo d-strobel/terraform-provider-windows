@@ -8,7 +8,6 @@ description: |-
 
 <!-- resource description generated from schema -->
 Manage local users.
-
 <!-- examples generated from example files -->
 ## Example Usage
 
@@ -44,7 +43,6 @@ resource "windows_local_user" "this" {
 - `password_last_set` (String) The last time when the password was set for the local user.
 - `password_required` (Boolean) If true a password is required login with the local user.
 - `sid` (String) The security ID of the local user.
-
 ## Import
 
 Import a local user by the security ID (SID).

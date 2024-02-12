@@ -3,7 +3,7 @@ package local
 import (
 	"context"
 	"fmt"
-	"terraform-provider-windows/internal/generate/local_datasources"
+	"terraform-provider-windows/internal/generate/datasource_local_group"
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local"
@@ -26,7 +26,7 @@ func (d *localGroupDataSource) Metadata(ctx context.Context, req datasource.Meta
 }
 
 func (d *localGroupDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-	resp.Schema = local_datasources.LocalGroupDataSourceSchema(ctx)
+	resp.Schema = datasource_local_group.LocalGroupDataSourceSchema(ctx)
 	resp.Schema.Description = `Retrieve information about a local security group.
 You can get a group by the name or the security ID of the group.
 `
@@ -50,7 +50,7 @@ func (d *localGroupDataSource) Configure(ctx context.Context, req datasource.Con
 }
 
 func (d *localGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data local_datasources.LocalGroupModel
+	var data datasource_local_group.LocalGroupModel
 
 	// Read Terraform configuration data into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
