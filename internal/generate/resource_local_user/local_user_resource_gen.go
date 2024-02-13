@@ -32,12 +32,10 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 				Computed:            true,
 				Description:         "Define a description for the local user. The maximum length is 48 characters.",
 				MarkdownDescription: "Define a description for the local user. The maximum length is 48 characters.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 				Validators: []validator.String{
-					stringvalidator.LengthBetween(1, 48),
+					stringvalidator.LengthAtMost(48),
 				},
+				Default: stringdefault.StaticString(""),
 			},
 			"enabled": schema.BoolAttribute{
 				Optional:            true,
@@ -51,9 +49,7 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 				Computed:            true,
 				Description:         "Define the full name of the local user. The full name differs from the user name of the user account.",
 				MarkdownDescription: "Define the full name of the local user. The full name differs from the user name of the user account.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
+				Default:             stringdefault.StaticString(""),
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
