@@ -35,7 +35,7 @@ data "windows_local_user" "admin" {
 - `enabled` (Boolean) Get the status of the local user.
 - `full_name` (String) The full name of the local user.
 - `id` (String) The ID of the retrieved local user. This is the same as the SID.
-- `last_login` (String) The last login time of the local user.
+- `last_logon` (String) The last logon time of the local user.
 - `password_changeable_date` (String) The password changeable date of the local user.
 - `password_expires` (String) The time when the password of the local user expires.
 - `password_last_set` (String) The last time when the password was set for the local user.
