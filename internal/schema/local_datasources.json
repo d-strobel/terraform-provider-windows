@@ -92,7 +92,14 @@
                         "name": "account_expires",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "Retrieve the time where the local user account expires."
+                            "description": "Retrieve the time where the local user account expires.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
@@ -120,14 +127,28 @@
                         "name": "password_changeable_date",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The password changeable date of the local user."
+                            "description": "The password changeable date of the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
                         "name": "password_expires",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The time when the password of the local user expires."
+                            "description": "The time when the password of the local user expires.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
@@ -148,14 +169,28 @@
                         "name": "password_last_set",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The last time when the password was set for the local user."
+                            "description": "The last time when the password was set for the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
                         "name": "last_login",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The last login time of the local user."
+                            "description": "The last login time of the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
