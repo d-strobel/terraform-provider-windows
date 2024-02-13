@@ -60,11 +60,11 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"last_login": schema.StringAttribute{
+			"last_logon": schema.StringAttribute{
 				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
-				Description:         "The last login time of the local user.",
-				MarkdownDescription: "The last login time of the local user.",
+				Description:         "The last logon time of the local user.",
+				MarkdownDescription: "The last logon time of the local user.",
 			},
 			"name": schema.StringAttribute{
 				Required:            true,
@@ -142,7 +142,7 @@ type LocalUserModel struct {
 	Enabled                types.Bool        `tfsdk:"enabled"`
 	FullName               types.String      `tfsdk:"full_name"`
 	Id                     types.String      `tfsdk:"id"`
-	LastLogin              timetypes.RFC3339 `tfsdk:"last_login"`
+	LastLogon              timetypes.RFC3339 `tfsdk:"last_logon"`
 	Name                   types.String      `tfsdk:"name"`
 	Password               types.String      `tfsdk:"password"`
 	PasswordChangeableDate timetypes.RFC3339 `tfsdk:"password_changeable_date"`

@@ -92,7 +92,7 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 	data.FullName = types.StringValue(winResp.FullName)
 	data.Id = types.StringValue(winResp.SID.Value)
 
-	data.LastLogin, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
+	data.LastLogon, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
 	resp.Diagnostics.Append(diag...)
 
 	data.Name = types.StringValue(winResp.Name)
@@ -141,7 +141,7 @@ func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	data.FullName = types.StringValue(winResp.FullName)
 	data.Id = types.StringValue(winResp.SID.Value)
 
-	data.LastLogin, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
+	data.LastLogon, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
 	resp.Diagnostics.Append(diag...)
 
 	data.Name = types.StringValue(winResp.Name)
@@ -209,7 +209,7 @@ func (r *localUserResource) Update(ctx context.Context, req resource.UpdateReque
 	data.FullName = types.StringValue(winResp.FullName)
 	data.Id = types.StringValue(winResp.SID.Value)
 
-	data.LastLogin, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
+	data.LastLogon, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
 	resp.Diagnostics.Append(diag...)
 
 	data.Name = types.StringValue(winResp.Name)

@@ -180,10 +180,10 @@
                         }
                     },
                     {
-                        "name": "last_login",
+                        "name": "last_logon",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The last login time of the local user.",
+                            "description": "The last logon time of the local user.",
                             "custom_type": {
                                 "import": {
                                     "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"

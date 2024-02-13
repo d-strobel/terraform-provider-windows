@@ -39,11 +39,11 @@ func LocalUserDataSourceSchema(ctx context.Context) schema.Schema {
 				Description:         "The ID of the retrieved local user. This is the same as the SID.",
 				MarkdownDescription: "The ID of the retrieved local user. This is the same as the SID.",
 			},
-			"last_login": schema.StringAttribute{
+			"last_logon": schema.StringAttribute{
 				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
-				Description:         "The last login time of the local user.",
-				MarkdownDescription: "The last login time of the local user.",
+				Description:         "The last logon time of the local user.",
+				MarkdownDescription: "The last logon time of the local user.",
 			},
 			"name": schema.StringAttribute{
 				Required:            true,
@@ -93,7 +93,7 @@ type LocalUserModel struct {
 	Enabled                types.Bool        `tfsdk:"enabled"`
 	FullName               types.String      `tfsdk:"full_name"`
 	Id                     types.String      `tfsdk:"id"`
-	LastLogin              timetypes.RFC3339 `tfsdk:"last_login"`
+	LastLogon              timetypes.RFC3339 `tfsdk:"last_logon"`
 	Name                   types.String      `tfsdk:"name"`
 	PasswordChangeableDate timetypes.RFC3339 `tfsdk:"password_changeable_date"`
 	PasswordExpires        timetypes.RFC3339 `tfsdk:"password_expires"`

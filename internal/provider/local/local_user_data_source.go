@@ -82,7 +82,7 @@ func (d *localUserDataSource) Read(ctx context.Context, req datasource.ReadReque
 	data.FullName = types.StringValue(winResp.FullName)
 	data.Id = types.StringValue(winResp.SID.Value)
 
-	data.LastLogin, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
+	data.LastLogon, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
 	resp.Diagnostics.Append(diag...)
 
 	data.Name = types.StringValue(winResp.Name)
