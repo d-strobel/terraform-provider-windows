@@ -8,7 +8,9 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local"
+	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -50,6 +52,7 @@ func (d *localUserDataSource) Configure(ctx context.Context, req datasource.Conf
 
 func (d *localUserDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data datasource_local_user.LocalUserModel
+	var diag diag.Diagnostics
 
 	// Read Terraform configuration data into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
@@ -68,22 +71,33 @@ func (d *localUserDataSource) Read(ctx context.Context, req datasource.ReadReque
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local user, got error: %s", err))
 		return
-
 	}
 
 	// Set data
-	data.Id = types.StringValue(winResp.SID.Value)
-	data.Sid = types.StringValue(winResp.SID.Value)
-	data.Name = types.StringValue(winResp.Name)
+	data.AccountExpires, diag = timetypes.NewRFC3339Value(winResp.AccountExpires.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
 	data.Description = types.StringValue(winResp.Description)
 	data.Enabled = types.BoolValue(winResp.Enabled)
-	data.PasswordRequired = types.BoolValue(winResp.PasswordRequired)
-	data.AccountExpires = types.StringValue(winResp.AccountExpires.Format(time.DateTime))
 	data.FullName = types.StringValue(winResp.FullName)
-	data.LastLogin = types.StringValue(winResp.LastLogon.Format(time.DateTime))
-	data.PasswordChangeableDate = types.StringValue(winResp.PasswordChangeableDate.Format(time.DateTime))
-	data.PasswordExpires = types.StringValue(winResp.PasswordExpires.Format(time.DateTime))
-	data.PasswordLastSet = types.StringValue(winResp.PasswordLastSet.Format(time.DateTime))
+	data.Id = types.StringValue(winResp.SID.Value)
+
+	data.LastLogon, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.Name = types.StringValue(winResp.Name)
+
+	data.PasswordChangeableDate, diag = timetypes.NewRFC3339Value(winResp.PasswordChangeableDate.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordExpires, diag = timetypes.NewRFC3339Value(winResp.PasswordExpires.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordLastSet, diag = timetypes.NewRFC3339Value(winResp.PasswordLastSet.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordRequired = types.BoolValue(winResp.PasswordRequired)
+	data.Sid = types.StringValue(winResp.SID.Value)
 	data.UserMayChangePassword = types.BoolValue(winResp.UserMayChangePassword)
 
 	// Save data into Terraform state

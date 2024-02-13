@@ -263,6 +263,7 @@ func (p *WindowsProvider) DataSources(ctx context.Context) []func() datasource.D
 		local.NewLocalGroupDataSource,
 		local.NewLocalGroupsDataSource,
 		local.NewLocalUserDataSource,
+		local.NewLocalUsersDataSource,
 	}
 }
 

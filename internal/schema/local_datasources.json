@@ -9,20 +9,6 @@
             "schema": {
                 "attributes": [
                     {
-                        "name": "name",
-                        "string": {
-                            "computed_optional_required": "optional",
-                            "description": "Define the name of the local security group."
-                        }
-                    },
-                    {
-                        "name": "sid",
-                        "string": {
-                            "computed_optional_required": "optional",
-                            "description": "Define the security ID of the local security group."
-                        }
-                    },
-                    {
                         "name": "description",
                         "string": {
                             "computed_optional_required": "computed",
@@ -34,6 +20,20 @@
                         "string": {
                             "computed_optional_required": "computed",
                             "description": "The ID of the retrieved local security group. This is the same as the SID."
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "string": {
+                            "computed_optional_required": "optional",
+                            "description": "Define the name of the local security group."
+                        }
+                    },
+                    {
+                        "name": "sid",
+                        "string": {
+                            "computed_optional_required": "optional",
+                            "description": "Define the security ID of the local security group."
                         }
                     }
                 ]
@@ -50,20 +50,6 @@
                             "nested_object": {
                                 "attributes": [
                                     {
-                                        "name": "name",
-                                        "string": {
-                                            "computed_optional_required": "computed",
-                                            "description": "The name of the local security group."
-                                        }
-                                    },
-                                    {
-                                        "name": "sid",
-                                        "string": {
-                                            "computed_optional_required": "computed",
-                                            "description": "The security ID of the local security group."
-                                        }
-                                    },
-                                    {
                                         "name": "description",
                                         "string": {
                                             "computed_optional_required": "computed",
@@ -75,6 +61,20 @@
                                         "string": {
                                             "computed_optional_required": "computed",
                                             "description": "The ID of the retrieved local security group. This is the same as the SID."
+                                        }
+                                    },
+                                    {
+                                        "name": "name",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The name of the local security group."
+                                        }
+                                    },
+                                    {
+                                        "name": "sid",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The security ID of the local security group."
                                         }
                                     }
                                 ]
@@ -92,7 +92,14 @@
                         "name": "account_expires",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "Retrieve the time where the local user account expires."
+                            "description": "Retrieve the time where the local user account expires.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
@@ -117,45 +124,24 @@
                         }
                     },
                     {
-                        "name": "password_changeable_date",
+                        "name": "id",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The password changeable date of the local user."
+                            "description": "The ID of the retrieved local user. This is the same as the SID."
                         }
                     },
                     {
-                        "name": "password_expires",
+                        "name": "last_logon",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The time when the password of the local user expires."
-                        }
-                    },
-                    {
-                        "name": "user_may_change_password",
-                        "bool": {
-                            "computed_optional_required": "computed",
-                            "description": "If true the local user can change it's password."
-                        }
-                    },
-                    {
-                        "name": "password_required",
-                        "bool": {
-                            "computed_optional_required": "computed",
-                            "description": "If true a password is required login with the local user."
-                        }
-                    },
-                    {
-                        "name": "password_last_set",
-                        "string": {
-                            "computed_optional_required": "computed",
-                            "description": "The last time when the password was set for the local user."
-                        }
-                    },
-                    {
-                        "name": "last_login",
-                        "string": {
-                            "computed_optional_required": "computed",
-                            "description": "The last login time of the local user."
+                            "description": "The last logon time of the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
@@ -166,6 +152,55 @@
                         }
                     },
                     {
+                        "name": "password_changeable_date",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The password changeable date of the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
+                        }
+                    },
+                    {
+                        "name": "password_expires",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The time when the password of the local user expires.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
+                        }
+                    },
+                    {
+                        "name": "password_last_set",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The last time when the password was set for the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
+                        }
+                    },
+                    {
+                        "name": "password_required",
+                        "bool": {
+                            "computed_optional_required": "computed",
+                            "description": "If true a password is required login with the local user."
+                        }
+                    },
+                    {
                         "name": "sid",
                         "string": {
                             "computed_optional_required": "optional",
@@ -173,10 +208,153 @@
                         }
                     },
                     {
-                        "name": "id",
-                        "string": {
+                        "name": "user_may_change_password",
+                        "bool": {
                             "computed_optional_required": "computed",
-                            "description": "The ID of the retrieved local user. This is the same as the SID."
+                            "description": "If true the local user can change it's password."
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "local_users",
+            "schema": {
+                "attributes": [
+                    {
+                        "name": "users",
+                        "list_nested": {
+                            "computed_optional_required": "computed",
+                            "nested_object": {
+                                "attributes": [
+                                    {
+                                        "name": "account_expires",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "Retrieve the time where the local user account expires.",
+                                            "custom_type": {
+                                                "import": {
+                                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                                },
+                                                "type": "timetypes.RFC3339Type{}",
+                                                "value_type": "timetypes.RFC3339"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "description",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The description of the local user."
+                                        }
+                                    },
+                                    {
+                                        "name": "enabled",
+                                        "bool": {
+                                            "computed_optional_required": "computed",
+                                            "description": "Get the status of the local user."
+                                        }
+                                    },
+                                    {
+                                        "name": "full_name",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The full name of the local user."
+                                        }
+                                    },
+                                    {
+                                        "name": "id",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The ID of the retrieved local user. This is the same as the SID."
+                                        }
+                                    },
+                                    {
+                                        "name": "last_logon",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The last logon time of the local user.",
+                                            "custom_type": {
+                                                "import": {
+                                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                                },
+                                                "type": "timetypes.RFC3339Type{}",
+                                                "value_type": "timetypes.RFC3339"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "name",
+                                        "string": {
+                                            "computed_optional_required": "required",
+                                            "description": "Define the name of the local user."
+                                        }
+                                    },
+                                    {
+                                        "name": "password_changeable_date",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The password changeable date of the local user.",
+                                            "custom_type": {
+                                                "import": {
+                                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                                },
+                                                "type": "timetypes.RFC3339Type{}",
+                                                "value_type": "timetypes.RFC3339"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "password_expires",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The time when the password of the local user expires.",
+                                            "custom_type": {
+                                                "import": {
+                                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                                },
+                                                "type": "timetypes.RFC3339Type{}",
+                                                "value_type": "timetypes.RFC3339"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "password_last_set",
+                                        "string": {
+                                            "computed_optional_required": "computed",
+                                            "description": "The last time when the password was set for the local user.",
+                                            "custom_type": {
+                                                "import": {
+                                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                                },
+                                                "type": "timetypes.RFC3339Type{}",
+                                                "value_type": "timetypes.RFC3339"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "password_required",
+                                        "bool": {
+                                            "computed_optional_required": "computed",
+                                            "description": "If true a password is required login with the local user."
+                                        }
+                                    },
+                                    {
+                                        "name": "sid",
+                                        "string": {
+                                            "computed_optional_required": "optional",
+                                            "description": "The security ID of the local user."
+                                        }
+                                    },
+                                    {
+                                        "name": "user_may_change_password",
+                                        "bool": {
+                                            "computed_optional_required": "computed",
+                                            "description": "If true the local user can change it's password."
+                                        }
+                                    }
+                                ]
+                            }
                         }
                     }
                 ]

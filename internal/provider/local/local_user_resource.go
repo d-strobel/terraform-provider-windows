@@ -8,6 +8,8 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local"
+	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -55,20 +57,12 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
+	// Read time values from the plan
+	accountExpiresPlanValue, diag := data.AccountExpires.ValueRFC3339Time()
+	resp.Diagnostics.Append(diag...)
+
 	if resp.Diagnostics.HasError() {
 		return
-	}
-
-	// Convert time string to time
-	accountExpires := time.Time{}
-	if !data.AccountExpires.IsUnknown() {
-		var err error
-
-		accountExpires, err = time.Parse(time.DateTime, data.AccountExpires.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(path.Root("account_expires"), "Config Error", fmt.Sprintf("Unable to parse time, got error: %s", err))
-			return
-		}
 	}
 
 	// Create API call logic
@@ -80,7 +74,7 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 		Password:              data.Password.ValueString(),
 		PasswordNeverExpires:  data.PasswordNeverExpires.ValueBool(),
 		UserMayChangePassword: data.UserMayChangePassword.ValueBool(),
-		AccountExpires:        accountExpires,
+		AccountExpires:        accountExpiresPlanValue,
 	}
 
 	winResp, err := r.client.Local.UserCreate(ctx, params)
@@ -90,16 +84,28 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	// Set data
-	data.AccountExpires = types.StringValue(winResp.AccountExpires.Format(time.DateTime))
+	data.AccountExpires, diag = timetypes.NewRFC3339Value(winResp.AccountExpires.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
 	data.Description = types.StringValue(winResp.Description)
 	data.Enabled = types.BoolValue(winResp.Enabled)
 	data.FullName = types.StringValue(winResp.FullName)
 	data.Id = types.StringValue(winResp.SID.Value)
-	data.LastLogin = types.StringValue(winResp.LastLogon.Format(time.DateTime))
+
+	data.LastLogon, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
 	data.Name = types.StringValue(winResp.Name)
-	data.PasswordChangeableDate = types.StringValue(winResp.PasswordChangeableDate.Format(time.DateTime))
-	data.PasswordExpires = types.StringValue(winResp.PasswordChangeableDate.Format(time.DateTime))
-	data.PasswordLastSet = types.StringValue(winResp.PasswordLastSet.Format(time.DateTime))
+
+	data.PasswordChangeableDate, diag = timetypes.NewRFC3339Value(winResp.PasswordChangeableDate.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordExpires, diag = timetypes.NewRFC3339Value(winResp.PasswordExpires.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordLastSet, diag = timetypes.NewRFC3339Value(winResp.PasswordLastSet.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
 	data.PasswordRequired = types.BoolValue(winResp.PasswordRequired)
 	data.Sid = types.StringValue(winResp.SID.Value)
 	data.UserMayChangePassword = types.BoolValue(winResp.UserMayChangePassword)
@@ -110,6 +116,7 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 
 func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var data resource_local_user.LocalUserModel
+	var diag diag.Diagnostics
 
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
@@ -126,18 +133,30 @@ func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 
 	// Set data
-	data.Id = types.StringValue(winResp.SID.Value)
-	data.Sid = types.StringValue(winResp.SID.Value)
-	data.Name = types.StringValue(winResp.Name)
+	data.AccountExpires, diag = timetypes.NewRFC3339Value(winResp.AccountExpires.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
 	data.Description = types.StringValue(winResp.Description)
 	data.Enabled = types.BoolValue(winResp.Enabled)
-	data.PasswordRequired = types.BoolValue(winResp.PasswordRequired)
-	data.AccountExpires = types.StringValue(winResp.AccountExpires.Format(time.DateTime))
 	data.FullName = types.StringValue(winResp.FullName)
-	data.LastLogin = types.StringValue(winResp.LastLogon.Format(time.DateTime))
-	data.PasswordChangeableDate = types.StringValue(winResp.PasswordChangeableDate.Format(time.DateTime))
-	data.PasswordExpires = types.StringValue(winResp.PasswordExpires.Format(time.DateTime))
-	data.PasswordLastSet = types.StringValue(winResp.PasswordLastSet.Format(time.DateTime))
+	data.Id = types.StringValue(winResp.SID.Value)
+
+	data.LastLogon, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.Name = types.StringValue(winResp.Name)
+
+	data.PasswordChangeableDate, diag = timetypes.NewRFC3339Value(winResp.PasswordChangeableDate.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordExpires, diag = timetypes.NewRFC3339Value(winResp.PasswordExpires.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordLastSet, diag = timetypes.NewRFC3339Value(winResp.PasswordLastSet.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordRequired = types.BoolValue(winResp.PasswordRequired)
+	data.Sid = types.StringValue(winResp.SID.Value)
 	data.UserMayChangePassword = types.BoolValue(winResp.UserMayChangePassword)
 
 	// Save updated data into Terraform state
@@ -150,32 +169,24 @@ func (r *localUserResource) Update(ctx context.Context, req resource.UpdateReque
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
+	// Read time values from the plan
+	accountExpiresValue, diag := data.AccountExpires.ValueRFC3339Time()
+	resp.Diagnostics.Append(diag...)
+
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Convert time string to time
-	accountExpires := time.Time{}
-	if !data.AccountExpires.IsUnknown() {
-		var err error
-
-		accountExpires, err = time.Parse(time.DateTime, data.AccountExpires.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(path.Root("account_expires"), "Config Error", fmt.Sprintf("Unable to parse time, got error: %s", err))
-			return
-		}
-	}
-
 	// Update API call logic
 	params := local.UserUpdateParams{
-		SID:                   data.Sid.ValueString(),
-		AccountExpires:        accountExpires,
+		AccountExpires:        accountExpiresValue,
 		Description:           data.Description.ValueString(),
 		Enabled:               data.Enabled.ValueBool(),
 		FullName:              data.FullName.ValueString(),
 		Password:              data.Password.ValueString(),
 		PasswordNeverExpires:  data.PasswordNeverExpires.ValueBool(),
 		UserMayChangePassword: data.UserMayChangePassword.ValueBool(),
+		SID:                   data.Sid.ValueString(),
 	}
 
 	if err := r.client.Local.UserUpdate(ctx, params); err != nil {
@@ -190,18 +201,30 @@ func (r *localUserResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	// Set data
-	data.Id = types.StringValue(winResp.SID.Value)
-	data.Sid = types.StringValue(winResp.SID.Value)
-	data.Name = types.StringValue(winResp.Name)
+	data.AccountExpires, diag = timetypes.NewRFC3339Value(winResp.AccountExpires.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
 	data.Description = types.StringValue(winResp.Description)
 	data.Enabled = types.BoolValue(winResp.Enabled)
-	data.PasswordRequired = types.BoolValue(winResp.PasswordRequired)
-	data.AccountExpires = types.StringValue(winResp.AccountExpires.Format(time.DateTime))
 	data.FullName = types.StringValue(winResp.FullName)
-	data.LastLogin = types.StringValue(winResp.LastLogon.Format(time.DateTime))
-	data.PasswordChangeableDate = types.StringValue(winResp.PasswordChangeableDate.Format(time.DateTime))
-	data.PasswordExpires = types.StringValue(winResp.PasswordExpires.Format(time.DateTime))
-	data.PasswordLastSet = types.StringValue(winResp.PasswordLastSet.Format(time.DateTime))
+	data.Id = types.StringValue(winResp.SID.Value)
+
+	data.LastLogon, diag = timetypes.NewRFC3339Value(winResp.LastLogon.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.Name = types.StringValue(winResp.Name)
+
+	data.PasswordChangeableDate, diag = timetypes.NewRFC3339Value(winResp.PasswordChangeableDate.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordExpires, diag = timetypes.NewRFC3339Value(winResp.PasswordExpires.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordLastSet, diag = timetypes.NewRFC3339Value(winResp.PasswordLastSet.Format(time.RFC3339))
+	resp.Diagnostics.Append(diag...)
+
+	data.PasswordRequired = types.BoolValue(winResp.PasswordRequired)
+	data.Sid = types.StringValue(winResp.SID.Value)
 	data.UserMayChangePassword = types.BoolValue(winResp.UserMayChangePassword)
 
 	// Save updated data into Terraform state

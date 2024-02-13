@@ -26,7 +26,7 @@ resource "windows_local_user" "this" {
 
 ### Optional
 
-- `account_expires` (String) Define when the local user account expires (UTC). If not specified, the user account never expires.<br>The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).
+- `account_expires` (String) Define when the local user account expires. If not specified, the user account never expires.<br>The string time format is the following: `2023-07-25T20:43:16Z` (see [Terraform timetypes](https://pkg.go.dev/github.com/hashicorp/terraform-plugin-framework-timetypes@v0.3.0/timetypes#RFC3339)).
 - `description` (String) Define a description for the local user. The maximum length is 48 characters.
 - `enabled` (Boolean) (Default: `true`)<br>Define whether the local user is enabled.
 - `full_name` (String) Define the full name of the local user. The full name differs from the user name of the user account.
@@ -37,7 +37,7 @@ resource "windows_local_user" "this" {
 ### Read-Only
 
 - `id` (String) The ID of the retrieved local security group. This is the same as the SID.
-- `last_login` (String) The last login time of the local user.
+- `last_logon` (String) The last logon time of the local user.
 - `password_changeable_date` (String) The password changeable date of the local user.
 - `password_expires` (String) The time when the password of the local user expires.
 - `password_last_set` (String) The last time when the password was set for the local user.
