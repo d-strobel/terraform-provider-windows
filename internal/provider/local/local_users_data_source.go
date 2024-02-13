@@ -21,10 +21,6 @@ type localUsersDataSource struct {
 	client *gowindows.Client
 }
 
-type localUsersDataSourceModel struct {
-	Id types.String `tfsdk:"id"`
-}
-
 func (d *localUsersDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_local_users"
 }
