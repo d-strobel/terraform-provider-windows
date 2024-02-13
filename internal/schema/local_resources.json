@@ -249,19 +249,17 @@
                         "name": "account_expires",
                         "string": {
                             "computed_optional_required": "computed_optional",
-                            "description": "Define when the local user account expires (UTC). If not specified, the user account never expires.<br>The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).",
-                            "plan_modifiers": [
-                                {
-                                    "custom": {
-                                        "imports": [
-                                            {
-                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-                                            }
-                                        ],
-                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
-                                    }
-                                }
-                            ]
+                            "description": "Define when the local user account expires. If not specified, the user account never expires.<br>The string time format is the following: `2023-07-25T20:43:16Z` (see [Terraform timetypes](https://pkg.go.dev/github.com/hashicorp/terraform-plugin-framework-timetypes@v0.3.0/timetypes#RFC3339)).",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            },
+                            "default": {
+                                "static": "0001-01-01T00:00:00Z"
+                            }
                         }
                     },
                     {
@@ -298,14 +296,28 @@
                         "name": "password_changeable_date",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The password changeable date of the local user."
+                            "description": "The password changeable date of the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
                         "name": "password_expires",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The time when the password of the local user expires."
+                            "description": "The time when the password of the local user expires.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
@@ -319,14 +331,28 @@
                         "name": "password_last_set",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The last time when the password was set for the local user."
+                            "description": "The last time when the password was set for the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     },
                     {
                         "name": "last_login",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The last login time of the local user."
+                            "description": "The last login time of the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
                         }
                     }
                 ]

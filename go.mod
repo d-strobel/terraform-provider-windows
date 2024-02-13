@@ -8,6 +8,7 @@ require (
 	github.com/d-strobel/gowindows v0.0.0-20240105224217-566c4d2dcc50
 	github.com/hashicorp/terraform-plugin-docs v0.17.0
 	github.com/hashicorp/terraform-plugin-framework v1.5.0
+	github.com/hashicorp/terraform-plugin-framework-timetypes v0.3.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.12.0
 	github.com/hashicorp/terraform-plugin-go v0.20.0
 )

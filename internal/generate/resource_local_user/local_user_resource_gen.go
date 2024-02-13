@@ -4,9 +4,11 @@ package resource_local_user
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -18,13 +20,12 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 	return schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"account_expires": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Optional:            true,
 				Computed:            true,
-				Description:         "Define when the local user account expires (UTC). If not specified, the user account never expires.<br>The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).",
-				MarkdownDescription: "Define when the local user account expires (UTC). If not specified, the user account never expires.<br>The string time format is the following: `yyyy-MM-dd hh:mm:ss` (see [go time package](https://pkg.go.dev/time#pkg-constants) `DateTime`).",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
+				Description:         "Define when the local user account expires. If not specified, the user account never expires.<br>The string time format is the following: `2023-07-25T20:43:16Z` (see [Terraform timetypes](https://pkg.go.dev/github.com/hashicorp/terraform-plugin-framework-timetypes@v0.3.0/timetypes#RFC3339)).",
+				MarkdownDescription: "Define when the local user account expires. If not specified, the user account never expires.<br>The string time format is the following: `2023-07-25T20:43:16Z` (see [Terraform timetypes](https://pkg.go.dev/github.com/hashicorp/terraform-plugin-framework-timetypes@v0.3.0/timetypes#RFC3339)).",
+				Default:             stringdefault.StaticString("0001-01-01T00:00:00Z"),
 			},
 			"description": schema.StringAttribute{
 				Optional:            true,
@@ -63,6 +64,7 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 				},
 			},
 			"last_login": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
 				Description:         "The last login time of the local user.",
 				MarkdownDescription: "The last login time of the local user.",
@@ -88,16 +90,19 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 				},
 			},
 			"password_changeable_date": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
 				Description:         "The password changeable date of the local user.",
 				MarkdownDescription: "The password changeable date of the local user.",
 			},
 			"password_expires": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
 				Description:         "The time when the password of the local user expires.",
 				MarkdownDescription: "The time when the password of the local user expires.",
 			},
 			"password_last_set": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
 				Description:         "The last time when the password was set for the local user.",
 				MarkdownDescription: "The last time when the password was set for the local user.",
@@ -134,19 +139,19 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 }
 
 type LocalUserModel struct {
-	AccountExpires         types.String `tfsdk:"account_expires"`
-	Description            types.String `tfsdk:"description"`
-	Enabled                types.Bool   `tfsdk:"enabled"`
-	FullName               types.String `tfsdk:"full_name"`
-	Id                     types.String `tfsdk:"id"`
-	LastLogin              types.String `tfsdk:"last_login"`
-	Name                   types.String `tfsdk:"name"`
-	Password               types.String `tfsdk:"password"`
-	PasswordChangeableDate types.String `tfsdk:"password_changeable_date"`
-	PasswordExpires        types.String `tfsdk:"password_expires"`
-	PasswordLastSet        types.String `tfsdk:"password_last_set"`
-	PasswordNeverExpires   types.Bool   `tfsdk:"password_never_expires"`
-	PasswordRequired       types.Bool   `tfsdk:"password_required"`
-	Sid                    types.String `tfsdk:"sid"`
-	UserMayChangePassword  types.Bool   `tfsdk:"user_may_change_password"`
+	AccountExpires         timetypes.RFC3339 `tfsdk:"account_expires"`
+	Description            types.String      `tfsdk:"description"`
+	Enabled                types.Bool        `tfsdk:"enabled"`
+	FullName               types.String      `tfsdk:"full_name"`
+	Id                     types.String      `tfsdk:"id"`
+	LastLogin              timetypes.RFC3339 `tfsdk:"last_login"`
+	Name                   types.String      `tfsdk:"name"`
+	Password               types.String      `tfsdk:"password"`
+	PasswordChangeableDate timetypes.RFC3339 `tfsdk:"password_changeable_date"`
+	PasswordExpires        timetypes.RFC3339 `tfsdk:"password_expires"`
+	PasswordLastSet        timetypes.RFC3339 `tfsdk:"password_last_set"`
+	PasswordNeverExpires   types.Bool        `tfsdk:"password_never_expires"`
+	PasswordRequired       types.Bool        `tfsdk:"password_required"`
+	Sid                    types.String      `tfsdk:"sid"`
+	UserMayChangePassword  types.Bool        `tfsdk:"user_may_change_password"`
 }
