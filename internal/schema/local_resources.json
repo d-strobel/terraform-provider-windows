@@ -181,18 +181,9 @@
                         "string": {
                             "computed_optional_required": "computed_optional",
                             "description": "Define the full name of the local user. The full name differs from the user name of the user account.",
-                            "plan_modifiers": [
-                                {
-                                    "custom": {
-                                        "imports": [
-                                            {
-                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-                                            }
-                                        ],
-                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
-                                    }
-                                }
-                            ]
+                            "default": {
+                                "static": ""
+                            }
                         }
                     },
                     {
@@ -200,18 +191,6 @@
                         "string": {
                             "computed_optional_required": "computed_optional",
                             "description": "Define a description for the local user. The maximum length is 48 characters.",
-                            "plan_modifiers": [
-                                {
-                                    "custom": {
-                                        "imports": [
-                                            {
-                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-                                            }
-                                        ],
-                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
-                                    }
-                                }
-                            ],
                             "validators": [
                                 {
                                     "custom": {
@@ -220,10 +199,13 @@
                                                 "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
                                             }
                                         ],
-                                        "schema_definition": "stringvalidator.LengthBetween(1, 48)"
+                                        "schema_definition": "stringvalidator.LengthAtMost(48)"
                                     }
                                 }
-                            ]
+                            ],
+                            "default": {
+                                "static": ""
+                            }
                         }
                     },
                     {
