@@ -121,6 +121,19 @@
                                         ],
                                         "schema_definition": "stringvalidator.LengthBetween(1, 20)"
                                     }
+                                },
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+                                            },
+                                            {
+                                                "path": "regexp"
+                                            }
+                                        ],
+                                        "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(`^[^\"\/\\[\\]:;|=,+*?<>\\@]+$`), `cannot contain the following characters: \"/\\[]:;|=,+*?<>@ `)"
+                                    }
                                 }
                             ],
                             "plan_modifiers": [
