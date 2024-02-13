@@ -4,6 +4,7 @@ package datasource_local_user
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -13,6 +14,7 @@ func LocalUserDataSourceSchema(ctx context.Context) schema.Schema {
 	return schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"account_expires": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
 				Description:         "Retrieve the time where the local user account expires.",
 				MarkdownDescription: "Retrieve the time where the local user account expires.",
@@ -38,6 +40,7 @@ func LocalUserDataSourceSchema(ctx context.Context) schema.Schema {
 				MarkdownDescription: "The ID of the retrieved local user. This is the same as the SID.",
 			},
 			"last_login": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
 				Description:         "The last login time of the local user.",
 				MarkdownDescription: "The last login time of the local user.",
@@ -48,16 +51,19 @@ func LocalUserDataSourceSchema(ctx context.Context) schema.Schema {
 				MarkdownDescription: "Define the name of the local user.",
 			},
 			"password_changeable_date": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
 				Description:         "The password changeable date of the local user.",
 				MarkdownDescription: "The password changeable date of the local user.",
 			},
 			"password_expires": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
 				Description:         "The time when the password of the local user expires.",
 				MarkdownDescription: "The time when the password of the local user expires.",
 			},
 			"password_last_set": schema.StringAttribute{
+				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
 				Description:         "The last time when the password was set for the local user.",
 				MarkdownDescription: "The last time when the password was set for the local user.",
@@ -82,17 +88,17 @@ func LocalUserDataSourceSchema(ctx context.Context) schema.Schema {
 }
 
 type LocalUserModel struct {
-	AccountExpires         types.String `tfsdk:"account_expires"`
-	Description            types.String `tfsdk:"description"`
-	Enabled                types.Bool   `tfsdk:"enabled"`
-	FullName               types.String `tfsdk:"full_name"`
-	Id                     types.String `tfsdk:"id"`
-	LastLogin              types.String `tfsdk:"last_login"`
-	Name                   types.String `tfsdk:"name"`
-	PasswordChangeableDate types.String `tfsdk:"password_changeable_date"`
-	PasswordExpires        types.String `tfsdk:"password_expires"`
-	PasswordLastSet        types.String `tfsdk:"password_last_set"`
-	PasswordRequired       types.Bool   `tfsdk:"password_required"`
-	Sid                    types.String `tfsdk:"sid"`
-	UserMayChangePassword  types.Bool   `tfsdk:"user_may_change_password"`
+	AccountExpires         timetypes.RFC3339 `tfsdk:"account_expires"`
+	Description            types.String      `tfsdk:"description"`
+	Enabled                types.Bool        `tfsdk:"enabled"`
+	FullName               types.String      `tfsdk:"full_name"`
+	Id                     types.String      `tfsdk:"id"`
+	LastLogin              timetypes.RFC3339 `tfsdk:"last_login"`
+	Name                   types.String      `tfsdk:"name"`
+	PasswordChangeableDate timetypes.RFC3339 `tfsdk:"password_changeable_date"`
+	PasswordExpires        timetypes.RFC3339 `tfsdk:"password_expires"`
+	PasswordLastSet        timetypes.RFC3339 `tfsdk:"password_last_set"`
+	PasswordRequired       types.Bool        `tfsdk:"password_required"`
+	Sid                    types.String      `tfsdk:"sid"`
+	UserMayChangePassword  types.Bool        `tfsdk:"user_may_change_password"`
 }
