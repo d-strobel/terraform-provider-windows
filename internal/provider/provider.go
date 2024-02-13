@@ -255,6 +255,7 @@ func (p *WindowsProvider) Resources(ctx context.Context) []func() resource.Resou
 	return []func() resource.Resource{
 		local.NewLocalGroupResource,
 		local.NewLocalUserResource,
+		local.NewLocalGroupMemberResource,
 	}
 }
 
