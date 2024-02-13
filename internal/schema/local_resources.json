@@ -9,6 +9,47 @@
             "schema": {
                 "attributes": [
                     {
+                        "name": "description",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "(Default: `\" \"`)<br>Define a description for the local security group. The maximum length is 48 characters.",
+                            "default": {
+                                "static": " "
+                            },
+                            "validators": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+                                            }
+                                        ],
+                                        "schema_definition": "stringvalidator.LengthBetween(1, 48)"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The ID of the retrieved local security group. This is the same as the SID.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "name",
                         "string": {
                             "computed_optional_required": "required",
@@ -57,15 +98,36 @@
                                 }
                             ]
                         }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "local_user",
+            "schema": {
+                "attributes": [
+                    {
+                        "name": "account_expires",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Define when the local user account expires. If not specified, the user account never expires.<br>The string time format is the following: `2023-07-25T20:43:16Z` (see [Terraform timetypes](https://pkg.go.dev/github.com/hashicorp/terraform-plugin-framework-timetypes@v0.3.0/timetypes#RFC3339)).",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            },
+                            "default": {
+                                "static": "0001-01-01T00:00:00Z"
+                            }
+                        }
                     },
                     {
                         "name": "description",
                         "string": {
                             "computed_optional_required": "computed_optional",
-                            "description": "(Default: `\" \"`)<br>Define a description for the local security group. The maximum length is 48 characters.",
-                            "default": {
-                                "static": " "
-                            },
+                            "description": "Define a description for the local user. The maximum length is 48 characters.",
                             "validators": [
                                 {
                                     "custom": {
@@ -74,10 +136,33 @@
                                                 "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
                                             }
                                         ],
-                                        "schema_definition": "stringvalidator.LengthBetween(1, 48)"
+                                        "schema_definition": "stringvalidator.LengthAtMost(48)"
                                     }
                                 }
-                            ]
+                            ],
+                            "default": {
+                                "static": ""
+                            }
+                        }
+                    },
+                    {
+                        "name": "enabled",
+                        "bool": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "(Default: `true`)<br>Define whether the local user is enabled.",
+                            "default": {
+                                "static": true
+                            }
+                        }
+                    },
+                    {
+                        "name": "full_name",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Define the full name of the local user. The full name differs from the user name of the user account.",
+                            "default": {
+                                "static": ""
+                            }
                         }
                     },
                     {
@@ -98,14 +183,21 @@
                                 }
                             ]
                         }
-                    }
-                ]
-            }
-        },
-        {
-            "name": "local_user",
-            "schema": {
-                "attributes": [
+                    },
+                    {
+                        "name": "last_logon",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The last logon time of the local user.",
+                            "custom_type": {
+                                "import": {
+                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+                                },
+                                "type": "timetypes.RFC3339Type{}",
+                                "value_type": "timetypes.RFC3339"
+                            }
+                        }
+                    },
                     {
                         "name": "name",
                         "string": {
@@ -151,25 +243,6 @@
                         }
                     },
                     {
-                        "name": "sid",
-                        "string": {
-                            "computed_optional_required": "computed",
-                            "description": "The security ID of the local user.",
-                            "plan_modifiers": [
-                                {
-                                    "custom": {
-                                        "imports": [
-                                            {
-                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-                                            }
-                                        ],
-                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    {
                         "name": "password",
                         "string": {
                             "computed_optional_required": "optional",
@@ -187,104 +260,6 @@
                                     }
                                 }
                             ]
-                        }
-                    },
-                    {
-                        "name": "full_name",
-                        "string": {
-                            "computed_optional_required": "computed_optional",
-                            "description": "Define the full name of the local user. The full name differs from the user name of the user account.",
-                            "default": {
-                                "static": ""
-                            }
-                        }
-                    },
-                    {
-                        "name": "description",
-                        "string": {
-                            "computed_optional_required": "computed_optional",
-                            "description": "Define a description for the local user. The maximum length is 48 characters.",
-                            "validators": [
-                                {
-                                    "custom": {
-                                        "imports": [
-                                            {
-                                                "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-                                            }
-                                        ],
-                                        "schema_definition": "stringvalidator.LengthAtMost(48)"
-                                    }
-                                }
-                            ],
-                            "default": {
-                                "static": ""
-                            }
-                        }
-                    },
-                    {
-                        "name": "id",
-                        "string": {
-                            "computed_optional_required": "computed",
-                            "description": "The ID of the retrieved local security group. This is the same as the SID.",
-                            "plan_modifiers": [
-                                {
-                                    "custom": {
-                                        "imports": [
-                                            {
-                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-                                            }
-                                        ],
-                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    {
-                        "name": "account_expires",
-                        "string": {
-                            "computed_optional_required": "computed_optional",
-                            "description": "Define when the local user account expires. If not specified, the user account never expires.<br>The string time format is the following: `2023-07-25T20:43:16Z` (see [Terraform timetypes](https://pkg.go.dev/github.com/hashicorp/terraform-plugin-framework-timetypes@v0.3.0/timetypes#RFC3339)).",
-                            "custom_type": {
-                                "import": {
-                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
-                                },
-                                "type": "timetypes.RFC3339Type{}",
-                                "value_type": "timetypes.RFC3339"
-                            },
-                            "default": {
-                                "static": "0001-01-01T00:00:00Z"
-                            }
-                        }
-                    },
-                    {
-                        "name": "enabled",
-                        "bool": {
-                            "computed_optional_required": "computed_optional",
-                            "description": "(Default: `true`)<br>Define whether the local user is enabled.",
-                            "default": {
-                                "static": true
-                            }
-                        }
-                    },
-                    {
-                        "name": "password_never_expires",
-                        "bool": {
-                            "computed_optional_required": "computed_optional",
-                            "description": "(Default: `true`)<br>Define whether the password of the local user.",
-                            "default": {
-                                "static": true
-                            }
-                        }
-                    },
-                    {
-                        "name": "user_may_change_password",
-                        "bool": {
-                            "computed_optional_required": "computed_optional",
-                            "description": "(Default: `true`)<br>Define whether the local user can change it's own password.",
-                            "default": {
-                                "static": true
-                            }
                         }
                     },
                     {
@@ -316,10 +291,13 @@
                         }
                     },
                     {
-                        "name": "password_required",
+                        "name": "password_never_expires",
                         "bool": {
-                            "computed_optional_required": "computed",
-                            "description": "If true a password is required login with the local user."
+                            "computed_optional_required": "computed_optional",
+                            "description": "(Default: `true`)<br>Define whether the password of the local user.",
+                            "default": {
+                                "static": true
+                            }
                         }
                     },
                     {
@@ -337,16 +315,38 @@
                         }
                     },
                     {
-                        "name": "last_logon",
+                        "name": "password_required",
+                        "bool": {
+                            "computed_optional_required": "computed",
+                            "description": "If true a password is required login with the local user."
+                        }
+                    },
+                    {
+                        "name": "sid",
                         "string": {
                             "computed_optional_required": "computed",
-                            "description": "The last logon time of the local user.",
-                            "custom_type": {
-                                "import": {
-                                    "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
-                                },
-                                "type": "timetypes.RFC3339Type{}",
-                                "value_type": "timetypes.RFC3339"
+                            "description": "The security ID of the local user.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "user_may_change_password",
+                        "bool": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "(Default: `true`)<br>Define whether the local user can change it's own password.",
+                            "default": {
+                                "static": true
                             }
                         }
                     }
