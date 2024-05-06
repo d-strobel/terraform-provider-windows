@@ -11,21 +11,17 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 )
 
-// Define imperative expressions to validate the provider config.
+// ConfigValidators define imperative expressions to validate the provider config.
 func (p *WindowsProvider) ConfigValidators(ctx context.Context) []provider.ConfigValidator {
 	return []provider.ConfigValidator{
 		providervalidator.ExactlyOneOf(
 			path.MatchRoot("winrm"),
 			path.MatchRoot("ssh"),
 		),
-		providervalidator.Conflicting(
-			path.MatchRoot("ssh"),
-			path.MatchRoot("kerberos"),
-		),
 	}
 }
 
-// Define programmatic expressions to validate the provider config.
+// ValidateConfig defines programmatic expressions to validate the provider config.
 func (p *WindowsProvider) ValidateConfig(ctx context.Context, req provider.ValidateConfigRequest, resp *provider.ValidateConfigResponse) {
 	var data provider_windows.WindowsModel
 
@@ -47,26 +43,6 @@ func (p *WindowsProvider) ValidateConfig(ctx context.Context, req provider.Valid
 			resp.Diagnostics.AddAttributeError(path.Root("winrm"),
 				"Missing config attribute",
 				fmt.Sprintf("Parameter 'password' or environment variable '%s' must be set.", envWinRMPassword),
-			)
-		}
-	}
-
-	// Check Kerberos attributes
-	if !data.Kerberos.IsNull() {
-
-		// Kerberos realm must be set via config or environment variable
-		if data.Kerberos.Realm.IsNull() && os.Getenv(envKerberosRealm) == "" {
-			resp.Diagnostics.AddAttributeError(path.Root("kerberos"),
-				"Missing config attribute",
-				fmt.Sprintf("Parameter 'realm' or environment variable '%s' must be set.", envKerberosRealm),
-			)
-		}
-
-		// Kerberos config file must be set via config or environment variable
-		if data.Kerberos.KrbConfigFile.IsNull() && os.Getenv(envKerberosConfigFile) == "" {
-			resp.Diagnostics.AddAttributeError(path.Root("kerberos"),
-				"Missing config attribute",
-				fmt.Sprintf("Parameter 'krb_config_file' or environment variable '%s' must be set.", envKerberosConfigFile),
 			)
 		}
 	}

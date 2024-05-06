@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/d-strobel/gowindows"
-	"github.com/d-strobel/gowindows/windows/local"
+	"github.com/d-strobel/gowindows/windows/local/accounts"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -62,12 +62,12 @@ func (d *localUserDataSource) Read(ctx context.Context, req datasource.ReadReque
 	}
 
 	// Read API call logic
-	params := local.UserReadParams{
+	params := accounts.UserReadParams{
 		Name: data.Name.ValueString(),
 		SID:  data.Sid.ValueString(),
 	}
 
-	winResp, err := d.client.Local.UserRead(ctx, params)
+	winResp, err := d.client.LocalAccounts.UserRead(ctx, params)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local user, got error: %s", err))
 		return

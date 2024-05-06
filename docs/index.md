@@ -31,24 +31,6 @@ provider "windows" {
 }
 ```
 
-### WinRM - Kerberos authentication
-```terraform
-// Example with a local vagrant machine via WinRM
-provider "windows" {
-  endpoint = "127.0.0.1"
-
-  winrm = {
-    username = "vagrant"
-    port     = 15985
-  }
-
-  kerberos = {
-    realm           = "example.local"
-    krb_config_file = "/path/to/krb5.conf"
-  }
-}
-```
-
 ### SSH - Password authentication
 ```terraform
 provider "windows" {
@@ -92,18 +74,8 @@ EOT
 
 ### Optional
 
-- `kerberos` (Attributes) Define the Kerberos connection parameters. Currently this can only be combined with a WinRM connection. (see [below for nested schema](#nestedatt--kerberos))
 - `ssh` (Attributes) Define the SSH connection parameters. Exactly one of 'winrm' or 'ssh' must be set for the provider to connect to a Windows target system. Define an empty 'ssh' attribute if you wish to use the environment variables. (see [below for nested schema](#nestedatt--ssh))
 - `winrm` (Attributes) Define the WinRM connection parameters. Exactly one of 'winrm' or 'ssh' must be set for the provider to connect to a Windows target system. Define an empty 'winrm' attribute if you wish to use the environment variables. (see [below for nested schema](#nestedatt--winrm))
-
-<a id="nestedatt--kerberos"></a>
-### Nested Schema for `kerberos`
-
-Optional:
-
-- `krb_config_file` (String) (Env: `WIN_KRB_CONFIG_FILE`)<br>Define the path to the kerberos configuration file. Required if kerberos is set.
-- `realm` (String) (Env: `WIN_KRB_REALM`)<br>Define the Kerberos realm. Required if kerberos is set.
-
 
 <a id="nestedatt--ssh"></a>
 ### Nested Schema for `ssh`

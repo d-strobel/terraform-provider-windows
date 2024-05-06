@@ -4,24 +4,11 @@ OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
 
-# Generate code from json specification
-.PHONY: generate-framework
-generate-framework:
-	@printf "$(OK_COLOR)==> Generate provider schema$(NO_COLOR)\n"
-	tfplugingen-framework generate provider --input ./internal/schema/provider_windows.json --output ./internal/generate
-	@printf "$(OK_COLOR)==> Generate local schema$(NO_COLOR)\n"
-	tfplugingen-framework generate data-sources --input ./internal/schema/local_datasources.json --output ./internal/generate
-	tfplugingen-framework generate resources --input ./internal/schema/local_resources.json --output ./internal/generate
-
-# Generate documentation
-.PHONY: generate-docs
-generate-docs:
-	@printf "$(OK_COLOR)==> Generate documentation$(NO_COLOR)\n"
-	go generate ./...
-
 # Generate all
 .PHONY: generate
-generate: generate-framework generate-docs
+generate:
+	@printf "$(OK_COLOR)==> Go generate$(NO_COLOR)\n"
+	@go generate ./...
 
 # Run acceptance tests
 .PHONY: testacc

@@ -6,7 +6,7 @@ import (
 	"terraform-provider-windows/internal/generate/resource_local_group_member"
 
 	"github.com/d-strobel/gowindows"
-	"github.com/d-strobel/gowindows/windows/local"
+	"github.com/d-strobel/gowindows/windows/local/accounts"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -58,12 +58,12 @@ func (r *localGroupMemberResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	// Create API call logic
-	params := local.GroupMemberCreateParams{
+	params := accounts.GroupMemberCreateParams{
 		SID:    data.GroupId.ValueString(),
 		Member: data.MemberId.ValueString(),
 	}
 
-	if err := r.client.Local.GroupMemberCreate(ctx, params); err != nil {
+	if err := r.client.LocalAccounts.GroupMemberCreate(ctx, params); err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create local group member, got error: %s", err))
 		return
 	}
@@ -86,12 +86,12 @@ func (r *localGroupMemberResource) Read(ctx context.Context, req resource.ReadRe
 	}
 
 	// Read API call logic
-	params := local.GroupMemberReadParams{
+	params := accounts.GroupMemberReadParams{
 		SID:    data.GroupId.ValueString(),
 		Member: data.MemberId.ValueString(),
 	}
 
-	if _, err := r.client.Local.GroupMemberRead(ctx, params); err != nil {
+	if _, err := r.client.LocalAccounts.GroupMemberRead(ctx, params); err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local group member, got error: %s", err))
 		return
 	}
@@ -115,12 +115,12 @@ func (r *localGroupMemberResource) Delete(ctx context.Context, req resource.Dele
 	}
 
 	// Delete API call logic
-	params := local.GroupMemberDeleteParams{
+	params := accounts.GroupMemberDeleteParams{
 		SID:    data.GroupId.ValueString(),
 		Member: data.MemberId.ValueString(),
 	}
 
-	if err := r.client.Local.GroupMemberDelete(ctx, params); err != nil {
+	if err := r.client.LocalAccounts.GroupMemberDelete(ctx, params); err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local group member, got error: %s", err))
 		return
 	}
