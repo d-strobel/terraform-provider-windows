@@ -148,7 +148,7 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 		// Connect to the Windows system.
 		conn, err := winrm.NewConnection(config)
 		if err != nil {
-			resp.Diagnostics.AddError("Unable to setup a new connection via WinRM", err.Error())
+			resp.Diagnostics.AddError("Unable to setup connection via WinRM", err.Error())
 			return
 		}
 
@@ -225,7 +225,7 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 		// Connect to the Windows system.
 		conn, err := ssh.NewConnection(config)
 		if err != nil {
-			resp.Diagnostics.AddError("Unable to setup a new connection via SSH", err.Error())
+			resp.Diagnostics.AddError("Unable to setup connection via SSH", err.Error())
 			return
 		}
 
