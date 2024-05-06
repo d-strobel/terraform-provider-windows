@@ -10,7 +10,6 @@ Terraform provider to manage Windows based resources.
 
 - [Terraform](https://developer.hashicorp.com/terraform/downloads) >= 1.0
 - [Go](https://golang.org/doc/install) >= 1.21
-- [Framework Code Generator](https://github.com/hashicorp/terraform-plugin-codegen-framework) >= 0.3.1
 
 ## Building The Provider
 
