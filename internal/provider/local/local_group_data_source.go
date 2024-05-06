@@ -6,7 +6,7 @@ import (
 	"terraform-provider-windows/internal/generate/datasource_local_group"
 
 	"github.com/d-strobel/gowindows"
-	"github.com/d-strobel/gowindows/windows/local"
+	"github.com/d-strobel/gowindows/windows/local/accounts"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -60,12 +60,12 @@ func (d *localGroupDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	}
 
 	// Read API call logic
-	params := local.GroupReadParams{
+	params := accounts.GroupReadParams{
 		Name: data.Name.ValueString(),
 		SID:  data.Sid.ValueString(),
 	}
 
-	winResp, err := d.client.Local.GroupRead(ctx, params)
+	winResp, err := d.client.LocalAccounts.GroupRead(ctx, params)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local security group, got error: %s", err))
 		return

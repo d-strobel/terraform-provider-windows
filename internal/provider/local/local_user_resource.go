@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/d-strobel/gowindows"
-	"github.com/d-strobel/gowindows/windows/local"
+	"github.com/d-strobel/gowindows/windows/local/accounts"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -66,7 +66,7 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	// Create API call logic
-	params := local.UserCreateParams{
+	params := accounts.UserCreateParams{
 		Name:                  data.Name.ValueString(),
 		FullName:              data.FullName.ValueString(),
 		Description:           data.Description.ValueString(),
@@ -77,7 +77,7 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 		AccountExpires:        accountExpiresPlanValue,
 	}
 
-	winResp, err := r.client.Local.UserCreate(ctx, params)
+	winResp, err := r.client.LocalAccounts.UserCreate(ctx, params)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create local user, got error: %s", err))
 		return
@@ -126,7 +126,7 @@ func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 
 	// Read API call logic
-	winResp, err := r.client.Local.UserRead(ctx, local.UserReadParams{SID: data.Sid.ValueString()})
+	winResp, err := r.client.LocalAccounts.UserRead(ctx, accounts.UserReadParams{SID: data.Sid.ValueString()})
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local user, got error: %s", err))
 		return
@@ -178,7 +178,7 @@ func (r *localUserResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	// Update API call logic
-	params := local.UserUpdateParams{
+	params := accounts.UserUpdateParams{
 		AccountExpires:        accountExpiresValue,
 		Description:           data.Description.ValueString(),
 		Enabled:               data.Enabled.ValueBool(),
@@ -189,12 +189,12 @@ func (r *localUserResource) Update(ctx context.Context, req resource.UpdateReque
 		SID:                   data.Sid.ValueString(),
 	}
 
-	if err := r.client.Local.UserUpdate(ctx, params); err != nil {
+	if err := r.client.LocalAccounts.UserUpdate(ctx, params); err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update local user, got error: %s", err))
 		return
 	}
 
-	winResp, err := r.client.Local.UserRead(ctx, local.UserReadParams{SID: data.Sid.ValueString()})
+	winResp, err := r.client.LocalAccounts.UserRead(ctx, accounts.UserReadParams{SID: data.Sid.ValueString()})
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local user after update, got error: %s", err))
 		return
@@ -242,7 +242,7 @@ func (r *localUserResource) Delete(ctx context.Context, req resource.DeleteReque
 	}
 
 	// Delete API call logic
-	err := r.client.Local.UserDelete(ctx, local.UserDeleteParams{SID: data.Sid.ValueString()})
+	err := r.client.LocalAccounts.UserDelete(ctx, accounts.UserDeleteParams{SID: data.Sid.ValueString()})
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local user, got error: %s", err))
 		return

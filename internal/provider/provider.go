@@ -14,7 +14,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 
 	"github.com/d-strobel/gowindows"
-	"github.com/d-strobel/gowindows/connection"
+	"github.com/d-strobel/gowindows/connection/ssh"
+	"github.com/d-strobel/gowindows/connection/winrm"
 )
 
 const (
@@ -34,10 +35,6 @@ const (
 	envWinRMTimeout  string = "WIN_WINRM_TIMEOUT"
 	envWinRMInsecure string = "WIN_WINRM_INSECURE"
 	envWinRMUseTLS   string = "WIN_WINRM_USE_TLS"
-
-	// WinRM Kerberos environment variables.
-	envKerberosRealm      string = "WIN_KRB_REALM"
-	envKerberosConfigFile string = "WIN_KRB_CONFIG_FILE"
 
 	// SSH default values.
 	defaultSSHPort     int  = 22
@@ -73,166 +70,167 @@ Check examples below for reference.
 `
 }
 
+// Configue sets up the provider client.
+// This includes the connection to the Windows system via WinRM or SSH.
 func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	var data provider_windows.WindowsModel
+	var client *gowindows.Client
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-	// Init connection configuration
-	config := &connection.Config{}
-
-	// Check and setup WinRM configuration
+	// Check the WinRM config and setup the connection.
 	if !data.Winrm.IsNull() {
-		config.WinRM = &connection.WinRMConfig{}
+		config := &winrm.Config{}
 
 		// Endpoint
-		config.WinRM.WinRMHost = data.Endpoint.ValueString()
+		config.Host = data.Endpoint.ValueString()
 
 		// Username
-		config.WinRM.WinRMUsername = data.Winrm.Password.ValueString()
+		config.Username = data.Winrm.Password.ValueString()
 		if data.Winrm.Password.IsNull() {
-			config.WinRM.WinRMUsername = os.Getenv(envWinRMUsername)
+			config.Username = os.Getenv(envWinRMUsername)
 		}
 
 		// Password
-		config.WinRM.WinRMPassword = data.Winrm.Password.ValueString()
+		config.Password = data.Winrm.Password.ValueString()
 		if data.Winrm.Password.IsNull() {
-			config.WinRM.WinRMPassword = os.Getenv(envWinRMPassword)
+			config.Password = os.Getenv(envWinRMPassword)
 		}
 
 		// Port
-		config.WinRM.WinRMPort = defaultWinRMPort
+		config.Port = defaultWinRMPort
 		if !data.Winrm.Port.IsNull() {
-			config.WinRM.WinRMPort = int(data.Winrm.Port.ValueInt64())
+			config.Port = int(data.Winrm.Port.ValueInt64())
 		} else if os.Getenv(envWinRMPort) != "" {
 			winrmPort, err := strconv.Atoi(os.Getenv(envWinRMPort))
 			if err != nil {
 				resp.Diagnostics.AddError("Environment variable conversion error", fmt.Sprintf("Failed to convert environment variable '%s' to integer. Error: %s", envWinRMPort, err))
 			}
-			config.WinRM.WinRMPort = winrmPort
+			config.Port = winrmPort
 		}
 
 		// Timeout
-		config.WinRM.WinRMTimeout = defaultWinRMTimeout
+		config.Timeout = defaultWinRMTimeout
 		if !data.Winrm.Timeout.IsNull() {
-			config.WinRM.WinRMTimeout = time.Duration(data.Winrm.Timeout.ValueInt64())
+			config.Timeout = time.Duration(data.Winrm.Timeout.ValueInt64())
 		} else if os.Getenv(envWinRMTimeout) != "" {
 			winrmTimeout, err := strconv.Atoi(os.Getenv(envWinRMTimeout))
 			if err != nil {
 				resp.Diagnostics.AddError("Environment variable conversion error", fmt.Sprintf("Failed to convert environment variable '%s' to integer. Error: %s", envWinRMTimeout, err))
 			}
-			config.WinRM.WinRMTimeout = time.Duration(winrmTimeout)
+			config.Timeout = time.Duration(winrmTimeout)
 		}
 
 		// UseTLS (https)
-		config.WinRM.WinRMUseTLS = defaultWinRMUseTLS
+		config.UseTLS = defaultWinRMUseTLS
 		if !data.Winrm.UseTls.IsNull() {
-			config.WinRM.WinRMUseTLS = data.Winrm.UseTls.ValueBool()
+			config.UseTLS = data.Winrm.UseTls.ValueBool()
 		} else if os.Getenv(envWinRMUseTLS) != "" {
 			winrmUseTls, err := strconv.ParseBool(os.Getenv(envWinRMUseTLS))
 			if err != nil {
 				resp.Diagnostics.AddError("Environment variable conversion error", fmt.Sprintf("Failed to convert environment variable '%s' to integer. Error: %s", envWinRMUseTLS, err))
 			}
-			config.WinRM.WinRMUseTLS = winrmUseTls
+			config.UseTLS = winrmUseTls
 		}
 
 		// Insecure
-		config.WinRM.WinRMInsecure = defaultWinRMInsecure
+		config.Insecure = defaultWinRMInsecure
 		if !data.Winrm.Insecure.IsNull() {
-			config.WinRM.WinRMInsecure = data.Winrm.Insecure.ValueBool()
+			config.Insecure = data.Winrm.Insecure.ValueBool()
 		} else if os.Getenv(envWinRMInsecure) != "" {
 			winrmInsecure, err := strconv.ParseBool(os.Getenv(envWinRMInsecure))
 			if err != nil {
 				resp.Diagnostics.AddError("Environment variable conversion error", fmt.Sprintf("Failed to convert environment variable '%s' to bool. Error: %s", envWinRMInsecure, err))
 			}
-			config.WinRM.WinRMUseTLS = winrmInsecure
+			config.UseTLS = winrmInsecure
 		}
 
-		// Kerberos
-		if !data.Kerberos.IsNull() {
-			config.WinRM.WinRMKerberos = &connection.KerberosConfig{}
-
-			// Realm
-			if !data.Kerberos.Realm.IsNull() {
-				config.WinRM.WinRMKerberos.Realm = data.Kerberos.Realm.ValueString()
-			} else if os.Getenv(envKerberosRealm) != "" {
-				config.WinRM.WinRMKerberos.Realm = os.Getenv(envKerberosRealm)
-			}
-
-			// Krb config file
-			if !data.Kerberos.KrbConfigFile.IsNull() {
-				config.WinRM.WinRMKerberos.KrbConfigFile = data.Kerberos.KrbConfigFile.ValueString()
-			} else if os.Getenv(envKerberosConfigFile) != "" {
-				config.WinRM.WinRMKerberos.KrbConfigFile = os.Getenv(envKerberosConfigFile)
-			}
+		// Connect to the Windows system.
+		conn, err := winrm.NewConnection(config)
+		if err != nil {
+			resp.Diagnostics.AddError("Unable to setup a new connection via WinRM", err.Error())
+			return
 		}
+
+		// Setup the gowindows client.
+		client = gowindows.NewClient(conn)
 	}
 
-	// Check and set SSH configuration
+	// Check the SSH config and setup the connection.
 	if !data.Ssh.IsNull() {
-		config.SSH = &connection.SSHConfig{}
+		config := &ssh.Config{}
 
 		// Endpoint
-		config.SSH.SSHHost = data.Endpoint.ValueString()
+		config.Host = data.Endpoint.ValueString()
 
 		// Username
 		if !data.Ssh.Username.IsNull() {
-			config.SSH.SSHUsername = data.Ssh.Username.ValueString()
+			config.Username = data.Ssh.Username.ValueString()
 		} else if os.Getenv(envSSHUsername) != "" {
-			config.SSH.SSHUsername = os.Getenv(envSSHUsername)
+			config.Username = os.Getenv(envSSHUsername)
 		}
 
 		// Password
 		if !data.Ssh.Password.IsNull() {
-			config.SSH.SSHPassword = data.Ssh.Password.ValueString()
+			config.Password = data.Ssh.Password.ValueString()
 		} else if os.Getenv(envSSHPassword) != "" {
-			config.SSH.SSHPassword = os.Getenv(envSSHPassword)
+			config.Password = os.Getenv(envSSHPassword)
 		}
 
 		// Private Key
 		if !data.Ssh.PrivateKey.IsNull() {
-			config.SSH.SSHPrivateKey = data.Ssh.PrivateKey.ValueString()
+			config.PrivateKey = data.Ssh.PrivateKey.ValueString()
 		} else if os.Getenv(envSSHPrivateKey) != "" {
-			config.SSH.SSHPrivateKey = os.Getenv(envSSHPrivateKey)
+			config.PrivateKey = os.Getenv(envSSHPrivateKey)
 		}
 
 		// Private Key path
 		if !data.Ssh.PrivateKeyPath.IsNull() {
-			config.SSH.SSHPrivateKeyPath = data.Ssh.PrivateKeyPath.ValueString()
+			config.PrivateKeyPath = data.Ssh.PrivateKeyPath.ValueString()
 		} else if os.Getenv(envSSHPrivateKeyPath) != "" {
-			config.SSH.SSHPrivateKeyPath = os.Getenv(envSSHPrivateKeyPath)
+			config.PrivateKeyPath = os.Getenv(envSSHPrivateKeyPath)
 		}
 
 		// Port
-		config.SSH.SSHPort = defaultSSHPort
+		config.Port = defaultSSHPort
 		if !data.Ssh.Port.IsNull() {
-			config.SSH.SSHPort = int(data.Ssh.Port.ValueInt64())
+			config.Port = int(data.Ssh.Port.ValueInt64())
 		} else if os.Getenv(envSSHPort) != "" {
 			sshPort, err := strconv.Atoi(os.Getenv(envSSHPort))
 			if err != nil {
 				resp.Diagnostics.AddError("Environment variable conversion error", fmt.Sprintf("Failed to convert environment variable '%s' to integer. Error: %s", envSSHPort, err))
 			}
-			config.SSH.SSHPort = sshPort
+			config.Port = sshPort
 		}
 
 		// Insecure
-		config.SSH.SSHInsecureIgnoreHostKey = defaultSSHInsecure
+		config.InsecureIgnoreHostKey = defaultSSHInsecure
 		if !data.Ssh.Insecure.IsNull() {
-			config.SSH.SSHInsecureIgnoreHostKey = data.Ssh.Insecure.ValueBool()
+			config.InsecureIgnoreHostKey = data.Ssh.Insecure.ValueBool()
 		} else if os.Getenv(envSSHInsecure) != "" {
 			sshInsecure, err := strconv.ParseBool(os.Getenv(envSSHInsecure))
 			if err != nil {
 				resp.Diagnostics.AddError("Environment variable conversion error", fmt.Sprintf("Failed to convert environment variable '%s' to bool. Error: %s", envSSHInsecure, err))
 			}
-			config.SSH.SSHInsecureIgnoreHostKey = sshInsecure
+			config.InsecureIgnoreHostKey = sshInsecure
 		}
 
 		// Known hosts path
 		if !data.Ssh.KnownHostsPath.IsNull() {
-			config.SSH.SSHKnownHostsPath = data.Ssh.KnownHostsPath.ValueString()
+			config.KnownHostsPath = data.Ssh.KnownHostsPath.ValueString()
 		} else if os.Getenv(envSSHKnownHostsPath) != "" {
-			config.SSH.SSHKnownHostsPath = os.Getenv(envSSHKnownHostsPath)
+			config.KnownHostsPath = os.Getenv(envSSHKnownHostsPath)
 		}
+
+		// Connect to the Windows system.
+		conn, err := ssh.NewConnection(config)
+		if err != nil {
+			resp.Diagnostics.AddError("Unable to setup a new connection via SSH", err.Error())
+			return
+		}
+
+		// Setup the gowindows client.
+		client = gowindows.NewClient(conn)
 	}
 
 	// Do not setup client if any errors occur
@@ -240,13 +238,7 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
-	// Setup client
-	client, err := gowindows.NewClient(config)
-	if err != nil {
-		resp.Diagnostics.AddError("Unable to setup client", err.Error())
-		return
-	}
-
+	// Set the client in the provider.
 	resp.DataSourceData = client
 	resp.ResourceData = client
 }

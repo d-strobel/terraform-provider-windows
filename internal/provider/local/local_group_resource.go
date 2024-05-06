@@ -6,7 +6,7 @@ import (
 	"terraform-provider-windows/internal/generate/resource_local_group"
 
 	"github.com/d-strobel/gowindows"
-	"github.com/d-strobel/gowindows/windows/local"
+	"github.com/d-strobel/gowindows/windows/local/accounts"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -63,12 +63,12 @@ func (r *localGroupResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	// Create API call logic
-	params := local.GroupCreateParams{
+	params := accounts.GroupCreateParams{
 		Name:        data.Name.ValueString(),
 		Description: data.Description.ValueString(),
 	}
 
-	winResp, err := r.client.Local.GroupCreate(ctx, params)
+	winResp, err := r.client.LocalAccounts.GroupCreate(ctx, params)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create local security group, got error: %s", err))
 		return
@@ -95,7 +95,7 @@ func (r *localGroupResource) Read(ctx context.Context, req resource.ReadRequest,
 	}
 
 	// Read API call logic
-	winResp, err := r.client.Local.GroupRead(ctx, local.GroupReadParams{SID: data.Id.ValueString()})
+	winResp, err := r.client.LocalAccounts.GroupRead(ctx, accounts.GroupReadParams{SID: data.Id.ValueString()})
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local security group, got error: %s", err))
 		return
@@ -121,12 +121,12 @@ func (r *localGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 
 	// Update API call logic
-	params := local.GroupUpdateParams{
+	params := accounts.GroupUpdateParams{
 		SID:         data.Sid.ValueString(),
 		Description: data.Description.ValueString(),
 	}
 
-	err := r.client.Local.GroupUpdate(ctx, params)
+	err := r.client.LocalAccounts.GroupUpdate(ctx, params)
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update local security group, got error: %s", err))
 		return
@@ -147,7 +147,7 @@ func (r *localGroupResource) Delete(ctx context.Context, req resource.DeleteRequ
 	}
 
 	// Delete API call logic
-	err := r.client.Local.GroupDelete(ctx, local.GroupDeleteParams{SID: data.Sid.ValueString()})
+	err := r.client.LocalAccounts.GroupDelete(ctx, accounts.GroupDeleteParams{SID: data.Sid.ValueString()})
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local security group, got error: %s", err))
 		return
