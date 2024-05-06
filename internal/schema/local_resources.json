@@ -352,6 +352,70 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "local_group_member",
+            "schema": {
+                "attributes": [
+                    {
+                        "name": "group_id",
+                        "string": {
+                            "computed_optional_required": "required",
+                            "description": "The ID of the local security group you want to add the member to. Changing this forces a new resource to be created.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.RequiresReplace()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "member_id",
+                        "string": {
+                            "computed_optional_required": "required",
+                            "description": "The ID of the principal you want to add as a member to the group. Supported object types are local users or groups. Changing this forces a new resource to be created.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.RequiresReplace()"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "string": {
+                            "computed_optional_required": "computed",
+                            "description": "The ID of this resource.",
+                            "plan_modifiers": [
+                                {
+                                    "custom": {
+                                        "imports": [
+                                            {
+                                                "path": "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+                                            }
+                                        ],
+                                        "schema_definition": "stringplanmodifier.UseStateForUnknown()"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }
     ]
 }

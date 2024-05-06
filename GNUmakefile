@@ -9,7 +9,6 @@ WARN_COLOR=\033[33;01m
 generate-framework:
 	@printf "$(OK_COLOR)==> Generate provider schema$(NO_COLOR)\n"
 	tfplugingen-framework generate provider --input ./internal/schema/provider_windows.json --output ./internal/generate
-
 	@printf "$(OK_COLOR)==> Generate local schema$(NO_COLOR)\n"
 	tfplugingen-framework generate data-sources --input ./internal/schema/local_datasources.json --output ./internal/generate
 	tfplugingen-framework generate resources --input ./internal/schema/local_resources.json --output ./internal/generate
