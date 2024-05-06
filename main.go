@@ -16,6 +16,15 @@ import (
 // ensure the documentation is formatted properly.
 //go:generate terraform fmt -recursive ./examples/
 
+// Run the terraform-framework code generation tool.
+//
+// Generate provider schema:
+//go:generate go run github.com/hashicorp/terraform-plugin-codegen-framework/cmd/tfplugingen-framework generate provider --input ./internal/schema/provider_windows.json --output ./internal/generate
+//
+// Generate local resources and data-sources:
+//go:generate go run github.com/hashicorp/terraform-plugin-codegen-framework/cmd/tfplugingen-framework generate data-sources --input ./internal/schema/local_datasources.json --output ./internal/generate
+//go:generate go run github.com/hashicorp/terraform-plugin-codegen-framework/cmd/tfplugingen-framework generate resources --input ./internal/schema/local_resources.json --output ./internal/generate
+
 // Run the docs generation tool, check its repository for more information on how it works and how docs
 // can be customized.
 //go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
