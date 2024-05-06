@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 )
 
-// Define imperative expressions to validate the provider config.
+// ConfigValidators define imperative expressions to validate the provider config.
 func (p *WindowsProvider) ConfigValidators(ctx context.Context) []provider.ConfigValidator {
 	return []provider.ConfigValidator{
 		providervalidator.ExactlyOneOf(
@@ -21,7 +21,7 @@ func (p *WindowsProvider) ConfigValidators(ctx context.Context) []provider.Confi
 	}
 }
 
-// Define programmatic expressions to validate the provider config.
+// ValidateConfig defines programmatic expressions to validate the provider config.
 func (p *WindowsProvider) ValidateConfig(ctx context.Context, req provider.ValidateConfigRequest, resp *provider.ValidateConfigResponse) {
 	var data provider_windows.WindowsModel
 
