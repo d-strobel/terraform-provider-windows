@@ -70,7 +70,7 @@ Check examples below for reference.
 `
 }
 
-// Configue sets up the provider client.
+// Configure sets up the provider client.
 // This includes the connection to the Windows system via WinRM or SSH.
 func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	var data provider_windows.WindowsModel
