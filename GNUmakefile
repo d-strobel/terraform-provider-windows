@@ -6,7 +6,7 @@ WARN_COLOR=\033[33;01m
 
 # Generate all
 .PHONY: generate
-generate: 
+generate:
 	@printf "$(OK_COLOR)==> Go generate$(NO_COLOR)\n"
 	@go generate ./...
 
