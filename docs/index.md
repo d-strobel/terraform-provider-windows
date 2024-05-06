@@ -31,24 +31,6 @@ provider "windows" {
 }
 ```
 
-### WinRM - Kerberos authentication
-```terraform
-// Example with a local vagrant machine via WinRM
-provider "windows" {
-  endpoint = "127.0.0.1"
-
-  winrm = {
-    username = "vagrant"
-    port     = 15985
-  }
-
-  kerberos = {
-    realm           = "example.local"
-    krb_config_file = "/path/to/krb5.conf"
-  }
-}
-```
-
 ### SSH - Password authentication
 ```terraform
 provider "windows" {
@@ -120,3 +102,6 @@ Optional:
 - `timeout` (Number) (Env: `WIN_WINRM_TIMEOUT`) (Default: `0`)<br>Define the connection timeout in minutes for the target Windows system.
 - `use_tls` (Boolean) (Env: `WIN_WINRM_USE_TLS`) (Default: `true`)<br>Define if TLS (https) should be used to connect with the target Windows system.
 - `username` (String) (Env: `WIN_WINRM_USERNAME`)<br>Define the username to connect with the target Windows system. Required if winrm is set.
+
+
+
