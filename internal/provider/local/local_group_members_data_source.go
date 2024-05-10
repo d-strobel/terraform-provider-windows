@@ -69,6 +69,10 @@ func (d *localGroupMembersDataSource) Read(ctx context.Context, req datasource.R
 		return
 	}
 
+	// Convert the response to the expected data source schema.
+	// This might be confusing but is necessary.
+	// For further information, see the following issue:
+	// https://github.com/hashicorp/terraform-plugin-codegen-framework/issues/80
 	var membersValueList []datasource_local_group_members.MembersValue
 
 	for _, member := range winResp {
