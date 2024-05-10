@@ -67,7 +67,7 @@ func (d *localGroupDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 	winResp, err := d.client.LocalAccounts.GroupRead(ctx, params)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local security group, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local security group:\n%s", err.Error()))
 		return
 
 	}

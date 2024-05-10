@@ -79,7 +79,7 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 
 	winResp, err := r.client.LocalAccounts.UserCreate(ctx, params)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create local user, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to create local user:\n%s", err.Error()))
 		return
 	}
 
@@ -128,7 +128,7 @@ func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	// Read API call logic
 	winResp, err := r.client.LocalAccounts.UserRead(ctx, accounts.UserReadParams{SID: data.Sid.ValueString()})
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local user, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local user:\n%s", err.Error()))
 		return
 	}
 
@@ -190,13 +190,13 @@ func (r *localUserResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	if err := r.client.LocalAccounts.UserUpdate(ctx, params); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update local user, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to update local user:\n%s", err.Error()))
 		return
 	}
 
 	winResp, err := r.client.LocalAccounts.UserRead(ctx, accounts.UserReadParams{SID: data.Sid.ValueString()})
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local user after update, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local user after update:\n%s", err.Error()))
 		return
 	}
 
@@ -244,7 +244,7 @@ func (r *localUserResource) Delete(ctx context.Context, req resource.DeleteReque
 	// Delete API call logic
 	err := r.client.LocalAccounts.UserDelete(ctx, accounts.UserDeleteParams{SID: data.Sid.ValueString()})
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local user, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local user:\n%s", err.Error()))
 		return
 	}
 }
