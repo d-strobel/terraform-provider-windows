@@ -62,7 +62,7 @@ func (d *localUsersDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	// Read API call logic
 	winResp, err := d.client.LocalAccounts.UserList(ctx)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local users, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local users:\n%s", err.Error()))
 		return
 	}
 

@@ -69,7 +69,7 @@ func (d *localUserDataSource) Read(ctx context.Context, req datasource.ReadReque
 
 	winResp, err := d.client.LocalAccounts.UserRead(ctx, params)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local user, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local user:\n%s", err.Error()))
 		return
 	}
 

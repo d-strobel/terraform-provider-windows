@@ -64,7 +64,7 @@ func (r *localGroupMemberResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if err := r.client.LocalAccounts.GroupMemberCreate(ctx, params); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create local group member, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to create local group member:\n%s", err.Error()))
 		return
 	}
 
@@ -92,7 +92,7 @@ func (r *localGroupMemberResource) Read(ctx context.Context, req resource.ReadRe
 	}
 
 	if _, err := r.client.LocalAccounts.GroupMemberRead(ctx, params); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local group member, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local group member:\n%s", err.Error()))
 		return
 	}
 
@@ -121,7 +121,7 @@ func (r *localGroupMemberResource) Delete(ctx context.Context, req resource.Dele
 	}
 
 	if err := r.client.LocalAccounts.GroupMemberDelete(ctx, params); err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local group member, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local group member:\n%s", err.Error()))
 		return
 	}
 }
