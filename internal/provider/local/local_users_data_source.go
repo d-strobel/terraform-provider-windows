@@ -66,6 +66,10 @@ func (d *localUsersDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
+	// Convert the response to the expected data source schema.
+	// This might be confusing but is necessary.
+	// For further information, see the following issue:
+	// https://github.com/hashicorp/terraform-plugin-codegen-framework/issues/80
 	var usersValueList []datasource_local_users.UsersValue
 
 	for _, user := range winResp {
