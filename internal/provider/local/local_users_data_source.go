@@ -8,6 +8,7 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -49,6 +50,7 @@ func (d *localUsersDataSource) Configure(ctx context.Context, req datasource.Con
 
 func (d *localUsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data datasource_local_users.LocalUsersModel
+	var diags diag.Diagnostics
 
 	// Read Terraform configuration data into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
@@ -83,13 +85,21 @@ func (d *localUsersDataSource) Read(ctx context.Context, req datasource.ReadRequ
 			UserMayChangePassword:  types.BoolValue(user.UserMayChangePassword),
 		}
 
-		objVal, _ := usersValue.ToObjectValue(ctx)
-		newUsersValue, _ := datasource_local_users.NewUsersValue(objVal.AttributeTypes(ctx), objVal.Attributes())
+		objVal, diags := usersValue.ToObjectValue(ctx)
+		resp.Diagnostics.Append(diags...)
+
+		newUsersValue, diags := datasource_local_users.NewUsersValue(objVal.AttributeTypes(ctx), objVal.Attributes())
+		resp.Diagnostics.Append(diags...)
+
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
 		usersValueList = append(usersValueList, newUsersValue)
 	}
 
-	data.Users, _ = types.ListValueFrom(ctx, datasource_local_users.UsersValue{}.Type(ctx), usersValueList)
+	data.Users, diags = types.ListValueFrom(ctx, datasource_local_users.UsersValue{}.Type(ctx), usersValueList)
+	resp.Diagnostics.Append(diags...)
 
 	// Save data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
