@@ -10,6 +10,7 @@ import (
 	"terraform-provider-windows/internal/generate/provider_windows"
 
 	"github.com/hashicorp/terraform-plugin-framework/provider"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/connection/ssh"
@@ -53,8 +54,13 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
+	// Add log masking for sensitive fields.
+	ctx = tflog.MaskFieldValuesWithFieldKeys(ctx, "Password", "PrivateKey")
+
 	// Check the WinRM config and setup the connection.
 	if !data.Winrm.IsNull() {
+		tflog.Debug(ctx, "Configure Windows client with WinRM connection")
+
 		config := &winrm.Config{}
 
 		// Endpoint
@@ -120,6 +126,15 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 			config.UseTLS = winrmInsecure
 		}
 
+		tflog.Debug(ctx, "Setup WinRM connection with the following config", map[string]interface{}{
+			"Host":     config.Host,
+			"Port":     config.Port,
+			"Username": config.Username,
+			"Password": config.Password,
+			"Timeout":  config.Timeout,
+			"UseTLS":   config.UseTLS,
+		})
+
 		// Connect to the Windows system.
 		conn, err := winrm.NewConnection(config)
 		if err != nil {
@@ -133,6 +148,8 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 
 	// Check the SSH config and setup the connection.
 	if !data.Ssh.IsNull() {
+		tflog.Debug(ctx, "Configure Windows client with SSH connection")
+
 		config := &ssh.Config{}
 
 		// Endpoint
@@ -196,6 +213,17 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 		} else if os.Getenv(envSSHKnownHostsPath) != "" {
 			config.KnownHostsPath = os.Getenv(envSSHKnownHostsPath)
 		}
+
+		tflog.Debug(ctx, "Setup SSH connection with the following config", map[string]interface{}{
+			"Host":           config.Host,
+			"Port":           config.Port,
+			"Username":       config.Username,
+			"Password":       config.Password,
+			"PrivateKey":     config.PrivateKey,
+			"PrivateKeyPath": config.PrivateKeyPath,
+			"KnownHostsPath": config.KnownHostsPath,
+			"Insecure":       config.Insecure,
+		})
 
 		// Connect to the Windows system.
 		conn, err := ssh.NewConnection(config)
