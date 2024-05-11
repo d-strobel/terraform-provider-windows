@@ -5,7 +5,7 @@ go 1.22
 toolchain go1.22.0
 
 require (
-	github.com/d-strobel/gowindows v1.0.1
+	github.com/d-strobel/gowindows v1.1.0
 	github.com/hashicorp/terraform-plugin-codegen-framework v0.3.1
 	github.com/hashicorp/terraform-plugin-docs v0.17.0
 	github.com/hashicorp/terraform-plugin-framework v1.5.0

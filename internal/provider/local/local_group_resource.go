@@ -70,7 +70,7 @@ func (r *localGroupResource) Create(ctx context.Context, req resource.CreateRequ
 
 	winResp, err := r.client.LocalAccounts.GroupCreate(ctx, params)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create local security group, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to create local security group:\n%s", err))
 		return
 	}
 
@@ -97,7 +97,7 @@ func (r *localGroupResource) Read(ctx context.Context, req resource.ReadRequest,
 	// Read API call logic
 	winResp, err := r.client.LocalAccounts.GroupRead(ctx, accounts.GroupReadParams{SID: data.Id.ValueString()})
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local security group, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local security group:\n%s", err.Error()))
 		return
 	}
 
@@ -128,7 +128,7 @@ func (r *localGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	err := r.client.LocalAccounts.GroupUpdate(ctx, params)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update local security group, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to update local security group:\n%s", err.Error()))
 		return
 	}
 
@@ -149,7 +149,7 @@ func (r *localGroupResource) Delete(ctx context.Context, req resource.DeleteRequ
 	// Delete API call logic
 	err := r.client.LocalAccounts.GroupDelete(ctx, accounts.GroupDeleteParams{SID: data.Sid.ValueString()})
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete local security group, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local security group:\n%s", err.Error()))
 		return
 	}
 }

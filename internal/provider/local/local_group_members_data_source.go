@@ -8,6 +8,7 @@ import (
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -49,6 +50,7 @@ func (d *localGroupMembersDataSource) Configure(ctx context.Context, req datasou
 
 func (d *localGroupMembersDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data datasource_local_group_members.LocalGroupMembersModel
+	var diags diag.Diagnostics
 
 	// Read Terraform configuration data into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
@@ -63,10 +65,14 @@ func (d *localGroupMembersDataSource) Read(ctx context.Context, req datasource.R
 	}
 	winResp, err := d.client.LocalAccounts.GroupMemberList(ctx, params)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local group members, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local group members:\n%s", err.Error()))
 		return
 	}
 
+	// Convert the response to the expected data source schema.
+	// This might be confusing but is necessary.
+	// For further information, see the following issue:
+	// https://github.com/hashicorp/terraform-plugin-codegen-framework/issues/80
 	var membersValueList []datasource_local_group_members.MembersValue
 
 	for _, member := range winResp {
@@ -75,13 +81,22 @@ func (d *localGroupMembersDataSource) Read(ctx context.Context, req datasource.R
 			Sid:         types.StringValue(member.SID.Value),
 			ObjectClass: types.StringValue(member.ObjectClass),
 		}
-		objVal, _ := memberValue.ToObjectValue(ctx)
-		newMembersValue, _ := datasource_local_group_members.NewMembersValue(objVal.AttributeTypes(ctx), objVal.Attributes())
+
+		objVal, diags := memberValue.ToObjectValue(ctx)
+		resp.Diagnostics.Append(diags...)
+
+		newMembersValue, diags := datasource_local_group_members.NewMembersValue(objVal.AttributeTypes(ctx), objVal.Attributes())
+		resp.Diagnostics.Append(diags...)
+
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
 		membersValueList = append(membersValueList, newMembersValue)
 	}
 
-	data.Members, _ = types.ListValueFrom(ctx, datasource_local_group_members.MembersValue{}.Type(ctx), membersValueList)
+	data.Members, diags = types.ListValueFrom(ctx, datasource_local_group_members.MembersValue{}.Type(ctx), membersValueList)
+	resp.Diagnostics.Append(diags...)
 
 	// Save data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)

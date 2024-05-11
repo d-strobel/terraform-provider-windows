@@ -7,6 +7,7 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -48,6 +49,7 @@ func (d *localGroupsDataSource) Configure(ctx context.Context, req datasource.Co
 
 func (d *localGroupsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data datasource_local_groups.LocalGroupsModel
+	var diags diag.Diagnostics
 
 	// Read Terraform configuration data into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
@@ -59,10 +61,14 @@ func (d *localGroupsDataSource) Read(ctx context.Context, req datasource.ReadReq
 	// Read API call logic
 	winResp, err := d.client.LocalAccounts.GroupList(ctx)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read local security groups, got error: %s", err))
+		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local security groups:\n%s", err.Error()))
 		return
 	}
 
+	// Convert the response to the expected data source schema.
+	// This might be confusing but is necessary.
+	// For further information, see the following issue:
+	// https://github.com/hashicorp/terraform-plugin-codegen-framework/issues/80
 	var groupsValueList []datasource_local_groups.GroupsValue
 
 	for _, group := range winResp {
@@ -72,13 +78,22 @@ func (d *localGroupsDataSource) Read(ctx context.Context, req datasource.ReadReq
 			Sid:         types.StringValue(group.SID.Value),
 			Id:          types.StringValue(group.SID.Value),
 		}
-		objVal, _ := groupsValue.ToObjectValue(ctx)
-		newGroupsValue, _ := datasource_local_groups.NewGroupsValue(objVal.AttributeTypes(ctx), objVal.Attributes())
+
+		objVal, diags := groupsValue.ToObjectValue(ctx)
+		resp.Diagnostics.Append(diags...)
+
+		newGroupsValue, diags := datasource_local_groups.NewGroupsValue(objVal.AttributeTypes(ctx), objVal.Attributes())
+		resp.Diagnostics.Append(diags...)
+
+		if resp.Diagnostics.HasError() {
+			return
+		}
 
 		groupsValueList = append(groupsValueList, newGroupsValue)
 	}
 
-	data.Groups, _ = types.ListValueFrom(ctx, datasource_local_groups.GroupsValue{}.Type(ctx), groupsValueList)
+	data.Groups, diags = types.ListValueFrom(ctx, datasource_local_groups.GroupsValue{}.Type(ctx), groupsValueList)
+	resp.Diagnostics.Append(diags...)
 
 	// Save data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
