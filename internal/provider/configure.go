@@ -179,15 +179,15 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 		}
 
 		// Insecure
-		config.InsecureIgnoreHostKey = defaultSSHInsecure
+		config.Insecure = defaultSSHInsecure
 		if !data.Ssh.Insecure.IsNull() {
-			config.InsecureIgnoreHostKey = data.Ssh.Insecure.ValueBool()
+			config.Insecure = data.Ssh.Insecure.ValueBool()
 		} else if os.Getenv(envSSHInsecure) != "" {
 			sshInsecure, err := strconv.ParseBool(os.Getenv(envSSHInsecure))
 			if err != nil {
 				resp.Diagnostics.AddError("Environment variable conversion error", fmt.Sprintf("Failed to convert environment variable '%s' to bool. Error: %s", envSSHInsecure, err))
 			}
-			config.InsecureIgnoreHostKey = sshInsecure
+			config.Insecure = sshInsecure
 		}
 
 		// Known hosts path
