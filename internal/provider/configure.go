@@ -67,8 +67,8 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 		config.Host = data.Endpoint.ValueString()
 
 		// Username
-		config.Username = data.Winrm.Password.ValueString()
-		if data.Winrm.Password.IsNull() {
+		config.Username = data.Winrm.Username.ValueString()
+		if data.Winrm.Username.IsNull() {
 			config.Username = os.Getenv(envWinRMUsername)
 		}
 
