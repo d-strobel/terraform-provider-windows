@@ -14,6 +14,7 @@ import (
 // ConfigValidators define imperative expressions to validate the provider config.
 func (p *WindowsProvider) ConfigValidators(ctx context.Context) []provider.ConfigValidator {
 	return []provider.ConfigValidator{
+		// WinRM and SSH are mutually exclusive.
 		providervalidator.ExactlyOneOf(
 			path.MatchRoot("winrm"),
 			path.MatchRoot("ssh"),
@@ -27,10 +28,9 @@ func (p *WindowsProvider) ValidateConfig(ctx context.Context, req provider.Valid
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-	// Check WinRM attributes
+	// Check WinRM attributes.
 	if !data.Winrm.IsNull() {
-
-		// username must be set via config or environment variable
+		// Username must be set via config or environment variable.
 		if data.Winrm.Username.IsNull() && os.Getenv(envWinRMUsername) == "" {
 			resp.Diagnostics.AddAttributeError(path.Root("winrm"),
 				"Missing config attribute",
@@ -38,7 +38,7 @@ func (p *WindowsProvider) ValidateConfig(ctx context.Context, req provider.Valid
 			)
 		}
 
-		// password must be set via config or environment variable
+		// Password must be set via config or environment variable.
 		if data.Winrm.Password.IsNull() && os.Getenv(envWinRMPassword) == "" {
 			resp.Diagnostics.AddAttributeError(path.Root("winrm"),
 				"Missing config attribute",
@@ -47,10 +47,9 @@ func (p *WindowsProvider) ValidateConfig(ctx context.Context, req provider.Valid
 		}
 	}
 
-	// Check SSH attributes
+	// Check SSH attributes.
 	if !data.Ssh.IsNull() {
-
-		// username must be set via config or environment variable
+		// Username must be set via config or environment variable.
 		if data.Ssh.Username.IsNull() && os.Getenv(envSSHUsername) == "" {
 			resp.Diagnostics.AddAttributeError(path.Root("ssh"),
 				"Missing config attribute",
@@ -58,11 +57,15 @@ func (p *WindowsProvider) ValidateConfig(ctx context.Context, req provider.Valid
 			)
 		}
 
-		// password must be set via config or environment variable
-		if data.Ssh.Password.IsNull() && os.Getenv(envSSHPassword) == "" && data.Ssh.PrivateKey.IsNull() && os.Getenv(envSSHPrivateKey) == "" && data.Ssh.PrivateKeyPath.IsNull() && os.Getenv(envSSHPrivateKeyPath) == "" {
+		// One of Password, PrivateKey ,PrivateKeyPath must be set via config or environment variable.
+		if data.Ssh.Password.IsNull() && os.Getenv(envSSHPassword) == "" &&
+			data.Ssh.PrivateKey.IsNull() && os.Getenv(envSSHPrivateKey) == "" &&
+			data.Ssh.PrivateKeyPath.IsNull() && os.Getenv(envSSHPrivateKeyPath) == "" {
 			resp.Diagnostics.AddAttributeError(path.Root("ssh"),
 				"Missing config attribute",
-				fmt.Sprintf("Exactly one of the following parameters must be set: ['password' or environment variable '%s', 'private_key' or environment variable '%s', 'private_key_path' or environment variable '%s'].", envSSHPassword, envSSHPrivateKey, envSSHPrivateKeyPath),
+				fmt.Sprintf(`Exactly one of the following parameters must be set:
+          ['password' or environment variable '%s', 'private_key' or environment variable '%s', 'private_key_path' or environment variable '%s'].`,
+					envSSHPassword, envSSHPrivateKey, envSSHPrivateKeyPath),
 			)
 		}
 	}
