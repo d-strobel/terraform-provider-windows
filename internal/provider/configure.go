@@ -59,7 +59,7 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 
 	// Check the WinRM config and setup the connection.
 	if !data.Winrm.IsNull() {
-		tflog.Info(ctx, "configure Windows remote client with WinRM connection")
+		tflog.Info(ctx, "Configure Windows remote client with WinRM connection")
 
 		config := &winrm.Config{}
 
@@ -126,7 +126,7 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 			config.UseTLS = winrmInsecure
 		}
 
-		tflog.Debug(ctx, "setup WinRM connection with the following config", map[string]interface{}{
+		tflog.Debug(ctx, "Setup WinRM connection with the following config", map[string]interface{}{
 			"Host":     config.Host,
 			"Port":     config.Port,
 			"Username": config.Username,
@@ -148,7 +148,7 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 
 	// Check the SSH config and setup the connection.
 	if !data.Ssh.IsNull() {
-		tflog.Info(ctx, "configure Windows remote client with SSH connection")
+		tflog.Info(ctx, "Configure Windows remote client with SSH connection")
 
 		config := &ssh.Config{}
 
@@ -214,7 +214,7 @@ func (p *WindowsProvider) Configure(ctx context.Context, req provider.ConfigureR
 			config.KnownHostsPath = os.Getenv(envSSHKnownHostsPath)
 		}
 
-		tflog.Debug(ctx, "setup SSH connection with the following config", map[string]interface{}{
+		tflog.Debug(ctx, "Setup SSH connection with the following config", map[string]interface{}{
 			"Host":           config.Host,
 			"Port":           config.Port,
 			"Username":       config.Username,
