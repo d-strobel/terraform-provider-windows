@@ -23,8 +23,8 @@ data "windows_local_group" "Administrator" {
 
 ### Optional
 
-- `name` (String) Define the name of the local security group.
-- `sid` (String) Define the security ID of the local security group.
+- `name` (String) The name of the local security group. Exactly one of 'name' or 'sid' is required.
+- `sid` (String) The security ID of the local security group. Exactly one of 'name' or 'sid' is required.
 
 ### Read-Only
 

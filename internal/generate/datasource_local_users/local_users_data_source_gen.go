@@ -25,8 +25,8 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 						"account_expires": schema.StringAttribute{
 							CustomType:          timetypes.RFC3339Type{},
 							Computed:            true,
-							Description:         "Retrieve the time where the local user account expires.",
-							MarkdownDescription: "Retrieve the time where the local user account expires.",
+							Description:         "The time where the local user account expires.",
+							MarkdownDescription: "The time where the local user account expires.",
 						},
 						"description": schema.StringAttribute{
 							Computed:            true,
@@ -35,8 +35,8 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 						},
 						"enabled": schema.BoolAttribute{
 							Computed:            true,
-							Description:         "Get the status of the local user.",
-							MarkdownDescription: "Get the status of the local user.",
+							Description:         "The status of the local user.",
+							MarkdownDescription: "The status of the local user.",
 						},
 						"full_name": schema.StringAttribute{
 							Computed:            true,
@@ -56,8 +56,8 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 						},
 						"name": schema.StringAttribute{
 							Computed:            true,
-							Description:         "Define the name of the local user.",
-							MarkdownDescription: "Define the name of the local user.",
+							Description:         "The name of the local user.",
+							MarkdownDescription: "The name of the local user.",
 						},
 						"password_changeable_date": schema.StringAttribute{
 							CustomType:          timetypes.RFC3339Type{},
