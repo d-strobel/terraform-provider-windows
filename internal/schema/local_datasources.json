@@ -286,7 +286,7 @@
                   {
                     "name": "name",
                     "string": {
-                      "computed_optional_required": "required",
+                      "computed_optional_required": "computed",
                       "description": "Define the name of the local user."
                     }
                   },
@@ -342,7 +342,7 @@
                   {
                     "name": "sid",
                     "string": {
-                      "computed_optional_required": "optional",
+                      "computed_optional_required": "computed",
                       "description": "The security ID of the local user."
                     }
                   },
