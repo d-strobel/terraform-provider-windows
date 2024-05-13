@@ -24,13 +24,13 @@ func LocalGroupDataSourceSchema(ctx context.Context) schema.Schema {
 			},
 			"name": schema.StringAttribute{
 				Optional:            true,
-				Description:         "Define the name of the local security group.",
-				MarkdownDescription: "Define the name of the local security group.",
+				Description:         "The name of the local security group. Exactly one of 'name' or 'sid' is required.",
+				MarkdownDescription: "The name of the local security group. Exactly one of 'name' or 'sid' is required.",
 			},
 			"sid": schema.StringAttribute{
 				Optional:            true,
-				Description:         "Define the security ID of the local security group.",
-				MarkdownDescription: "Define the security ID of the local security group.",
+				Description:         "The security ID of the local security group. Exactly one of 'name' or 'sid' is required.",
+				MarkdownDescription: "The security ID of the local security group. Exactly one of 'name' or 'sid' is required.",
 			},
 		},
 	}
