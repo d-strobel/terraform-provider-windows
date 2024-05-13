@@ -7,8 +7,10 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
+	"github.com/d-strobel/gowindows/winerror"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var _ resource.Resource = (*localGroupMemberResource)(nil)
@@ -64,6 +66,9 @@ func (r *localGroupMemberResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	if err := r.client.LocalAccounts.GroupMemberCreate(ctx, params); err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to create local group member:\n%s", err.Error()))
 		return
 	}
@@ -92,6 +97,9 @@ func (r *localGroupMemberResource) Read(ctx context.Context, req resource.ReadRe
 	}
 
 	if _, err := r.client.LocalAccounts.GroupMemberRead(ctx, params); err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local group member:\n%s", err.Error()))
 		return
 	}
@@ -121,6 +129,9 @@ func (r *localGroupMemberResource) Delete(ctx context.Context, req resource.Dele
 	}
 
 	if err := r.client.LocalAccounts.GroupMemberDelete(ctx, params); err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local group member:\n%s", err.Error()))
 		return
 	}

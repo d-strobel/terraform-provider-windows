@@ -7,9 +7,11 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
+	"github.com/d-strobel/gowindows/winerror"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var _ resource.Resource = (*localGroupResource)(nil)
@@ -70,6 +72,9 @@ func (r *localGroupResource) Create(ctx context.Context, req resource.CreateRequ
 
 	winResp, err := r.client.LocalAccounts.GroupCreate(ctx, params)
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to create local security group:\n%s", err))
 		return
 	}
@@ -97,6 +102,9 @@ func (r *localGroupResource) Read(ctx context.Context, req resource.ReadRequest,
 	// Read API call logic
 	winResp, err := r.client.LocalAccounts.GroupRead(ctx, accounts.GroupReadParams{SID: data.Id.ValueString()})
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local security group:\n%s", err.Error()))
 		return
 	}
@@ -128,6 +136,9 @@ func (r *localGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	err := r.client.LocalAccounts.GroupUpdate(ctx, params)
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to update local security group:\n%s", err.Error()))
 		return
 	}
@@ -149,6 +160,9 @@ func (r *localGroupResource) Delete(ctx context.Context, req resource.DeleteRequ
 	// Delete API call logic
 	err := r.client.LocalAccounts.GroupDelete(ctx, accounts.GroupDeleteParams{SID: data.Sid.ValueString()})
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local security group:\n%s", err.Error()))
 		return
 	}
