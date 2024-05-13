@@ -55,7 +55,7 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 							MarkdownDescription: "The last logon time of the local user.",
 						},
 						"name": schema.StringAttribute{
-							Required:            true,
+							Computed:            true,
 							Description:         "Define the name of the local user.",
 							MarkdownDescription: "Define the name of the local user.",
 						},
@@ -83,7 +83,7 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 							MarkdownDescription: "If true a password is required login with the local user.",
 						},
 						"sid": schema.StringAttribute{
-							Optional:            true,
+							Computed:            true,
 							Description:         "The security ID of the local user.",
 							MarkdownDescription: "The security ID of the local user.",
 						},
