@@ -8,7 +8,9 @@ import (
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
 	"github.com/d-strobel/gowindows/winerror"
+	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
@@ -32,6 +34,16 @@ func (d *localGroupDataSource) Schema(ctx context.Context, req datasource.Schema
 	resp.Schema.Description = `Retrieve information about a local security group.
 You can get a group by the name or the security ID of the group.
 `
+}
+
+func (d *localGroupDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
+	return []datasource.ConfigValidator{
+		// name and sid are mutually exclusive.
+		datasourcevalidator.ExactlyOneOf(
+			path.MatchRoot("name"),
+			path.MatchRoot("sid"),
+		),
+	}
 }
 
 func (d *localGroupDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
