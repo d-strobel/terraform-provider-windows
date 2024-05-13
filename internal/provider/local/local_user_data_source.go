@@ -8,10 +8,12 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
+	"github.com/d-strobel/gowindows/winerror"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var _ datasource.DataSource = (*localUserDataSource)(nil)
@@ -69,6 +71,9 @@ func (d *localUserDataSource) Read(ctx context.Context, req datasource.ReadReque
 
 	winResp, err := d.client.LocalAccounts.UserRead(ctx, params)
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local user:\n%s", err.Error()))
 		return
 	}
