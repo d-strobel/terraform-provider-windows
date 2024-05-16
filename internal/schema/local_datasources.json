@@ -26,14 +26,14 @@
             "name": "name",
             "string": {
               "computed_optional_required": "optional",
-              "description": "Define the name of the local security group."
+              "description": "The name of the local security group. Exactly one of 'name' or 'sid' is required."
             }
           },
           {
             "name": "sid",
             "string": {
               "computed_optional_required": "optional",
-              "description": "Define the security ID of the local security group."
+              "description": "The security ID of the local security group. Exactly one of 'name' or 'sid' is required."
             }
           }
         ]
@@ -92,7 +92,7 @@
             "name": "account_expires",
             "string": {
               "computed_optional_required": "computed",
-              "description": "Retrieve the time where the local user account expires.",
+              "description": "The time where the local user account expires.",
               "custom_type": {
                 "import": {
                   "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
@@ -113,7 +113,7 @@
             "name": "enabled",
             "bool": {
               "computed_optional_required": "computed",
-              "description": "Get the status of the local user."
+              "description": "The status of the local user."
             }
           },
           {
@@ -147,8 +147,8 @@
           {
             "name": "name",
             "string": {
-              "computed_optional_required": "required",
-              "description": "Define the name of the local user."
+              "computed_optional_required": "optional",
+              "description": "The name of the local user. Exactly one of 'name' or 'sid' is required."
             }
           },
           {
@@ -204,7 +204,7 @@
             "name": "sid",
             "string": {
               "computed_optional_required": "optional",
-              "description": "The security ID of the local user."
+              "description": "The security ID of the local user. Exactly one of 'name' or 'sid' is required."
             }
           },
           {
@@ -231,7 +231,7 @@
                     "name": "account_expires",
                     "string": {
                       "computed_optional_required": "computed",
-                      "description": "Retrieve the time where the local user account expires.",
+                      "description": "The time where the local user account expires.",
                       "custom_type": {
                         "import": {
                           "path": "github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
@@ -252,7 +252,7 @@
                     "name": "enabled",
                     "bool": {
                       "computed_optional_required": "computed",
-                      "description": "Get the status of the local user."
+                      "description": "The status of the local user."
                     }
                   },
                   {
@@ -286,8 +286,8 @@
                   {
                     "name": "name",
                     "string": {
-                      "computed_optional_required": "required",
-                      "description": "Define the name of the local user."
+                      "computed_optional_required": "computed",
+                      "description": "The name of the local user."
                     }
                   },
                   {
@@ -342,7 +342,7 @@
                   {
                     "name": "sid",
                     "string": {
-                      "computed_optional_required": "optional",
+                      "computed_optional_required": "computed",
                       "description": "The security ID of the local user."
                     }
                   },

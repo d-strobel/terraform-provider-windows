@@ -7,9 +7,11 @@ import (
 	"time"
 
 	"github.com/d-strobel/gowindows"
+	"github.com/d-strobel/gowindows/winerror"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var _ datasource.DataSource = (*localUsersDataSource)(nil)
@@ -62,6 +64,9 @@ func (d *localUsersDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	// Read API call logic
 	winResp, err := d.client.LocalAccounts.UserList(ctx)
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local users:\n%s", err.Error()))
 		return
 	}
@@ -70,6 +75,7 @@ func (d *localUsersDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	// This might be confusing but is necessary.
 	// For further information, see the following issue:
 	// https://github.com/hashicorp/terraform-plugin-codegen-framework/issues/80
+	tflog.Trace(ctx, "Converting the windows remote client response to the expected data source schema")
 	var usersValueList []datasource_local_users.UsersValue
 
 	for _, user := range winResp {

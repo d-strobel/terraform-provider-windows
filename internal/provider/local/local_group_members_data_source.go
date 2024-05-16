@@ -7,9 +7,11 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
+	"github.com/d-strobel/gowindows/winerror"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var _ datasource.DataSource = (*localGroupMembersDataSource)(nil)
@@ -65,6 +67,9 @@ func (d *localGroupMembersDataSource) Read(ctx context.Context, req datasource.R
 	}
 	winResp, err := d.client.LocalAccounts.GroupMemberList(ctx, params)
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local group members:\n%s", err.Error()))
 		return
 	}
@@ -73,6 +78,7 @@ func (d *localGroupMembersDataSource) Read(ctx context.Context, req datasource.R
 	// This might be confusing but is necessary.
 	// For further information, see the following issue:
 	// https://github.com/hashicorp/terraform-plugin-codegen-framework/issues/80
+	tflog.Trace(ctx, "Converting the windows remote client response to the expected data source schema")
 	var membersValueList []datasource_local_group_members.MembersValue
 
 	for _, member := range winResp {

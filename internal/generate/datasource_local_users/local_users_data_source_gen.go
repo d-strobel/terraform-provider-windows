@@ -25,8 +25,8 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 						"account_expires": schema.StringAttribute{
 							CustomType:          timetypes.RFC3339Type{},
 							Computed:            true,
-							Description:         "Retrieve the time where the local user account expires.",
-							MarkdownDescription: "Retrieve the time where the local user account expires.",
+							Description:         "The time where the local user account expires.",
+							MarkdownDescription: "The time where the local user account expires.",
 						},
 						"description": schema.StringAttribute{
 							Computed:            true,
@@ -35,8 +35,8 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 						},
 						"enabled": schema.BoolAttribute{
 							Computed:            true,
-							Description:         "Get the status of the local user.",
-							MarkdownDescription: "Get the status of the local user.",
+							Description:         "The status of the local user.",
+							MarkdownDescription: "The status of the local user.",
 						},
 						"full_name": schema.StringAttribute{
 							Computed:            true,
@@ -55,9 +55,9 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 							MarkdownDescription: "The last logon time of the local user.",
 						},
 						"name": schema.StringAttribute{
-							Required:            true,
-							Description:         "Define the name of the local user.",
-							MarkdownDescription: "Define the name of the local user.",
+							Computed:            true,
+							Description:         "The name of the local user.",
+							MarkdownDescription: "The name of the local user.",
 						},
 						"password_changeable_date": schema.StringAttribute{
 							CustomType:          timetypes.RFC3339Type{},
@@ -83,7 +83,7 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 							MarkdownDescription: "If true a password is required login with the local user.",
 						},
 						"sid": schema.StringAttribute{
-							Optional:            true,
+							Computed:            true,
 							Description:         "The security ID of the local user.",
 							MarkdownDescription: "The security ID of the local user.",
 						},

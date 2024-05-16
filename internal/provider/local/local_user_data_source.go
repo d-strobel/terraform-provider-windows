@@ -8,10 +8,14 @@ import (
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
+	"github.com/d-strobel/gowindows/winerror"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var _ datasource.DataSource = (*localUserDataSource)(nil)
@@ -30,7 +34,7 @@ func (d *localUserDataSource) Metadata(ctx context.Context, req datasource.Metad
 
 func (d *localUserDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = datasource_local_user.LocalUserDataSourceSchema(ctx)
-	resp.Schema.Description = `Get information about a local user.`
+	resp.Schema.Description = `Retrieve information about a local user. You can get a user by the name or the security ID.`
 }
 
 func (d *localUserDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -48,6 +52,16 @@ func (d *localUserDataSource) Configure(ctx context.Context, req datasource.Conf
 	}
 
 	d.client = client
+}
+
+func (d *localUserDataSource) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
+	return []datasource.ConfigValidator{
+		// name and sid are mutually exclusive.
+		datasourcevalidator.ExactlyOneOf(
+			path.MatchRoot("name"),
+			path.MatchRoot("sid"),
+		),
+	}
 }
 
 func (d *localUserDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
@@ -69,6 +83,9 @@ func (d *localUserDataSource) Read(ctx context.Context, req datasource.ReadReque
 
 	winResp, err := d.client.LocalAccounts.UserRead(ctx, params)
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local user:\n%s", err.Error()))
 		return
 	}

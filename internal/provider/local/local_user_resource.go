@@ -3,16 +3,19 @@ package local
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"terraform-provider-windows/internal/generate/resource_local_user"
 	"time"
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
+	"github.com/d-strobel/gowindows/winerror"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var _ resource.Resource = (*localUserResource)(nil)
@@ -54,6 +57,9 @@ func (r *localUserResource) Configure(ctx context.Context, req resource.Configur
 func (r *localUserResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var data resource_local_user.LocalUserModel
 
+	// Add log masking for Powershell secure strings.
+	ctx = tflog.MaskAllFieldValuesRegexes(ctx, regexp.MustCompile(`\$\(ConvertTo-SecureString -String '([^']*)'.+\)`))
+
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
@@ -79,6 +85,9 @@ func (r *localUserResource) Create(ctx context.Context, req resource.CreateReque
 
 	winResp, err := r.client.LocalAccounts.UserCreate(ctx, params)
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to create local user:\n%s", err.Error()))
 		return
 	}
@@ -128,6 +137,9 @@ func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	// Read API call logic
 	winResp, err := r.client.LocalAccounts.UserRead(ctx, accounts.UserReadParams{SID: data.Sid.ValueString()})
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local user:\n%s", err.Error()))
 		return
 	}
@@ -166,6 +178,9 @@ func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 func (r *localUserResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var data resource_local_user.LocalUserModel
 
+	// Add log masking for Powershell secure strings.
+	ctx = tflog.MaskAllFieldValuesRegexes(ctx, regexp.MustCompile(`\$\(ConvertTo-SecureString -String '([^']*)'.+\)`))
+
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
@@ -190,12 +205,19 @@ func (r *localUserResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 
 	if err := r.client.LocalAccounts.UserUpdate(ctx, params); err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to update local user:\n%s", err.Error()))
 		return
 	}
 
+	tflog.Debug(ctx, "Read local user after update to synchronize Terraform state")
 	winResp, err := r.client.LocalAccounts.UserRead(ctx, accounts.UserReadParams{SID: data.Sid.ValueString()})
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to read local user after update:\n%s", err.Error()))
 		return
 	}
@@ -244,6 +266,9 @@ func (r *localUserResource) Delete(ctx context.Context, req resource.DeleteReque
 	// Delete API call logic
 	err := r.client.LocalAccounts.UserDelete(ctx, accounts.UserDeleteParams{SID: data.Sid.ValueString()})
 	if err != nil {
+		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
+			"command": winerror.UnwrapCommand(err),
+		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local user:\n%s", err.Error()))
 		return
 	}

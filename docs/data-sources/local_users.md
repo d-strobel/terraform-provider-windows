@@ -25,24 +25,18 @@ data "windows_local_users" "all" {}
 <a id="nestedatt--users"></a>
 ### Nested Schema for `users`
 
-Required:
-
-- `name` (String) Define the name of the local user.
-
-Optional:
-
-- `sid` (String) The security ID of the local user.
-
 Read-Only:
 
-- `account_expires` (String) Retrieve the time where the local user account expires.
+- `account_expires` (String) The time where the local user account expires.
 - `description` (String) The description of the local user.
-- `enabled` (Boolean) Get the status of the local user.
+- `enabled` (Boolean) The status of the local user.
 - `full_name` (String) The full name of the local user.
 - `id` (String) The ID of the retrieved local user. This is the same as the SID.
 - `last_logon` (String) The last logon time of the local user.
+- `name` (String) The name of the local user.
 - `password_changeable_date` (String) The password changeable date of the local user.
 - `password_expires` (String) The time when the password of the local user expires.
 - `password_last_set` (String) The last time when the password was set for the local user.
 - `password_required` (Boolean) If true a password is required login with the local user.
+- `sid` (String) The security ID of the local user.
 - `user_may_change_password` (Boolean) If true the local user can change it's password.
