@@ -3,8 +3,8 @@ package provider
 import (
 	"context"
 	"fmt"
+	"github.com/d-strobel/terraform-provider-windows/internal/generate/provider_windows"
 	"os"
-	"terraform-provider-windows/internal/generate/provider_windows"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/providervalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"

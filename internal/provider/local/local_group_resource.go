@@ -3,7 +3,7 @@ package local
 import (
 	"context"
 	"fmt"
-	"terraform-provider-windows/internal/generate/resource_local_group"
+	"github.com/d-strobel/terraform-provider-windows/internal/generate/resource_local_group"
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"

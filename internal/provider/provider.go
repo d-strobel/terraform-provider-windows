@@ -2,8 +2,8 @@ package provider
 
 import (
 	"context"
-	"terraform-provider-windows/internal/generate/provider_windows"
-	"terraform-provider-windows/internal/provider/local"
+	"github.com/d-strobel/terraform-provider-windows/internal/generate/provider_windows"
+	"github.com/d-strobel/terraform-provider-windows/internal/provider/local"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
