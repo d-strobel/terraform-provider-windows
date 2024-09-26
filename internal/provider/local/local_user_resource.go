@@ -3,8 +3,8 @@ package local
 import (
 	"context"
 	"fmt"
+	"github.com/d-strobel/terraform-provider-windows/internal/generate/resource_local_user"
 	"regexp"
-	"terraform-provider-windows/internal/generate/resource_local_user"
 	"time"
 
 	"github.com/d-strobel/gowindows"
