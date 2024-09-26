@@ -1,3 +1,4 @@
+// package acctest contains utilities for acceptance testing.
 package acctest
 
 import (
@@ -6,7 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 )
 
-// TestAccProtoV6ProviderFactories are used to instantiate a provider during acceptance testing.
+// TestAccProtoV6ProviderFactories are used to instantiate a provider during acceptance testing
+// and should therefore be imported in the test files.
 var TestAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
 	"windows": providerserver.NewProtocol6WithError(provider.New("test")()),
 }
