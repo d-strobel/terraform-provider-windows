@@ -42,9 +42,3 @@ func TestAccLocalGroupDataSource(t *testing.T) {
 		},
 	})
 }
-
-// const testAccLocalGroupDataSourceConfig = `
-// data "windows_local_group" "test" {
-//   name = "Administrators"
-// }
-// `
