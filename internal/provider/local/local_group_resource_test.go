@@ -21,6 +21,8 @@ func TestAccLocalGroupResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("windows_local_group.test", "name", "Test"),
 					resource.TestCheckResourceAttr("windows_local_group.test", "description", " "),
+					resource.TestCheckResourceAttrSet("windows_local_group.test", "id"),
+					resource.TestCheckResourceAttrSet("windows_local_group.test", "sid"),
 				),
 			},
 			// Update and Read testing
@@ -34,6 +36,8 @@ func TestAccLocalGroupResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("windows_local_group.test", "name", "Test"),
 					resource.TestCheckResourceAttr("windows_local_group.test", "description", "Test description"),
+					resource.TestCheckResourceAttrSet("windows_local_group.test", "id"),
+					resource.TestCheckResourceAttrSet("windows_local_group.test", "sid"),
 				),
 			},
 		},
