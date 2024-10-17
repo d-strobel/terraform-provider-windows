@@ -43,7 +43,7 @@ resource "windows_local_user" "this" {
 
 ### Read-Only
 
-- `id` (String) The ID of the retrieved local security group. This is the same as the SID.
+- `id` (String) The ID of the retrieved local user. This is the same as the SID.
 - `last_logon` (String) The last logon time of the local user.
 - `password_changeable_date` (String) The password changeable date of the local user.
 - `password_expires` (String) The time when the password of the local user expires.
