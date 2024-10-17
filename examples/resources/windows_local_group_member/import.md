@@ -1,1 +1,1 @@
-Import a local group member with the following format: <Group SID>/member/<Member SID>
+Import a local group member by the SID of the group and the SID of the group member. Format: {GroupSID}/member/{MemberSID}
