@@ -3,8 +3,8 @@ package local
 import (
 	"context"
 	"fmt"
+	"github.com/d-strobel/terraform-provider-windows/internal/generate/resource_local_user"
 	"regexp"
-	"terraform-provider-windows/internal/generate/resource_local_user"
 	"time"
 
 	"github.com/d-strobel/gowindows"
@@ -135,7 +135,7 @@ func (r *localUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 
 	// Read API call logic
-	winResp, err := r.client.LocalAccounts.UserRead(ctx, accounts.UserReadParams{SID: data.Sid.ValueString()})
+	winResp, err := r.client.LocalAccounts.UserRead(ctx, accounts.UserReadParams{SID: data.Id.ValueString()})
 	if err != nil {
 		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
 			"command": winerror.UnwrapCommand(err),
@@ -275,5 +275,5 @@ func (r *localUserResource) Delete(ctx context.Context, req resource.DeleteReque
 }
 
 func (r *localUserResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("sid"), req, resp)
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

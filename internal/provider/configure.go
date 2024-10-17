@@ -5,9 +5,9 @@ import (
 
 	"context"
 	"fmt"
+	"github.com/d-strobel/terraform-provider-windows/internal/generate/provider_windows"
 	"os"
 	"strconv"
-	"terraform-provider-windows/internal/generate/provider_windows"
 
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
