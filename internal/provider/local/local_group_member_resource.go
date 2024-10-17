@@ -128,7 +128,11 @@ func (r *localGroupMemberResource) Read(ctx context.Context, req resource.ReadRe
 }
 
 func (r *localGroupMemberResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	// Update is not needed in this resource
+	// Update must never be called
+	resp.Diagnostics.AddError(
+		"Unexpected Update Call",
+		"The update operation is not supported for this resource. Please report this issue to the provider developers.",
+	)
 }
 
 func (r *localGroupMemberResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
