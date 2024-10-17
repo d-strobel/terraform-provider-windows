@@ -36,6 +36,13 @@ func TestAccLocalUserResource(t *testing.T) {
 					resource.TestCheckResourceAttrSet("windows_local_user.test_1", "sid"),
 				),
 			},
+			// Import testing
+			{
+				ResourceName:            "windows_local_user.test_1",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"password_never_expires"},
+			},
 			// Update and Read testing only name
 			{
 				Config: acctest.ProviderConfig() + `
@@ -65,11 +72,11 @@ func TestAccLocalUserResource(t *testing.T) {
 			// Create and Read testing with name + password
 			{
 				Config: acctest.ProviderConfig() + `
-          resource "windows_local_user" "test_2" {
-            name     = "test-2"
-            password = "Supersecretpassword1234"
-          }
-        `,
+			    resource "windows_local_user" "test_2" {
+			      name     = "test-2"
+			      password = "Supersecretpassword1234"
+			    }
+			  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("windows_local_user.test_2", "name", "test-2"),
 					resource.TestCheckResourceAttr("windows_local_user.test_2", "full_name", ""),
@@ -91,11 +98,11 @@ func TestAccLocalUserResource(t *testing.T) {
 			// Update and Read testing with name + password
 			{
 				Config: acctest.ProviderConfig() + `
-          resource "windows_local_user" "test_2" {
-            name     = "test-2"
-            password = "NEWSupersecretpassword1234"
-          }
-        `,
+			    resource "windows_local_user" "test_2" {
+			      name     = "test-2"
+			      password = "NEWSupersecretpassword1234"
+			    }
+			  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("windows_local_user.test_2", "name", "test-2"),
 					resource.TestCheckResourceAttr("windows_local_user.test_2", "full_name", ""),
@@ -117,17 +124,17 @@ func TestAccLocalUserResource(t *testing.T) {
 			// Create and Read testing with all possible parameters
 			{
 				Config: acctest.ProviderConfig() + `
-          resource "windows_local_user" "test_3" {
-            name                     = "test-3"
-            full_name                = "Test User 3"
-            description              = "Test user for Terraform test"
-            password                 = "SuperSecretPassword123!"
-            account_expires          = "2072-12-31T23:59:59Z"
-            enabled                  = false
-            password_never_expires   = false
-            user_may_change_password = false
-          }
-        `,
+			    resource "windows_local_user" "test_3" {
+			      name                     = "test-3"
+			      full_name                = "Test User 3"
+			      description              = "Test user for Terraform test"
+			      password                 = "SuperSecretPassword123!"
+			      account_expires          = "2072-12-31T23:59:59Z"
+			      enabled                  = false
+			      password_never_expires   = false
+			      user_may_change_password = false
+			    }
+			  `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("windows_local_user.test_3", "name", "test-3"),
 					resource.TestCheckResourceAttr("windows_local_user.test_3", "full_name", "Test User 3"),
