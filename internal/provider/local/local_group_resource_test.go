@@ -25,6 +25,12 @@ func TestAccLocalGroupResource(t *testing.T) {
 					resource.TestCheckResourceAttrSet("windows_local_group.test", "sid"),
 				),
 			},
+			// Import testing
+			{
+				ResourceName:      "windows_local_group.test",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
 			// Update and Read testing
 			{
 				Config: acctest.ProviderConfig() + `
