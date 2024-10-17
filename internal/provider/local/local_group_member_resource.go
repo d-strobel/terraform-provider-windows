@@ -3,11 +3,14 @@ package local
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/d-strobel/terraform-provider-windows/internal/generate/resource_local_group_member"
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
 	"github.com/d-strobel/gowindows/winerror"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -86,23 +89,38 @@ func (r *localGroupMemberResource) Read(ctx context.Context, req resource.ReadRe
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
+	// Split the ID into SID and Member
+	resourceId := data.Id.ValueString()
+	resourceIdParts := strings.Split(resourceId, "/member/")
+	if len(resourceIdParts) != 2 {
+		resp.Diagnostics.AddError(
+			"Invalid Import ID",
+			fmt.Sprintf("Expected import ID format: '<SID>/member/<Member>', got: %s", resourceId),
+		)
+	}
+
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	// Read API call logic
 	params := accounts.GroupMemberReadParams{
-		SID:    data.GroupId.ValueString(),
-		Member: data.MemberId.ValueString(),
+		SID:    resourceIdParts[0],
+		Member: resourceIdParts[1],
 	}
 
-	if _, err := r.client.LocalAccounts.GroupMemberRead(ctx, params); err != nil {
+	winResp, err := r.client.LocalAccounts.GroupMemberRead(ctx, params)
+	if err != nil {
 		tflog.Error(ctx, "Received unexpected error from remote windows client", map[string]interface{}{
 			"command": winerror.UnwrapCommand(err),
 		})
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local group member:\n%s", err.Error()))
 		return
 	}
+
+	// Set read values
+	data.GroupId = types.StringValue(params.SID)
+	data.MemberId = types.StringValue(winResp.SID.Value)
 
 	// Save updated data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -135,4 +153,8 @@ func (r *localGroupMemberResource) Delete(ctx context.Context, req resource.Dele
 		resp.Diagnostics.AddError("Windows Client Error", fmt.Sprintf("Unable to delete local group member:\n%s", err.Error()))
 		return
 	}
+}
+
+func (r *localGroupMemberResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
