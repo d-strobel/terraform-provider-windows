@@ -25,6 +25,12 @@ func TestAccLocalGroupMemberResource(t *testing.T) {
 					resource.TestCheckResourceAttr("windows_local_group_member.test", "id", "S-1-5-32-544/member/S-1-5-21-153895498-367353507-3704405138-501"),
 				),
 			},
+			// Import testing
+			{
+				ResourceName:      "windows_local_group_member.test",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
 		},
 	})
 }
