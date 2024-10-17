@@ -38,12 +38,9 @@ resource "windows_local_group_member" "this" {
 
 - `id` (String) The ID of this resource.
 ## Import
-``
-To import a local group member, you need both the SID (Security Identifier) of the group and the SID of the group member. 
-These two SIDs should be concatenated with/member/` in between.
-Format:
-<Group SID>/member/<Member SID>
-```
+
+Import a local group member with the following format: <Group SID>/member/<Member SID>
+
 ```bash
 terraform import windows_local_group_member.test S-1-5-32-544/member/S-1-5-21-153895498-367353507-3704405138-501
 ```
