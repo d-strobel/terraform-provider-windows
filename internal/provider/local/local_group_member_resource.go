@@ -89,17 +89,18 @@ func (r *localGroupMemberResource) Read(ctx context.Context, req resource.ReadRe
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	// Split the ID into SID and Member
 	resourceId := data.Id.ValueString()
 	resourceIdParts := strings.Split(resourceId, "/member/")
 	if len(resourceIdParts) != 2 {
 		resp.Diagnostics.AddError(
-			"Invalid Import ID",
-			fmt.Sprintf("Expected import ID format: '<SID>/member/<Member>', got: %s", resourceId),
+			"Invalid resource ID format",
+			fmt.Sprintf("Expected resource ID format: '<SID of the Group>/member/<SID of the GroupMember>', got: %s", resourceId),
 		)
-	}
-
-	if resp.Diagnostics.HasError() {
 		return
 	}
 
