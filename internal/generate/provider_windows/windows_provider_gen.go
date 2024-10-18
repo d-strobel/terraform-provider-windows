@@ -680,16 +680,26 @@ func (v SshValue) String() string {
 func (v SshValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	attributeTypes := map[string]attr.Type{
+		"insecure":         basetypes.BoolType{},
+		"known_hosts_path": basetypes.StringType{},
+		"password":         basetypes.StringType{},
+		"port":             basetypes.Int64Type{},
+		"private_key":      basetypes.StringType{},
+		"private_key_path": basetypes.StringType{},
+		"username":         basetypes.StringType{},
+	}
+
+	if v.IsNull() {
+		return types.ObjectNull(attributeTypes), diags
+	}
+
+	if v.IsUnknown() {
+		return types.ObjectUnknown(attributeTypes), diags
+	}
+
 	objVal, diags := types.ObjectValue(
-		map[string]attr.Type{
-			"insecure":         basetypes.BoolType{},
-			"known_hosts_path": basetypes.StringType{},
-			"password":         basetypes.StringType{},
-			"port":             basetypes.Int64Type{},
-			"private_key":      basetypes.StringType{},
-			"private_key_path": basetypes.StringType{},
-			"username":         basetypes.StringType{},
-		},
+		attributeTypes,
 		map[string]attr.Value{
 			"insecure":         v.Insecure,
 			"known_hosts_path": v.KnownHostsPath,
@@ -1276,15 +1286,25 @@ func (v WinrmValue) String() string {
 func (v WinrmValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	attributeTypes := map[string]attr.Type{
+		"insecure": basetypes.BoolType{},
+		"password": basetypes.StringType{},
+		"port":     basetypes.Int64Type{},
+		"timeout":  basetypes.Int64Type{},
+		"use_tls":  basetypes.BoolType{},
+		"username": basetypes.StringType{},
+	}
+
+	if v.IsNull() {
+		return types.ObjectNull(attributeTypes), diags
+	}
+
+	if v.IsUnknown() {
+		return types.ObjectUnknown(attributeTypes), diags
+	}
+
 	objVal, diags := types.ObjectValue(
-		map[string]attr.Type{
-			"insecure": basetypes.BoolType{},
-			"password": basetypes.StringType{},
-			"port":     basetypes.Int64Type{},
-			"timeout":  basetypes.Int64Type{},
-			"use_tls":  basetypes.BoolType{},
-			"username": basetypes.StringType{},
-		},
+		attributeTypes,
 		map[string]attr.Value{
 			"insecure": v.Insecure,
 			"password": v.Password,
