@@ -32,8 +32,7 @@ func (r *localGroupResource) Schema(ctx context.Context, req resource.SchemaRequ
 	resp.Schema = resource_local_group.LocalGroupResourceSchema(ctx)
 	resp.Schema.Description = `Manage local security groups.
 
-**Note:** The description default is a string with a space.
-This is necessary because the powershell function Set-LocalGroup does not allow an empty string.
+-> The description default is a string with a space. This is necessary because the powershell function Set-LocalGroup does not allow an empty string.
 `
 }
 
