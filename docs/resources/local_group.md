@@ -9,8 +9,7 @@ description: |-
 <!-- resource description generated from schema -->
 Manage local security groups.
 
-**Note:** The description default is a string with a space.
-This is necessary because the powershell function Set-LocalGroup does not allow an empty string.
+-> The description default is a string with a space. This is necessary because the powershell function Set-LocalGroup does not allow an empty string.
 <!-- examples generated from example files -->
 ## Example Usage
 

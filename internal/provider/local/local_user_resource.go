@@ -34,7 +34,6 @@ func (r *localUserResource) Metadata(ctx context.Context, req resource.MetadataR
 
 func (r *localUserResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = resource_local_user.LocalUserResourceSchema(ctx)
-	resp.Schema.Description = `Manage local users.`
 }
 
 func (r *localUserResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {

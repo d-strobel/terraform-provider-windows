@@ -54,8 +54,8 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
-				Description:         "The ID of the retrieved local security group. This is the same as the SID.",
-				MarkdownDescription: "The ID of the retrieved local security group. This is the same as the SID.",
+				Description:         "The ID of the retrieved local user. This is the same as the SID.",
+				MarkdownDescription: "The ID of the retrieved local user. This is the same as the SID.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -133,6 +133,8 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 				Default:             booldefault.StaticBool(true),
 			},
 		},
+		Description:         "Manage local users.",
+		MarkdownDescription: "Manage local users.",
 	}
 }
 

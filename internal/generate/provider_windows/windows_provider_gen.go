@@ -116,6 +116,8 @@ func WindowsProviderSchema(ctx context.Context) schema.Schema {
 				MarkdownDescription: "Define the WinRM connection parameters. Exactly one of 'winrm' or 'ssh' must be set for the provider to connect to a Windows target system. Define an empty 'winrm' attribute if you wish to use the environment variables.",
 			},
 		},
+		Description:         "The windows provider is used to interact remotely via winrm or ssh with a windows system.\n\n~> **Important** Due to the limitations of the terraform-plugin-framework some attributes are listed as optionals even though a combination of certain parameters are required. Check examples below for reference.",
+		MarkdownDescription: "The windows provider is used to interact remotely via winrm or ssh with a windows system.\n\n~> **Important** Due to the limitations of the terraform-plugin-framework some attributes are listed as optionals even though a combination of certain parameters are required. Check examples below for reference.",
 	}
 }
 
@@ -680,16 +682,26 @@ func (v SshValue) String() string {
 func (v SshValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	attributeTypes := map[string]attr.Type{
+		"insecure":         basetypes.BoolType{},
+		"known_hosts_path": basetypes.StringType{},
+		"password":         basetypes.StringType{},
+		"port":             basetypes.Int64Type{},
+		"private_key":      basetypes.StringType{},
+		"private_key_path": basetypes.StringType{},
+		"username":         basetypes.StringType{},
+	}
+
+	if v.IsNull() {
+		return types.ObjectNull(attributeTypes), diags
+	}
+
+	if v.IsUnknown() {
+		return types.ObjectUnknown(attributeTypes), diags
+	}
+
 	objVal, diags := types.ObjectValue(
-		map[string]attr.Type{
-			"insecure":         basetypes.BoolType{},
-			"known_hosts_path": basetypes.StringType{},
-			"password":         basetypes.StringType{},
-			"port":             basetypes.Int64Type{},
-			"private_key":      basetypes.StringType{},
-			"private_key_path": basetypes.StringType{},
-			"username":         basetypes.StringType{},
-		},
+		attributeTypes,
 		map[string]attr.Value{
 			"insecure":         v.Insecure,
 			"known_hosts_path": v.KnownHostsPath,
@@ -1276,15 +1288,25 @@ func (v WinrmValue) String() string {
 func (v WinrmValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	attributeTypes := map[string]attr.Type{
+		"insecure": basetypes.BoolType{},
+		"password": basetypes.StringType{},
+		"port":     basetypes.Int64Type{},
+		"timeout":  basetypes.Int64Type{},
+		"use_tls":  basetypes.BoolType{},
+		"username": basetypes.StringType{},
+	}
+
+	if v.IsNull() {
+		return types.ObjectNull(attributeTypes), diags
+	}
+
+	if v.IsUnknown() {
+		return types.ObjectUnknown(attributeTypes), diags
+	}
+
 	objVal, diags := types.ObjectValue(
-		map[string]attr.Type{
-			"insecure": basetypes.BoolType{},
-			"password": basetypes.StringType{},
-			"port":     basetypes.Int64Type{},
-			"timeout":  basetypes.Int64Type{},
-			"use_tls":  basetypes.BoolType{},
-			"username": basetypes.StringType{},
-		},
+		attributeTypes,
 		map[string]attr.Value{
 			"insecure": v.Insecure,
 			"password": v.Password,

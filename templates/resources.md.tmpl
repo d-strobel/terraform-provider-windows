@@ -20,6 +20,7 @@ description: |-
 
 {{- if .HasImport }}
 ## Import
+
 {{ plainmarkdown (codefile "" (printf "examples/resources/%s/import.md" .Name)) }}
 {{ codefile "bash" .ImportFile }}
 {{- end }}

@@ -102,6 +102,8 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 				Computed: true,
 			},
 		},
+		Description:         "Retrieve a list of all local users.",
+		MarkdownDescription: "Retrieve a list of all local users.",
 	}
 }
 
@@ -952,22 +954,32 @@ func (v UsersValue) String() string {
 func (v UsersValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	attributeTypes := map[string]attr.Type{
+		"account_expires":          basetypes.StringType{},
+		"description":              basetypes.StringType{},
+		"enabled":                  basetypes.BoolType{},
+		"full_name":                basetypes.StringType{},
+		"id":                       basetypes.StringType{},
+		"last_logon":               basetypes.StringType{},
+		"name":                     basetypes.StringType{},
+		"password_changeable_date": basetypes.StringType{},
+		"password_expires":         basetypes.StringType{},
+		"password_last_set":        basetypes.StringType{},
+		"password_required":        basetypes.BoolType{},
+		"sid":                      basetypes.StringType{},
+		"user_may_change_password": basetypes.BoolType{},
+	}
+
+	if v.IsNull() {
+		return types.ObjectNull(attributeTypes), diags
+	}
+
+	if v.IsUnknown() {
+		return types.ObjectUnknown(attributeTypes), diags
+	}
+
 	objVal, diags := types.ObjectValue(
-		map[string]attr.Type{
-			"account_expires":          basetypes.StringType{},
-			"description":              basetypes.StringType{},
-			"enabled":                  basetypes.BoolType{},
-			"full_name":                basetypes.StringType{},
-			"id":                       basetypes.StringType{},
-			"last_logon":               basetypes.StringType{},
-			"name":                     basetypes.StringType{},
-			"password_changeable_date": basetypes.StringType{},
-			"password_expires":         basetypes.StringType{},
-			"password_last_set":        basetypes.StringType{},
-			"password_required":        basetypes.BoolType{},
-			"sid":                      basetypes.StringType{},
-			"user_may_change_password": basetypes.BoolType{},
-		},
+		attributeTypes,
 		map[string]attr.Value{
 			"account_expires":          v.AccountExpires,
 			"description":              v.Description,

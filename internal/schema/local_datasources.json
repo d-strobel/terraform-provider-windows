@@ -7,6 +7,8 @@
     {
       "name": "local_group",
       "schema": {
+        "description": "Retrieve information about a local security group.\nYou can get a group by the name or the security ID of the group.",
+        "markdown_description": "Retrieve information about a local security group.\nYou can get a group by the name or the security ID of the group.",
         "attributes": [
           {
             "name": "description",
@@ -42,6 +44,8 @@
     {
       "name": "local_groups",
       "schema": {
+        "description": "Retrieve a list of all local security groups.",
+        "markdown_description": "Retrieve a list of all local security groups.",
         "attributes": [
           {
             "name": "groups",
@@ -87,6 +91,8 @@
     {
       "name": "local_user",
       "schema": {
+        "description": "Retrieve information about a local user. You can get a user by the name or the security ID.",
+        "markdown_description": "Retrieve information about a local user. You can get a user by the name or the security ID.",
         "attributes": [
           {
             "name": "account_expires",
@@ -220,6 +226,8 @@
     {
       "name": "local_users",
       "schema": {
+        "description": "Retrieve a list of all local users.",
+        "markdown_description": "Retrieve a list of all local users.",
         "attributes": [
           {
             "name": "users",
@@ -363,6 +371,8 @@
     {
       "name": "local_group_members",
       "schema": {
+        "description": "Retrieve a list of members for a specific local security group.",
+        "markdown_description": "Retrieve a list of members for a specific local security group.",
         "attributes": [
           {
             "name": "name",

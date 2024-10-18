@@ -32,7 +32,6 @@ func (r *localGroupMemberResource) Metadata(ctx context.Context, req resource.Me
 
 func (r *localGroupMemberResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = resource_local_group_member.LocalGroupMemberResourceSchema(ctx)
-	resp.Schema.Description = `Manage group member for local security groups.`
 }
 
 func (r *localGroupMemberResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -89,17 +88,18 @@ func (r *localGroupMemberResource) Read(ctx context.Context, req resource.ReadRe
 	// Read Terraform prior state data into the model
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	// Split the ID into SID and Member
 	resourceId := data.Id.ValueString()
 	resourceIdParts := strings.Split(resourceId, "/member/")
 	if len(resourceIdParts) != 2 {
 		resp.Diagnostics.AddError(
-			"Invalid Import ID",
-			fmt.Sprintf("Expected import ID format: '<SID>/member/<Member>', got: %s", resourceId),
+			"Invalid resource ID format",
+			fmt.Sprintf("Expected resource ID format: '<SID of the Group>/member/<SID of the GroupMember>', got: %s", resourceId),
 		)
-	}
-
-	if resp.Diagnostics.HasError() {
 		return
 	}
 
@@ -127,7 +127,11 @@ func (r *localGroupMemberResource) Read(ctx context.Context, req resource.ReadRe
 }
 
 func (r *localGroupMemberResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	// Update is not needed in this resource
+	// Update must never be called
+	resp.Diagnostics.AddError(
+		"Unexpected Update Call",
+		"The update operation is not supported for this resource. Please report this issue to the provider developers.",
+	)
 }
 
 func (r *localGroupMemberResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

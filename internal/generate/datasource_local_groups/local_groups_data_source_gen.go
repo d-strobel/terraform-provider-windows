@@ -51,6 +51,8 @@ func LocalGroupsDataSourceSchema(ctx context.Context) schema.Schema {
 				Computed: true,
 			},
 		},
+		Description:         "Retrieve a list of all local security groups.",
+		MarkdownDescription: "Retrieve a list of all local security groups.",
 	}
 }
 
@@ -469,13 +471,23 @@ func (v GroupsValue) String() string {
 func (v GroupsValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	attributeTypes := map[string]attr.Type{
+		"description": basetypes.StringType{},
+		"id":          basetypes.StringType{},
+		"name":        basetypes.StringType{},
+		"sid":         basetypes.StringType{},
+	}
+
+	if v.IsNull() {
+		return types.ObjectNull(attributeTypes), diags
+	}
+
+	if v.IsUnknown() {
+		return types.ObjectUnknown(attributeTypes), diags
+	}
+
 	objVal, diags := types.ObjectValue(
-		map[string]attr.Type{
-			"description": basetypes.StringType{},
-			"id":          basetypes.StringType{},
-			"name":        basetypes.StringType{},
-			"sid":         basetypes.StringType{},
-		},
+		attributeTypes,
 		map[string]attr.Value{
 			"description": v.Description,
 			"id":          v.Id,

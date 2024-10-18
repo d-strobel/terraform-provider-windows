@@ -39,6 +39,8 @@ func LocalGroupMemberResourceSchema(ctx context.Context) schema.Schema {
 				},
 			},
 		},
+		Description:         "Manage group member for local security groups.",
+		MarkdownDescription: "Manage group member for local security groups.",
 	}
 }
 

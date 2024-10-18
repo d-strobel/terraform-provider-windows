@@ -3,11 +3,13 @@ package local
 import (
 	"context"
 	"fmt"
-	"github.com/d-strobel/terraform-provider-windows/internal/generate/datasource_local_users"
 	"time"
+
+	"github.com/d-strobel/terraform-provider-windows/internal/generate/datasource_local_users"
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/winerror"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -30,7 +32,6 @@ func (d *localUsersDataSource) Metadata(ctx context.Context, req datasource.Meta
 
 func (d *localUsersDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = datasource_local_users.LocalUsersDataSourceSchema(ctx)
-	resp.Schema.Description = `Retrieve a list of all local users.`
 }
 
 func (d *localUsersDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -76,36 +77,33 @@ func (d *localUsersDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	// For further information, see the following issue:
 	// https://github.com/hashicorp/terraform-plugin-codegen-framework/issues/80
 	tflog.Trace(ctx, "Converting the windows remote client response to the expected data source schema")
-	var usersValueList []datasource_local_users.UsersValue
+	userValue := datasource_local_users.UsersValue{}
+	var userValues []datasource_local_users.UsersValue
 
 	for _, user := range winResp {
-		usersValue := datasource_local_users.UsersValue{
-			AccountExpires:         types.StringValue(user.AccountExpires.Format(time.RFC3339)),
-			Description:            types.StringValue(user.Description),
-			Enabled:                types.BoolValue(user.Enabled),
-			FullName:               types.StringValue(user.FullName),
-			Id:                     types.StringValue(user.SID.Value),
-			LastLogon:              types.StringValue(user.LastLogon.Format(time.RFC3339)),
-			Name:                   types.StringValue(user.Name),
-			PasswordChangeableDate: types.StringValue(user.PasswordChangeableDate.Format(time.RFC3339)),
-			PasswordExpires:        types.StringValue(user.PasswordExpires.Format(time.RFC3339)),
-			PasswordLastSet:        types.StringValue(user.PasswordLastSet.Format(time.RFC3339)),
-			PasswordRequired:       types.BoolValue(user.PasswordRequired),
-			Sid:                    types.StringValue(user.SID.Value),
-			UserMayChangePassword:  types.BoolValue(user.UserMayChangePassword),
-		}
+		r := datasource_local_users.NewUsersValueMust(userValue.AttributeTypes(ctx), map[string]attr.Value{
+			"account_expires":          types.StringValue(user.AccountExpires.Format(time.RFC3339)),
+			"description":              types.StringValue(user.Description),
+			"enabled":                  types.BoolValue(user.Enabled),
+			"full_name":                types.StringValue(user.FullName),
+			"id":                       types.StringValue(user.SID.Value),
+			"last_logon":               types.StringValue(user.LastLogon.Format(time.RFC3339)),
+			"name":                     types.StringValue(user.Name),
+			"password_changeable_date": types.StringValue(user.PasswordChangeableDate.Format(time.RFC3339)),
+			"password_expires":         types.StringValue(user.PasswordExpires.Format(time.RFC3339)),
+			"password_last_set":        types.StringValue(user.PasswordLastSet.Format(time.RFC3339)),
+			"password_required":        types.BoolValue(user.PasswordRequired),
+			"sid":                      types.StringValue(user.SID.Value),
+			"user_may_change_password": types.BoolValue(user.UserMayChangePassword),
+		})
+		userValues = append(userValues, r)
+	}
 
-		objVal, diags := usersValue.ToObjectValue(ctx)
-		resp.Diagnostics.Append(diags...)
+	usersValueList, diags := types.ListValueFrom(ctx, userValue.Type(ctx), userValues)
+	resp.Diagnostics.Append(diags...)
 
-		newUsersValue, diags := datasource_local_users.NewUsersValue(objVal.AttributeTypes(ctx), objVal.Attributes())
-		resp.Diagnostics.Append(diags...)
-
-		if resp.Diagnostics.HasError() {
-			return
-		}
-
-		usersValueList = append(usersValueList, newUsersValue)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
 	data.Users, diags = types.ListValueFrom(ctx, datasource_local_users.UsersValue{}.Type(ctx), usersValueList)

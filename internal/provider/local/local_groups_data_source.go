@@ -3,10 +3,12 @@ package local
 import (
 	"context"
 	"fmt"
+
 	"github.com/d-strobel/terraform-provider-windows/internal/generate/datasource_local_groups"
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/winerror"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -29,7 +31,6 @@ func (d *localGroupsDataSource) Metadata(ctx context.Context, req datasource.Met
 
 func (d *localGroupsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = datasource_local_groups.LocalGroupsDataSourceSchema(ctx)
-	resp.Schema.Description = `Retrieve a list of all local security groups.`
 }
 
 func (d *localGroupsDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -75,27 +76,25 @@ func (d *localGroupsDataSource) Read(ctx context.Context, req datasource.ReadReq
 	// For further information, see the following issue:
 	// https://github.com/hashicorp/terraform-plugin-codegen-framework/issues/80
 	tflog.Trace(ctx, "Converting the windows remote client response to the expected data source schema")
-	var groupsValueList []datasource_local_groups.GroupsValue
+
+	groupValue := datasource_local_groups.GroupsValue{}
+	var groupValues []datasource_local_groups.GroupsValue
 
 	for _, group := range winResp {
-		groupsValue := datasource_local_groups.GroupsValue{
-			Name:        types.StringValue(group.Name),
-			Description: types.StringValue(group.Description),
-			Sid:         types.StringValue(group.SID.Value),
-			Id:          types.StringValue(group.SID.Value),
-		}
+		r := datasource_local_groups.NewGroupsValueMust(groupValue.AttributeTypes(ctx), map[string]attr.Value{
+			"name":        types.StringValue(group.Name),
+			"description": types.StringValue(group.Description),
+			"sid":         types.StringValue(group.SID.Value),
+			"id":          types.StringValue(group.SID.Value),
+		})
+		groupValues = append(groupValues, r)
+	}
 
-		objVal, diags := groupsValue.ToObjectValue(ctx)
-		resp.Diagnostics.Append(diags...)
+	groupsValueList, diags := types.ListValueFrom(ctx, groupValue.Type(ctx), groupValues)
+	resp.Diagnostics.Append(diags...)
 
-		newGroupsValue, diags := datasource_local_groups.NewGroupsValue(objVal.AttributeTypes(ctx), objVal.Attributes())
-		resp.Diagnostics.Append(diags...)
-
-		if resp.Diagnostics.HasError() {
-			return
-		}
-
-		groupsValueList = append(groupsValueList, newGroupsValue)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
 	data.Groups, diags = types.ListValueFrom(ctx, datasource_local_groups.GroupsValue{}.Type(ctx), groupsValueList)

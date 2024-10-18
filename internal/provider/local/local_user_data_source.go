@@ -34,7 +34,6 @@ func (d *localUserDataSource) Metadata(ctx context.Context, req datasource.Metad
 
 func (d *localUserDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = datasource_local_user.LocalUserDataSourceSchema(ctx)
-	resp.Schema.Description = `Retrieve information about a local user. You can get a user by the name or the security ID.`
 }
 
 func (d *localUserDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {

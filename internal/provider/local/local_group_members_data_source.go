@@ -3,11 +3,13 @@ package local
 import (
 	"context"
 	"fmt"
+
 	"github.com/d-strobel/terraform-provider-windows/internal/generate/datasource_local_group_members"
 
 	"github.com/d-strobel/gowindows"
 	"github.com/d-strobel/gowindows/windows/local/accounts"
 	"github.com/d-strobel/gowindows/winerror"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -30,7 +32,6 @@ func (d *localGroupMembersDataSource) Metadata(ctx context.Context, req datasour
 
 func (d *localGroupMembersDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = datasource_local_group_members.LocalGroupMembersDataSourceSchema(ctx)
-	resp.Schema.Description = `Retrieve a list of members for a specific local security group.`
 }
 
 func (d *localGroupMembersDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -79,26 +80,22 @@ func (d *localGroupMembersDataSource) Read(ctx context.Context, req datasource.R
 	// For further information, see the following issue:
 	// https://github.com/hashicorp/terraform-plugin-codegen-framework/issues/80
 	tflog.Trace(ctx, "Converting the windows remote client response to the expected data source schema")
-	var membersValueList []datasource_local_group_members.MembersValue
+	memberValue := datasource_local_group_members.MembersValue{}
+	var memberValues []datasource_local_group_members.MembersValue
 
 	for _, member := range winResp {
-		memberValue := datasource_local_group_members.MembersValue{
-			Name:        types.StringValue(member.Name),
-			Sid:         types.StringValue(member.SID.Value),
-			ObjectClass: types.StringValue(member.ObjectClass),
-		}
+		r := datasource_local_group_members.NewMembersValueMust(memberValue.AttributeTypes(ctx), map[string]attr.Value{
+			"name":         types.StringValue(member.Name),
+			"sid":          types.StringValue(member.SID.Value),
+			"object_class": types.StringValue(member.ObjectClass),
+		})
+		memberValues = append(memberValues, r)
+	}
 
-		objVal, diags := memberValue.ToObjectValue(ctx)
-		resp.Diagnostics.Append(diags...)
-
-		newMembersValue, diags := datasource_local_group_members.NewMembersValue(objVal.AttributeTypes(ctx), objVal.Attributes())
-		resp.Diagnostics.Append(diags...)
-
-		if resp.Diagnostics.HasError() {
-			return
-		}
-
-		membersValueList = append(membersValueList, newMembersValue)
+	membersValueList, diags := types.ListValueFrom(ctx, memberValue.Type(ctx), memberValues)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
 
 	data.Members, diags = types.ListValueFrom(ctx, datasource_local_group_members.MembersValue{}.Type(ctx), membersValueList)

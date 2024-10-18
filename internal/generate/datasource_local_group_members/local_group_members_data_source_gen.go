@@ -51,6 +51,8 @@ func LocalGroupMembersDataSourceSchema(ctx context.Context) schema.Schema {
 				MarkdownDescription: "The name of the local group.",
 			},
 		},
+		Description:         "Retrieve a list of members for a specific local security group.",
+		MarkdownDescription: "Retrieve a list of members for a specific local security group.",
 	}
 }
 
@@ -422,12 +424,22 @@ func (v MembersValue) String() string {
 func (v MembersValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
+	attributeTypes := map[string]attr.Type{
+		"name":         basetypes.StringType{},
+		"object_class": basetypes.StringType{},
+		"sid":          basetypes.StringType{},
+	}
+
+	if v.IsNull() {
+		return types.ObjectNull(attributeTypes), diags
+	}
+
+	if v.IsUnknown() {
+		return types.ObjectUnknown(attributeTypes), diags
+	}
+
 	objVal, diags := types.ObjectValue(
-		map[string]attr.Type{
-			"name":         basetypes.StringType{},
-			"object_class": basetypes.StringType{},
-			"sid":          basetypes.StringType{},
-		},
+		attributeTypes,
 		map[string]attr.Value{
 			"name":         v.Name,
 			"object_class": v.ObjectClass,
