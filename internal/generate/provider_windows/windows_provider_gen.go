@@ -116,6 +116,8 @@ func WindowsProviderSchema(ctx context.Context) schema.Schema {
 				MarkdownDescription: "Define the WinRM connection parameters. Exactly one of 'winrm' or 'ssh' must be set for the provider to connect to a Windows target system. Define an empty 'winrm' attribute if you wish to use the environment variables.",
 			},
 		},
+		Description:         "The windows provider is used to interact remotely via winrm or ssh with a windows system.\n\n**Important**:\nDue to the limitations of the terraform-plugin-framework some attributes are listed as optionals even though a combination of certain parameters are required\nCheck examples below for reference.",
+		MarkdownDescription: "The windows provider is used to interact remotely via winrm or ssh with a windows system.\n\n**Important**:\nDue to the limitations of the terraform-plugin-framework some attributes are listed as optionals even though a combination of certain parameters are required.\nCheck examples below for reference.",
 	}
 }
 

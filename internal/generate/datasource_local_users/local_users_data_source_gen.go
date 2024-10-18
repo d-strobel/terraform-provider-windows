@@ -102,6 +102,8 @@ func LocalUsersDataSourceSchema(ctx context.Context) schema.Schema {
 				Computed: true,
 			},
 		},
+		Description:         "Retrieve a list of all local users.",
+		MarkdownDescription: "Retrieve a list of all local users.",
 	}
 }
 

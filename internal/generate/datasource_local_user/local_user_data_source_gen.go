@@ -84,6 +84,8 @@ func LocalUserDataSourceSchema(ctx context.Context) schema.Schema {
 				MarkdownDescription: "If true the local user can change it's password.",
 			},
 		},
+		Description:         "Retrieve information about a local user. You can get a user by the name or the security ID.",
+		MarkdownDescription: "Retrieve information about a local user. You can get a user by the name or the security ID.",
 	}
 }
 

@@ -32,7 +32,6 @@ func (d *localUsersDataSource) Metadata(ctx context.Context, req datasource.Meta
 
 func (d *localUsersDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = datasource_local_users.LocalUsersDataSourceSchema(ctx)
-	resp.Schema.Description = `Retrieve a list of all local users.`
 }
 
 func (d *localUsersDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {

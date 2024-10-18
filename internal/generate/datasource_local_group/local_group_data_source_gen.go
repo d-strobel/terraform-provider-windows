@@ -33,6 +33,8 @@ func LocalGroupDataSourceSchema(ctx context.Context) schema.Schema {
 				MarkdownDescription: "The security ID of the local security group. Exactly one of 'name' or 'sid' is required.",
 			},
 		},
+		Description:         "Retrieve information about a local security group.\nYou can get a group by the name or the security ID of the group.",
+		MarkdownDescription: "Retrieve information about a local security group.\nYou can get a group by the name or the security ID of the group.",
 	}
 }
 

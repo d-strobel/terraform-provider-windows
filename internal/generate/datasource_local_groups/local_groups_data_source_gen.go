@@ -51,6 +51,8 @@ func LocalGroupsDataSourceSchema(ctx context.Context) schema.Schema {
 				Computed: true,
 			},
 		},
+		Description:         "Retrieve a list of all local security groups.",
+		MarkdownDescription: "Retrieve a list of all local security groups.",
 	}
 }
 

@@ -32,7 +32,6 @@ func (r *localGroupMemberResource) Metadata(ctx context.Context, req resource.Me
 
 func (r *localGroupMemberResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = resource_local_group_member.LocalGroupMemberResourceSchema(ctx)
-	resp.Schema.Description = `Manage group member for local security groups.`
 }
 
 func (r *localGroupMemberResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {

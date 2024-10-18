@@ -51,6 +51,8 @@ func LocalGroupMembersDataSourceSchema(ctx context.Context) schema.Schema {
 				MarkdownDescription: "The name of the local group.",
 			},
 		},
+		Description:         "Retrieve a list of members for a specific local security group.",
+		MarkdownDescription: "Retrieve a list of members for a specific local security group.",
 	}
 }
 

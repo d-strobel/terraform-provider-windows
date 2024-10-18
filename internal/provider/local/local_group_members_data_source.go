@@ -32,7 +32,6 @@ func (d *localGroupMembersDataSource) Metadata(ctx context.Context, req datasour
 
 func (d *localGroupMembersDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = datasource_local_group_members.LocalGroupMembersDataSourceSchema(ctx)
-	resp.Schema.Description = `Retrieve a list of members for a specific local security group.`
 }
 
 func (d *localGroupMembersDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {

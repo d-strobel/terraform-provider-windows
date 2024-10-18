@@ -7,6 +7,8 @@
     {
       "name": "local_group",
       "schema": {
+        "description": "Manage local security groups.\n\n-> The description default is a string with a space. This is necessary because the powershell function Set-LocalGroup does not allow an empty string.",
+        "markdown_description": "Manage local security groups.\n\n-> The description default is a string with a space. This is necessary because the powershell function Set-LocalGroup does not allow an empty string.",
         "attributes": [
           {
             "name": "description",
@@ -105,6 +107,8 @@
     {
       "name": "local_user",
       "schema": {
+        "description": "Manage local users.",
+        "markdown_description": "Manage local users.",
         "attributes": [
           {
             "name": "account_expires",
@@ -356,6 +360,8 @@
     {
       "name": "local_group_member",
       "schema": {
+        "description": "Manage group member for local security groups.",
+        "markdown_description": "Manage group member for local security groups.",
         "attributes": [
           {
             "name": "group_id",

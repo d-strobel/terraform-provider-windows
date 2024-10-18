@@ -55,6 +55,8 @@ func LocalGroupResourceSchema(ctx context.Context) schema.Schema {
 				},
 			},
 		},
+		Description:         "Manage local security groups.\n\n-> The description default is a string with a space. This is necessary because the powershell function Set-LocalGroup does not allow an empty string.",
+		MarkdownDescription: "Manage local security groups.\n\n-> The description default is a string with a space. This is necessary because the powershell function Set-LocalGroup does not allow an empty string.",
 	}
 }
 

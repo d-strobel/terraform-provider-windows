@@ -133,6 +133,8 @@ func LocalUserResourceSchema(ctx context.Context) schema.Schema {
 				Default:             booldefault.StaticBool(true),
 			},
 		},
+		Description:         "Manage local users.",
+		MarkdownDescription: "Manage local users.",
 	}
 }
 
