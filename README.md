@@ -59,38 +59,6 @@ You can find more details about pre-commit hooks on their official website: [pre
 
 This Terraform provider follows the conventional commit guidelines. For more information, see [conventionalcommits.org](https://www.conventionalcommits.org/).
 
-### Acceptance test
-
-> The acceptance tests are currently not available via Github action.
-
-#### Prerequisites
-
-* [Terraform](https://developer.hashicorp.com/terraform/downloads)
-* [OpenTofu](https://opentofu.org/docs/intro/install)
-* [Go](https://golang.org/doc/install)
-* [Hashicorp Vagrant](https://www.vagrantup.com/)
-* [Oracle VirtualBox](https://www.virtualbox.org/)
-
-#### Run tests
-
-Boot the Vagrant machines:
-
-```shell
-make vagrant-up
-```
-
-Run acceptance tests for terraform and opentofu:
-
-```shell
-make testacc
-```
-
-Destroy the Vagrant machines:
-
-```shell
-make vagrant-down
-```
-
 ### Code Generation
 
 Some parts of this provider are automatically generated using the [terraform-plugin-codegen-framework](https://github.com/hashicorp/terraform-plugin-codegen-framework).
@@ -129,8 +97,43 @@ tfplugingen-framework scaffold data-source --name subpackage_datasource_name --o
 After generating the files, update them as needed.
 Review the existing resources and data sources for guidance on what changes to make initially.
 
-Finally, implement the CRUD operation logic in the corresponding functions, 
-and don’t forget to add acceptance tests to validate the functionality (see [Acceptance tests](#Acceptance test)
+Once the CRUD operation logic is implemented in the corresponding functions, 
+ensure that the `New...Resource` or `New...DataSource` function is called in the [provider.go](./internal/provider/provider.go)
+file under the appropriate `Resources` or `DataSources` function.
+
+Finally, don’t forget to add acceptance tests to validate the functionality (see section [Acceptance Test](#acceptance-test)).
+
+### Acceptance test
+
+> The acceptance tests are currently not available via Github action.
+
+#### Prerequisites
+
+* [Terraform](https://developer.hashicorp.com/terraform/downloads)
+* [OpenTofu](https://opentofu.org/docs/intro/install)
+* [Go](https://golang.org/doc/install)
+* [Hashicorp Vagrant](https://www.vagrantup.com/)
+* [Oracle VirtualBox](https://www.virtualbox.org/)
+
+#### Run tests
+
+Boot the Vagrant machines:
+
+```shell
+make vagrant-up
+```
+
+Run acceptance tests for terraform and opentofu:
+
+```shell
+make testacc
+```
+
+Destroy the Vagrant machines:
+
+```shell
+make vagrant-down
+```
 
 ## Inspirations
 
