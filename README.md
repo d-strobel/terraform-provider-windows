@@ -71,7 +71,7 @@ This Terraform provider follows the conventional commit guidelines. For more inf
 * [Hashicorp Vagrant](https://www.vagrantup.com/)
 * [Oracle VirtualBox](https://www.virtualbox.org/)
 
-#### Usage
+#### Run tests
 
 Boot the Vagrant machines:
 
@@ -91,7 +91,46 @@ Destroy the Vagrant machines:
 make vagrant-down
 ```
 
-###
+### Code Generation
+
+Some parts of this provider are automatically generated using the [terraform-plugin-codegen-framework](https://github.com/hashicorp/terraform-plugin-codegen-framework).
+
+#### Schema
+
+The schemas for providers, resources, and data sources are defined as JSON files located in the [internal/schema](./internal/schema) directory.
+
+To generate the corresponding code, simply run `go generate`.<br> 
+This will execute all commands in the [main.go](./main.go) file that are prefixed with the following syntax: `//go:generate <CMD>`.
+
+If you are adding a new resource within an existing subpackage, update the JSON schema in the respective subpackage file.
+
+For a new subpackage, you’ll need to create a new file for the resources and data sources.<br>
+Additionally, you'll also need to add the appropriate code generation commands in the [main.go](./main.go) file.
+
+#### Scaffolding
+
+Once the schema code is generated, you may want to create the data source or resource files that utilize the generated code.
+
+To help with this, you can use the scaffold command from the terraform-plugin-codegen-framework to initially generate these files.<br>
+Since the scaffolded files require manual modification, you only need to generate them once.
+
+* Create a Resource
+
+```shell
+tfplugingen-framework scaffold resource --name subpackage_resource_name --output-dir internal/provider/subpackage --package subpackage
+```
+
+* Create a Datasources
+
+```shell
+tfplugingen-framework scaffold data-source --name subpackage_datasource_name --output-dir internal/provider/subpackage --package subpackage
+```
+
+After generating the files, update them as needed.
+Review the existing resources and data sources for guidance on what changes to make initially.
+
+Finally, implement the CRUD operation logic in the corresponding functions, 
+and don’t forget to add acceptance tests to validate the functionality (see [Acceptance tests](#Acceptance test)
 
 ## Inspirations
 
