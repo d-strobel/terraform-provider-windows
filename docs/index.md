@@ -72,8 +72,10 @@ EOT
 
 ### Optional
 
-- `ssh` (Attributes) Define the SSH connection parameters. Exactly one of 'winrm' or 'ssh' must be set for the provider to connect to a Windows target system. Define an empty 'ssh' attribute if you wish to use the environment variables. (see [below for nested schema](#nestedatt--ssh))
-- `winrm` (Attributes) Define the WinRM connection parameters. Exactly one of 'winrm' or 'ssh' must be set for the provider to connect to a Windows target system. Define an empty 'winrm' attribute if you wish to use the environment variables. (see [below for nested schema](#nestedatt--winrm))
+~> **Important** Exactly one of 'winrm' or 'ssh' must be set for the provider to connect to a Windows target system.
+
+- `ssh` (Attributes) Define the SSH connection parameters. Define an empty 'ssh' attribute if you wish to use the environment variables. (see [below for nested schema](#nestedatt--ssh))
+- `winrm` (Attributes) Define the WinRM connection parameters. Define an empty 'winrm' attribute if you wish to use the environment variables. (see [below for nested schema](#nestedatt--winrm))
 
 <a id="nestedatt--ssh"></a>
 ### Nested Schema for `ssh`
@@ -82,11 +84,11 @@ Optional:
 
 - `insecure` (Boolean) (Env: `WIN_SSH_INSECURE`) (Default: `false`)<br>Accept insecure SSH connections. This includes e.g. the acceptance of unknown or changed host keys.
 - `known_hosts_path` (String) (Env: `WIN_SSH_KNOWN_HOSTS_PATH`)<br>Define the path to the known hosts file to connect with the target Windows system.
+- `username` (String) (Env: `WIN_SSH_USERNAME`)<br>Define the username to connect with the target Windows system. Required if ssh is set.
 - `password` (String, Sensitive) (Env: `WIN_SSH_PASSWORD`)<br>Define the password to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.
 - `port` (Number) (Env: `WIN_SSH_PORT`) (Default: `22`)<br>Define the port to connect with the target Windows system.
 - `private_key` (String, Sensitive) (Env: `WIN_SSH_PRIVATE_KEY`)<br>Define the private key to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.
 - `private_key_path` (String) (Env: `WIN_SSH_PRIVATE_KEY_PATH`)<br>Define the path to the private key file to connect with the target Windows system. Exactly one of 'password', 'private_key' or 'private_key_path' is required if ssh is set.
-- `username` (String) (Env: `WIN_SSH_USERNAME`)<br>Define the username to connect with the target Windows system. Required if ssh is set.
 
 
 <a id="nestedatt--winrm"></a>
@@ -95,11 +97,8 @@ Optional:
 Optional:
 
 - `insecure` (Boolean) (Env: `WIN_WINRM_INSECURE`) (Default: `false`)<br>Accept insecure WinRM connection. This includes e.g. the acceptance of untrusted certificates.
+- `username` (String) (Env: `WIN_WINRM_USERNAME`)<br>Define the username to connect with the target Windows system. Required if winrm is set.
 - `password` (String, Sensitive) (Env: `WIN_WINRM_PASSWORD`)<br>Define the password to connect with the target Windows system. Required if winrm is set.
 - `port` (Number) (Env: `WIN_WINRM_PORT`) (Default: `5986`)<br>Define the port to connect with the target Windows system.
 - `timeout` (Number) (Env: `WIN_WINRM_TIMEOUT`) (Default: `0`)<br>Define the connection timeout in minutes for the target Windows system.
 - `use_tls` (Boolean) (Env: `WIN_WINRM_USE_TLS`) (Default: `true`)<br>Define if TLS (https) should be used to connect with the target Windows system.
-- `username` (String) (Env: `WIN_WINRM_USERNAME`)<br>Define the username to connect with the target Windows system. Required if winrm is set.
-
-
-
