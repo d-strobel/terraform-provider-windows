@@ -25,7 +25,7 @@ resource "windows_local_group" "test" {
 
 ### Required
 
-- `name` (String) Define the name for the local security group. The maximum length is 256 characters. A local security name can't contain the following characters: `"`, `/`, `\`, `[`, `]`, `:`, `;`, `|`, `=`, `,`, `+`, `*`, `?`, `<`, `>`, `@`
+- `name` (String) Define the name for the local security group. The maximum length is 256 characters.
 
 ### Optional
 
