@@ -8,7 +8,7 @@ description: |-
 
 <!-- data-source description generated from schema -->
 Retrieve information about a local security group.
-You can retrieve a group by its name or security ID.
+You can get a group by the name or the security ID of the group.
 <!-- examples generated from example files -->
 ## Example Usage
 
@@ -23,10 +23,8 @@ data "windows_local_group" "Administrator" {
 
 ### Optional
 
-~> **Important** Exactly one of 'name' or 'sid' is required.
-
-- `name` (String) The name of the local security group.
-- `sid` (String) The security ID of the local security group.
+- `name` (String) The name of the local security group. Exactly one of 'name' or 'sid' is required.
+- `sid` (String) The security ID of the local security group. Exactly one of 'name' or 'sid' is required.
 
 ### Read-Only
 
