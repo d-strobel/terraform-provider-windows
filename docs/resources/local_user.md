@@ -33,7 +33,7 @@ resource "windows_local_user" "this" {
 
 ### Optional
 
-- `account_expires` (String) Define when the local user account expires. If not specified, the user account never expires.<br>The string time format is the following: `2023-07-25T20:43:16Z` (see [Terraform timetypes](https://pkg.go.dev/github.com/hashicorp/terraform-plugin-framework-timetypes@v0.3.0/timetypes#RFC3339)).
+- `account_expires` (String) Define when the local user account expires. If not specified, the user account never expires.<br>The string time format is the following: `2023-07-25T20:43:16Z` (ISO 8601 datetime/RFC3389, see [Terraform timetypes](https://pkg.go.dev/github.com/hashicorp/terraform-plugin-framework-timetypes@v0.3.0/timetypes#RFC3339)).
 - `description` (String) Define a description for the local user. The maximum length is 48 characters.
 - `enabled` (Boolean) (Default: `true`)<br>Define whether the local user is enabled.
 - `full_name` (String) Define the full name of the local user. The full name differs from the user name of the user account.
