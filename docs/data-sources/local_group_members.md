@@ -2,12 +2,12 @@
 page_title: "windows_local_group_members Data Source - terraform-provider-windows"
 subcategory: "Local"
 description: |-
-  Retrieve a list of members for a specific local security group
+  Retrieve a list of members of a specific local security group
 ---
 # windows_local_group_members (Data Source)
 
 <!-- data-source description generated from schema -->
-Retrieve a list of members for a specific local security group.
+Retrieve a list of members of a specific local security group.
 <!-- examples generated from example files -->
 ## Example Usage
 
