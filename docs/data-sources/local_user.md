@@ -7,7 +7,7 @@ description: |-
 # windows_local_user (Data Source)
 
 <!-- data-source description generated from schema -->
-Retrieve information about a local user. You can get a user by the name or the security ID.
+Retrieve information about a local user. You can retrieve a user by its name or security ID.
 <!-- examples generated from example files -->
 ## Example Usage
 
@@ -22,8 +22,10 @@ data "windows_local_user" "admin" {
 
 ### Optional
 
-- `name` (String) The name of the local user. Exactly one of 'name' or 'sid' is required.
-- `sid` (String) The security ID of the local user. Exactly one of 'name' or 'sid' is required.
+~> **Important** Exactly one of 'name' or 'sid' is required.
+
+- `name` (String) The name of the local user.
+- `sid` (String) The security ID of the local user.
 
 ### Read-Only
 
