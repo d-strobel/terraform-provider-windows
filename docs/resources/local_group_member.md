@@ -2,12 +2,12 @@
 page_title: "windows_local_group_member Resource - terraform-provider-windows"
 subcategory: "Local"
 description: |-
-  Manage members of local security groups
+  Manage group member for local security groups
 ---
 # windows_local_group_member (Resource)
 
 <!-- resource description generated from schema -->
-Manage members of local security groups.
+Manage group member for local security groups.
 <!-- examples generated from example files -->
 ## Example Usage
 
