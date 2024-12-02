@@ -5,7 +5,7 @@ go 1.22.8
 require (
 	github.com/d-strobel/gowindows v1.1.0
 	github.com/hashicorp/terraform-plugin-codegen-framework v0.4.1
-	github.com/hashicorp/terraform-plugin-docs v0.20.0
+	github.com/hashicorp/terraform-plugin-docs v0.20.1
 	github.com/hashicorp/terraform-plugin-framework v1.13.0
 	github.com/hashicorp/terraform-plugin-framework-timetypes v0.5.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.15.0
