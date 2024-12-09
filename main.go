@@ -24,6 +24,10 @@ import (
 // Generate local resources and data-sources:
 //go:generate go run github.com/hashicorp/terraform-plugin-codegen-framework/cmd/tfplugingen-framework generate data-sources --input ./internal/schema/local_datasources.json --output ./internal/generate
 //go:generate go run github.com/hashicorp/terraform-plugin-codegen-framework/cmd/tfplugingen-framework generate resources --input ./internal/schema/local_resources.json --output ./internal/generate
+//
+// Generate DNS resources and data-sources:
+//go:generate go run github.com/hashicorp/terraform-plugin-codegen-framework/cmd/tfplugingen-framework generate data-sources --input ./internal/schema/dns_datasources.json --output ./internal/generate
+//go:generate go run github.com/hashicorp/terraform-plugin-codegen-framework/cmd/tfplugingen-framework generate resources --input ./internal/schema/dns_resources.json --output ./internal/generate
 
 // Run the docs generation tool, check its repository for more information on how it works and how docs
 // can be customized.
