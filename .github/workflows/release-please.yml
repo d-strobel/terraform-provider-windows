@@ -1,0 +1,24 @@
+# Release-Please creates creates pull-requests for new versions.
+# After merging the PR it creates a changelog based on the conventional commits
+# and a Tag that triggers the goreleaser workflow.
+name: release-please
+
+on:
+  push:
+    branches:
+      - main
+
+# Release-Please need permissions to read and write the repository contents
+# and creating pull-requests.
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: go
+          skip-github-release: true
