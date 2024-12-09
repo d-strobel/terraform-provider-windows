@@ -14,11 +14,3 @@ repos:
       - id: commitlint
         additional_dependencies: ["@commitlint/config-conventional"]
         stages: ["commit-msg"]
-  - repo: https://github.com/dnephin/pre-commit-golang
-    rev: v0.5.1
-    hooks:
-      - id: go-fmt
-      - id: golangci-lint
-      - id: go-unit-tests
-      - id: go-build
-      - id: go-mod-tidy
