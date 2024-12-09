@@ -1,6 +1,6 @@
 module github.com/d-strobel/terraform-provider-windows
 
-go 1.22.8
+go 1.23.3
 
 require (
 	github.com/d-strobel/gowindows v1.1.0
