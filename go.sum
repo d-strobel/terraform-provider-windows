@@ -40,8 +40,8 @@ github.com/cloudflare/circl v1.3.7 h1:qlCDlTPz2n9fu58M0Nh1J/JzcFpfgkFHHX3O35r5vc
 github.com/cloudflare/circl v1.3.7/go.mod h1:sRTcRWXGLrKw6yIGJ+l7amYJFfAXbZG0kBSc8r4zxgA=
 github.com/cyphar/filepath-securejoin v0.2.4 h1:Ugdm7cg7i6ZK6x3xDF1oEu1nfkyfH53EtKeQYTC3kyg=
 github.com/cyphar/filepath-securejoin v0.2.4/go.mod h1:aPGpWjXOXUn2NCNjFvBE6aRxGGx79pTxQpKOJNYHHl4=
-github.com/d-strobel/gowindows v1.1.0 h1:bIQ/iWM27c9mr2i+EnkauHhqrjeyETSSl4HWZASzn60=
-github.com/d-strobel/gowindows v1.1.0/go.mod h1:cssWAaTQlW99zi2m8i/RIZM6RM7sl1wNbWop8uUk3Vk=
+github.com/d-strobel/gowindows v1.2.0 h1:TJb9rytn6DjWF9E3YnuZtX5gUvKe4URKSgxavMR5pYI=
+github.com/d-strobel/gowindows v1.2.0/go.mod h1:zz2uP7h+uTJpkJTssTsGALz/ww/dSV1sT9g4iMMb140=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
