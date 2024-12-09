@@ -1,9 +1,10 @@
 module github.com/d-strobel/terraform-provider-windows
 
 go 1.22.8
+toolchain go1.23.4
 
 require (
-	github.com/d-strobel/gowindows v1.1.0
+	github.com/d-strobel/gowindows v1.2.0
 	github.com/hashicorp/terraform-plugin-codegen-framework v0.4.1
 	github.com/hashicorp/terraform-plugin-docs v0.20.1
 	github.com/hashicorp/terraform-plugin-framework v1.13.0
