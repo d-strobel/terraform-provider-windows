@@ -55,7 +55,7 @@
             "name": "name",
             "string": {
               "computed_optional_required": "required",
-              "description": "Define the name for the local security group. The maximum length is 256 characters.",
+              "description": "Define the name for the local security group. The maximum length is 256 characters. A local security group name can't contain the following characters: `\"`, `/`, `\\`, `[`, `]`, `:`, `;`, `|`, `=`, `,`, `+`, `*`, `?`, `<`, `>`, `@`",
               "validators": [
                 {
                   "custom": {
@@ -65,6 +65,19 @@
                       }
                     ],
                     "schema_definition": "stringvalidator.LengthBetween(1, 256)"
+                  }
+                },
+                {
+                  "custom": {
+                    "imports": [
+                      {
+                        "path": "github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+                      },
+                      {
+                        "path": "regexp"
+                      }
+                    ],
+                    "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(`^[^\"/\\[\\]:;|=,+*?<>\\@]+$`), `cannot contain the following characters: \"/\\[]:;|=,+*?<>@ `)"
                   }
                 }
               ],
@@ -228,7 +241,7 @@
                         "path": "regexp"
                       }
                     ],
-                    "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(`^[^\"\/\\[\\]:;|=,+*?<>\\@]+$`), `cannot contain the following characters: \"/\\[]:;|=,+*?<>@ `)"
+                    "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(`^[^\"/\\[\\]:;|=,+*?<>\\@]+$`), `cannot contain the following characters: \"/\\[]:;|=,+*?<>@ `)"
                   }
                 }
               ],
@@ -360,8 +373,8 @@
     {
       "name": "local_group_member",
       "schema": {
-        "description": "Manage group member for local security groups.",
-        "markdown_description": "Manage group member for local security groups.",
+        "description": "Manage members of local security groups.",
+        "markdown_description": "Manage members of local security groups.",
         "attributes": [
           {
             "name": "group_id",
